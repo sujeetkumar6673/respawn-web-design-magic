@@ -24,18 +24,25 @@ const ResourcesSection: React.FC = () => {
     }
   ];
 
+  // Updated partners with reliable image URLs
   const partners = [
     {
       id: 'united',
-      logo: 'https://www.unitedhealthgroup.com/content/dam/UHG/Images/Global/Logos/UHC_Logo.svg'
+      name: 'United Healthcare',
+      logo: 'https://www.unitedhealthgroup.com/content/dam/UHG/Images/newsroom/logos/uh-logo-anniversary-2023.png',
+      fallbackLogo: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=150&auto=format&fit=crop'
     },
     {
       id: 'bcbs',
-      logo: 'https://www.bcbs.com/themes/custom/bcbs/img/bcbs-logo-web.svg'
+      name: 'Blue Cross Blue Shield',
+      logo: 'https://www.bluecrossmn.com/sites/default/files/svg/logo_bcbsmn.svg',
+      fallbackLogo: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=150&auto=format&fit=crop'
     },
     {
       id: 'advent',
-      logo: 'https://www.adventhealth.com/sites/default/files/styles/bfc-header-logo/public/media/advent-health-logo.svg'
+      name: 'Advent Health',
+      logo: 'https://www.adventhealth.com/themes/default/img/AH_WHITE_LOGO.png',
+      fallbackLogo: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=150&auto=format&fit=crop'
     }
   ];
 
@@ -63,16 +70,16 @@ const ResourcesSection: React.FC = () => {
         ))}
       </div>
       
-      <div className="flex flex-wrap items-center justify-center gap-8 my-4">
+      <div className="flex flex-wrap items-center justify-center gap-8 my-6">
         {partners.map(partner => (
-          <div key={partner.id} className="h-8">
+          <div key={partner.id} className="h-12 bg-rezilia-purple rounded-md px-6 py-2 flex items-center justify-center">
             <img 
               src={partner.logo} 
-              alt="Partner logo" 
-              className="h-full" 
+              alt={`${partner.name} logo`}
+              className="h-8 max-w-[120px] object-contain" 
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
-                target.src = "https://via.placeholder.com/150x50?text=Partner+Logo";
+                target.src = partner.fallbackLogo;
               }}
             />
           </div>

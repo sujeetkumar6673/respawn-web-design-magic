@@ -43,6 +43,14 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Custom colors */
+    --rezilia-purple: #2717A5;
+    --rezilia-blue: #67d6ff;
+    --rezilia-green: #62E884;
+    --rezilia-orange: #FF9F46;
+    --rezilia-pink: #FF719A;
+    --rezilia-lightblue: #D8EFFF;
   }
 
   .dark {
@@ -102,6 +110,23 @@
   width: 100%;
 }
 
+/* Sidebar styling */
+.bg-rezilia-purple {
+  background-color: #2717A5;
+}
+
+.bg-simplicia-green-1 {
+  background-color: #A2E882;
+}
+
+.bg-simplicia-green-2 {
+  background-color: #70E076;
+}
+
+.bg-simplicia-green-3 {
+  background-color: #44C768;
+}
+
 .sidebar-item {
   @apply flex items-center gap-3 text-white rounded-md px-3 py-2.5 transition-all font-medium;
   white-space: nowrap;
@@ -115,6 +140,21 @@
   @apply bg-white/10;
 }
 
+/* 3D icon styling */
+.icon-3d-wrapper {
+  @apply flex items-center justify-center min-w-[24px] min-h-[24px];
+}
+
+.icon-3d-inner {
+  @apply relative flex items-center justify-center;
+  filter: drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.3));
+}
+
+.shadow-simplicia {
+  box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Other classes */
 .calendar-day {
   @apply flex items-center justify-center h-9 w-9 rounded-full transition-all cursor-pointer;
 }

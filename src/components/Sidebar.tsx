@@ -26,7 +26,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
   ];
 
   return (
-    <div className="sidebar h-screen bg-sidebar flex flex-col overflow-y-auto w-[230px] lg:w-[220px] md:w-[80px] sm:w-[70px]">
+    <div className="sidebar h-screen bg-sidebar flex flex-col overflow-y-auto w-[230px] lg:w-[220px] md:w-[200px] sm:w-[180px]">
       <div className="flex justify-center py-6">
         <div className="h-16 w-16 md:h-12 md:w-12 sm:h-10 sm:w-10">
           <ReziliaLogo />
@@ -42,11 +42,11 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
             <div className="text-white">
               {item.icon}
             </div>
-            <div className="flex-1 text-sm font-medium md:hidden">
+            <div className="flex-1 text-sm font-medium">
               {item.name}
             </div>
             {item.badge && (
-              <div className="badge badge-orange md:hidden">
+              <div className="badge badge-orange">
                 {item.badge}
               </div>
             )}
@@ -54,8 +54,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
         ))}
       </div>
       
-      <div className="p-4 md:p-2">
-        <div className="text-white text-xs opacity-70 mb-1 md:hidden">Powered by Rezilia AI</div>
+      <div className="p-4">
+        <div className="text-white text-xs opacity-70 mb-1">Powered by Rezilia AI</div>
       </div>
     </div>
   );

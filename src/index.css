@@ -104,6 +104,7 @@
 
 .sidebar-item {
   @apply flex items-center gap-3 text-white rounded-md px-3 py-2.5 transition-all font-medium;
+  white-space: nowrap;
 }
 
 .sidebar-item.active {

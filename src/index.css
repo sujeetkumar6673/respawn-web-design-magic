@@ -103,7 +103,7 @@
 }
 
 .sidebar-item {
-  @apply flex items-center gap-3 text-white rounded-md px-3 py-2 transition-all font-medium;
+  @apply flex items-center gap-3 text-white rounded-md px-3 py-2.5 transition-all font-medium;
 }
 
 .sidebar-item.active {

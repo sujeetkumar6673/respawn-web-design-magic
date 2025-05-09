@@ -35,11 +35,14 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
       
       <div className="flex-1 px-3 py-2">
         {navItems.map((item) => (
-          <div key={item.id} className={`sidebar-item mb-1 ${activePage === item.id ? 'active' : ''}`}>
+          <div 
+            key={item.id} 
+            className={`sidebar-item mb-1 ${activePage === item.id ? 'active' : ''}`}
+          >
             <div className="text-white">
               {item.icon}
             </div>
-            <div className="flex-1 md:hidden">
+            <div className="flex-1 text-sm font-medium md:hidden">
               {item.name}
             </div>
             {item.badge && (
@@ -49,6 +52,10 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
             )}
           </div>
         ))}
+      </div>
+      
+      <div className="p-4 md:p-2">
+        <div className="text-white text-xs opacity-70 mb-1 md:hidden">Powered by Rezilia AI</div>
       </div>
     </div>
   );

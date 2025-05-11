@@ -8,6 +8,7 @@ interface ScheduleItem {
   title: string;
   subtitle?: string;
   color: string;
+  borderColor: string;
 }
 
 const Schedule: React.FC = () => {
@@ -17,20 +18,23 @@ const Schedule: React.FC = () => {
       time: '08:00 am',
       title: 'Meditation and mindfulness',
       subtitle: 'Running',
-      color: 'bg-rezilia-lightblue'
+      color: 'bg-[#F2FCE2]',
+      borderColor: 'border-l-green-500'
     },
     {
       id: 'breakfast',
       time: '09:45 am',
       title: 'Breakfast with Mom',
       subtitle: 'Check Groceries List',
-      color: 'bg-rezilia-pink'
+      color: 'bg-[#FEC6A1]/30',
+      borderColor: 'border-l-orange-400'
     },
     {
       id: 'meeting',
       time: '10:50 am',
       title: 'Online meeting',
-      color: 'bg-rezilia-pink'
+      color: 'bg-[#FFDCE5]',
+      borderColor: 'border-l-red-500'
     }
   ];
 
@@ -39,41 +43,45 @@ const Schedule: React.FC = () => {
       id: 'doctor',
       time: '',
       title: 'Mom\'s Doctor Appointment',
-      color: 'bg-rezilia-purple'
+      color: 'bg-[#E5DEFF]',
+      borderColor: 'border-l-purple-500'
     }
   ];
 
   return (
-    <div>
-      <Card>
-        <CardHeader className="py-2 px-4">
-          <h3 className="font-bold">TODAY</h3>
-        </CardHeader>
-        <CardContent className="p-3">
-          {scheduleItems.map(item => (
-            <div key={item.id} className="flex mb-3">
-              <div className="w-24 text-sm text-gray-500 pt-1">{item.time}</div>
-              <div className={`flex-1 schedule-item ${item.color} border-l-rezilia-purple`}>
-                <div className="font-medium">{item.title}</div>
-                {item.subtitle && <div className="text-sm">{item.subtitle}</div>}
-              </div>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
-
-      <Card className="mt-4">
-        <CardHeader className="py-2 px-4">
-          <h3 className="font-bold">UPCOMING</h3>
-        </CardHeader>
-        <CardContent className="p-3">
-          {upcomingItems.map(item => (
-            <div key={item.id} className={`schedule-item ${item.color} border-l-rezilia-purple`}>
+    <div className="mt-4">
+      <div className="mb-2">
+        <h3 className="font-bold text-gray-800 px-1">TODAY</h3>
+      </div>
+      <div className="space-y-3">
+        {scheduleItems.map(item => (
+          <div key={item.id} className="flex">
+            <div className="w-24 text-sm text-gray-500 pt-2">{item.time}</div>
+            <div className={`flex-1 p-3 rounded-md ${item.color} border-l-4 ${item.borderColor}`}>
               <div className="font-medium">{item.title}</div>
+              {item.subtitle && <div className="text-sm text-gray-600">{item.subtitle}</div>}
             </div>
-          ))}
-        </CardContent>
-      </Card>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-6 mb-2">
+        <h3 className="font-bold text-gray-800 px-1">UPCOMING</h3>
+      </div>
+      <div className="space-y-3">
+        {upcomingItems.map(item => (
+          <div key={item.id} className="flex">
+            {item.time && (
+              <div className="w-24 text-sm text-gray-500 pt-2">{item.time}</div>
+            )}
+            <div className={`flex-1 p-3 rounded-md ${item.color} border-l-4 ${item.borderColor}
+              ${!item.time ? 'ml-24' : ''}`}>
+              <div className="font-medium">{item.title}</div>
+              {item.subtitle && <div className="text-sm text-gray-600">{item.subtitle}</div>}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

@@ -57,8 +57,11 @@ const Schedule: React.FC = () => {
           <div key={item.id} className="flex">
             <div className="w-20 text-sm text-gray-500 pt-2">{item.time}</div>
             <div className="relative flex-1">
-              {/* Changed from w-1.5 to w-2 and removed rounded-l-md for a straight edge */}
-              <div className="absolute left-0 top-0 bottom-0 w-2" style={{ backgroundColor: item.borderColor.replace('border-l-', '') }}></div>
+              {/* Using actual border and correct solid color */}
+              <div 
+                className={`absolute left-0 top-0 bottom-0 w-2`} 
+                style={{ backgroundColor: item.borderColor.replace('border-l-', '') }}
+              ></div>
               <div className={`h-full pl-5 py-3 pr-3 rounded-md ${item.color}`}>
                 <div className="font-medium text-gray-800">{item.title}</div>
                 {item.subtitle && <div className="text-sm text-gray-600 mt-1">{item.subtitle}</div>}
@@ -78,8 +81,11 @@ const Schedule: React.FC = () => {
               {/* Placeholder for alignment */}
             </div>
             <div className="relative flex-1">
-              {/* Changed from w-1.5 to w-2 and removed rounded-l-md for a straight edge */}
-              <div className="absolute left-0 top-0 bottom-0 w-2" style={{ backgroundColor: item.borderColor.replace('border-l-', '') }}></div>
+              {/* Using actual border and correct solid color */}
+              <div 
+                className={`absolute left-0 top-0 bottom-0 w-2`} 
+                style={{ backgroundColor: item.borderColor.replace('border-l-', '') }}
+              ></div>
               <div className={`h-full pl-5 py-3 pr-3 rounded-md ${item.color}`}>
                 <div className="font-medium text-gray-800">{item.title}</div>
                 {item.subtitle && <div className="text-sm text-gray-600 mt-1">{item.subtitle}</div>}

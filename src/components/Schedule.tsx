@@ -18,7 +18,7 @@ const Schedule: React.FC = () => {
       title: 'Meditation and mindfulness',
       subtitle: 'Running',
       color: 'bg-[#D7F8E3]',
-      borderColor: 'border-l-[#42BD7D]'
+      borderColor: '#42BD7D'
     },
     {
       id: 'breakfast',
@@ -26,14 +26,14 @@ const Schedule: React.FC = () => {
       title: 'Breakfast with Mom',
       subtitle: 'Check Groceries List',
       color: 'bg-[#FFE6D5]',
-      borderColor: 'border-l-[#FF8651]'
+      borderColor: '#FF8651'
     },
     {
       id: 'meeting',
       time: '10:50 am',
       title: 'Online meeting',
       color: 'bg-[#FFD6DE]',
-      borderColor: 'border-l-[#FF5A74]'
+      borderColor: '#FF5A74'
     }
   ];
 
@@ -43,7 +43,7 @@ const Schedule: React.FC = () => {
       time: '',
       title: 'Mom\'s Doctor Appointment',
       color: 'bg-[#EBE3FF]',
-      borderColor: 'border-l-[#7B5AC5]'
+      borderColor: '#7B5AC5'
     }
   ];
 
@@ -57,12 +57,11 @@ const Schedule: React.FC = () => {
           <div key={item.id} className="flex">
             <div className="w-20 text-sm text-gray-500 pt-2">{item.time}</div>
             <div className="relative flex-1">
-              {/* Using actual border and correct solid color */}
+              {/* Direct left border implementation */}
               <div 
-                className={`absolute left-0 top-0 bottom-0 w-2`} 
-                style={{ backgroundColor: item.borderColor.replace('border-l-', '') }}
-              ></div>
-              <div className={`h-full pl-5 py-3 pr-3 rounded-md ${item.color}`}>
+                className={`h-full pl-5 py-3 pr-3 rounded-r-md ${item.color}`}
+                style={{ borderLeft: `4px solid ${item.borderColor}` }}
+              >
                 <div className="font-medium text-gray-800">{item.title}</div>
                 {item.subtitle && <div className="text-sm text-gray-600 mt-1">{item.subtitle}</div>}
               </div>
@@ -81,12 +80,11 @@ const Schedule: React.FC = () => {
               {/* Placeholder for alignment */}
             </div>
             <div className="relative flex-1">
-              {/* Using actual border and correct solid color */}
+              {/* Direct left border implementation */}
               <div 
-                className={`absolute left-0 top-0 bottom-0 w-2`} 
-                style={{ backgroundColor: item.borderColor.replace('border-l-', '') }}
-              ></div>
-              <div className={`h-full pl-5 py-3 pr-3 rounded-md ${item.color}`}>
+                className={`h-full pl-5 py-3 pr-3 rounded-r-md ${item.color}`}
+                style={{ borderLeft: `4px solid ${item.borderColor}` }}
+              >
                 <div className="font-medium text-gray-800">{item.title}</div>
                 {item.subtitle && <div className="text-sm text-gray-600 mt-1">{item.subtitle}</div>}
               </div>

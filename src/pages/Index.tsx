@@ -51,8 +51,8 @@ const Index = () => {
                 
                 {/* Right Column */}
                 <div className="space-y-8">
-                  {/* Calendar */}
-                  <div className="-mt-2">
+                  {/* Calendar - adjusted to align with welcome message */}
+                  <div className="-mt-4">
                     <Calendar />
                   </div>
                   

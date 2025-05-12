@@ -102,9 +102,14 @@ const CalendarPage = () => {
 
   // Handle form submission
   const onSubmit = (data: EventFormValues) => {
+    // Create a new event with all required fields explicitly set
     const newEvent: CalendarEvent = {
       id: Date.now().toString(),
-      ...data
+      title: data.title,
+      date: data.date,
+      time: data.time,
+      description: data.description || '',
+      color: data.color
     };
     
     setEvents([...events, newEvent]);
@@ -425,7 +430,8 @@ const CalendarPage = () => {
       {/* Mobile Navigation - only visible on mobile */}
       {isMobile && <MobileNav activePage={activePage} onNavigate={handleNavigate} />}
 
-      <style jsx global>{`
+      <style>
+        {`
         .rdp {
           --rdp-accent-color: var(--rezilia-purple);
           margin: 0;
@@ -459,7 +465,8 @@ const CalendarPage = () => {
           background-color: var(--rezilia-purple) !important;
           color: white !important;
         }
-      `}</style>
+        `}
+      </style>
     </div>
   );
 };

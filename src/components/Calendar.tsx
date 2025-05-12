@@ -64,7 +64,7 @@ const Calendar: React.FC = () => {
         />
       </div>
 
-      <style>
+      <style jsx>
         {`
         .event-day {
           font-weight: bold;

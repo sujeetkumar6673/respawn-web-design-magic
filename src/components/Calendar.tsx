@@ -107,6 +107,24 @@ const Calendar: React.FC = () => {
           color: #666 !important;
           font-weight: 600 !important;
         }
+        .rdp-day:not(.rdp-day_outside) {
+          font-weight: normal !important;
+          color: #333 !important;
+          display: block !important;
+          visibility: visible !important;
+        }
+        .calendar-container {
+          min-height: 300px;
+        }
+        .rdp-tbody {
+          visibility: visible !important;
+        }
+        .rdp-button_reset {
+          visibility: visible !important;
+          display: flex !important;
+          align-items: center;
+          justify-content: center;
+        }
       `}</style>
     </div>
   );

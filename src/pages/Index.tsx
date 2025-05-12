@@ -41,11 +41,18 @@ const Index = () => {
                   {/* Welcome Message */}
                   <WelcomeMessage userName={userName} />
                   
-                  {/* Calendar - moved higher for mobile */}
+                  {/* Calendar and Schedule - side by side on mobile */}
                   {isMobile && (
                     <section className="mt-4">
-                      <h2 className="text-xl font-bold mb-3">Calendar</h2>
-                      <Calendar />
+                      <h2 className="text-xl font-bold mb-3">Calendar & Schedule</h2>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                          <Calendar />
+                        </div>
+                        <div>
+                          <Schedule />
+                        </div>
+                      </div>
                     </section>
                   )}
                   
@@ -66,7 +73,7 @@ const Index = () => {
                   </section>
                 </div>
                 
-                {/* Right Column - Calendar only shown on desktop here */}
+                {/* Right Column - Calendar and Schedule only shown on desktop here */}
                 <div className="space-y-6 sm:space-y-8">
                   {/* Calendar - desktop position */}
                   {!isMobile && (
@@ -75,8 +82,8 @@ const Index = () => {
                     </div>
                   )}
                   
-                  {/* Schedule - shown on both mobile and desktop */}
-                  <Schedule />
+                  {/* Schedule - only shown on desktop here */}
+                  {!isMobile && <Schedule />}
                 </div>
               </div>
             </div>

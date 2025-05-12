@@ -28,25 +28,25 @@ const Calendar: React.FC = () => {
   ];
 
   return (
-    <div className="bg-white rounded-lg p-4 shadow-sm">
-      <div className="flex items-center justify-between mb-4">
+    <div className="bg-white rounded-lg p-3 sm:p-4 shadow-sm">
+      <div className="flex items-center justify-between mb-3 sm:mb-4">
         <div className="flex items-end gap-2">
-          <h2 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold`}>May 2025</h2>
+          <h2 className={`${isMobile ? 'text-lg' : 'text-2xl'} font-bold`}>May 2025</h2>
           <Badge className="bg-rezilia-orange text-white mb-1">1014</Badge>
         </div>
-        <div className="flex gap-2">
-          <Button variant="ghost" size="icon">
+        <div className="flex gap-1 sm:gap-2">
+          <Button variant="ghost" size="icon" className="h-7 w-7 sm:h-8 sm:w-8">
             <ChevronLeftIcon />
           </Button>
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" className="h-7 w-7 sm:h-8 sm:w-8">
             <ChevronRightIcon />
           </Button>
         </div>
       </div>
       
-      <div className="grid grid-cols-7 gap-1">
+      <div className="grid grid-cols-7 gap-0 sm:gap-1">
         {days.map((day, i) => (
-          <div key={i} className="text-center font-medium text-sm py-1">
+          <div key={i} className="text-center font-medium text-xs sm:text-sm py-1">
             {day}
           </div>
         ))}
@@ -55,7 +55,8 @@ const Calendar: React.FC = () => {
           week.map((date, dateIdx) => (
             <div 
               key={`${weekIdx}-${dateIdx}`} 
-              className={`calendar-day ${date.isActive ? 'active' : ''} ${!date.isCurrentMonth ? 'other-month' : ''}`}
+              className={`calendar-day text-center py-1 text-sm ${date.isActive ? 'bg-rezilia-purple text-white rounded-full' : ''} 
+                ${!date.isCurrentMonth ? 'text-gray-300' : ''}`}
             >
               {date.day}
             </div>

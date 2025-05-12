@@ -51,30 +51,31 @@ const Schedule: React.FC = () => {
   ];
 
   // Determine time column width based on device
-  const timeColWidth = isMobile ? "w-14" : "w-24";
-
+  const timeColWidth = isMobile ? "w-12" : "w-24";
+  const fontSize = isMobile ? "text-xs" : "text-sm";
+  
   return (
-    <div className="mt-4 px-1 sm:px-0">
-      <div className="mb-4">
-        <h3 className="font-bold text-gray-800">TODAY</h3>
+    <div className={`mt-2 sm:mt-4 ${isMobile ? 'px-0' : 'px-1 sm:px-0'}`}>
+      <div className="mb-2 sm:mb-4">
+        <h3 className="font-bold text-gray-800 text-sm sm:text-base">TODAY</h3>
       </div>
       <div className="relative">
         {scheduleItems.map((item) => (
-          <div key={item.id} className="relative mb-4">
+          <div key={item.id} className="relative mb-2 sm:mb-4">
             <div className="flex">
               {/* Time column */}
               <div className={`${timeColWidth} relative`}>
-                <div className="text-sm text-gray-500 pt-2">{item.time}</div>
+                <div className={`${fontSize} text-gray-500 pt-2`}>{item.time}</div>
               </div>
               
               {/* Task card */}
               <div className="flex-1">
                 <div 
-                  className={`pl-4 py-3 pr-3 rounded-r-md ${item.color}`}
+                  className={`pl-3 sm:pl-4 py-2 sm:py-3 pr-2 sm:pr-3 rounded-r-md ${item.color}`}
                   style={{ borderLeft: `4px solid ${item.borderColor}` }}
                 >
-                  <div className="font-medium text-gray-800">{item.title}</div>
-                  {item.subtitle && <div className="text-sm text-gray-600 mt-1">{item.subtitle}</div>}
+                  <div className={`font-medium text-gray-800 ${fontSize}`}>{item.title}</div>
+                  {item.subtitle && <div className={`${isMobile ? 'text-xs' : 'text-sm'} text-gray-600 mt-1`}>{item.subtitle}</div>}
                 </div>
               </div>
             </div>
@@ -82,23 +83,23 @@ const Schedule: React.FC = () => {
         ))}
       </div>
 
-      <div className="mt-8 mb-4">
-        <h3 className="font-bold text-gray-800">UPCOMING</h3>
+      <div className="mt-4 sm:mt-8 mb-2 sm:mb-4">
+        <h3 className="font-bold text-gray-800 text-sm sm:text-base">UPCOMING</h3>
       </div>
       <div className="relative">        
         {/* Upcoming items */}
         {upcomingItems.map((item) => (
-          <div key={item.id} className="flex mb-4">
+          <div key={item.id} className="flex mb-2 sm:mb-4">
             <div className={`${timeColWidth} relative`}>
-              <div className="text-sm text-gray-500 pt-2">{item.time}</div>
+              <div className={`${fontSize} text-gray-500 pt-2`}>{item.time}</div>
             </div>
             <div className="flex-1">
               <div 
-                className={`pl-4 py-3 pr-3 rounded-r-md ${item.color}`}
+                className={`pl-3 sm:pl-4 py-2 sm:py-3 pr-2 sm:pr-3 rounded-r-md ${item.color}`}
                 style={{ borderLeft: `4px solid ${item.borderColor}` }}
               >
-                <div className="font-medium text-gray-800">{item.title}</div>
-                {item.subtitle && <div className="text-sm text-gray-600 mt-1">{item.subtitle}</div>}
+                <div className={`font-medium text-gray-800 ${fontSize}`}>{item.title}</div>
+                {item.subtitle && <div className={`${isMobile ? 'text-xs' : 'text-sm'} text-gray-600 mt-1`}>{item.subtitle}</div>}
               </div>
             </div>
           </div>

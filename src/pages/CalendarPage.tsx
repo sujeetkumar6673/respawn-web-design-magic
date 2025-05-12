@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import MobileNav from '@/components/MobileNav';
-import { CalendarPlus, Calendar as CalendarIcon } from 'lucide-react';
+import { CalendarPlus, Calendar as CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -22,7 +22,9 @@ import { toast } from 'sonner';
 // Form validation schema
 const eventFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
-  date: z.date(),
+  date: z.date({
+    required_error: "Date is required",
+  }),
   time: z.string().min(1, "Time is required"),
   description: z.string().optional(),
   color: z.string().default("#2717A5")
@@ -68,7 +70,7 @@ const CalendarPage = () => {
 
   // Handle form submission
   const onSubmit = (data: EventFormValues) => {
-    // Create a new event with all required fields explicitly set
+    // Create a new event with all required fields
     const newEvent = {
       id: Date.now().toString(),
       title: data.title,
@@ -116,7 +118,7 @@ const CalendarPage = () => {
                   </Button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   {/* Calendar Section */}
                   <div className="bg-rezilia-lightblue rounded-xl p-4 shadow-sm">
                     <div className="flex items-center justify-between mb-4">
@@ -201,7 +203,7 @@ const CalendarPage = () => {
                   </div>
 
                   {/* Upcoming Events */}
-                  <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                  <div className="col-span-1 lg:col-span-1 bg-white rounded-xl p-4 shadow-sm border border-gray-100">
                     <h2 className="text-xl font-bold text-rezilia-purple mb-4">Upcoming Events</h2>
                     
                     {upcomingEvents.length > 0 ? (
@@ -258,7 +260,7 @@ const CalendarPage = () => {
 
       {/* Add Event Dialog */}
       <Dialog open={isAddEventDialogOpen} onOpenChange={setIsAddEventDialogOpen}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold text-rezilia-purple">Add New Event</DialogTitle>
             <DialogDescription>
@@ -365,7 +367,7 @@ const CalendarPage = () => {
                 )}
               />
 
-              <DialogFooter className="mt-6 flex flex-col sm:flex-row gap-2 sm:gap-0">
+              <DialogFooter className="mt-6 sm:space-x-2 gap-2">
                 <Button 
                   type="button" 
                   variant="outline" 

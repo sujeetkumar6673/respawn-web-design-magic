@@ -10,6 +10,7 @@ import Schedule from '@/components/Schedule';
 import WelcomeMessage from '@/components/WelcomeMessage';
 import MobileNav from '@/components/MobileNav';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { CalendarProvider } from '@/contexts/CalendarContext';
 
 const Index = () => {
   const userName = "Nina";
@@ -45,14 +46,16 @@ const Index = () => {
                   {isMobile && (
                     <section className="mt-4">
                       <h2 className="text-xl font-bold mb-3">Calendar & Schedule</h2>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                          <Calendar />
+                      <CalendarProvider>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div>
+                            <Calendar />
+                          </div>
+                          <div>
+                            <Schedule />
+                          </div>
                         </div>
-                        <div>
-                          <Schedule />
-                        </div>
-                      </div>
+                      </CalendarProvider>
                     </section>
                   )}
                   
@@ -77,13 +80,13 @@ const Index = () => {
                 <div className="space-y-6 sm:space-y-8">
                   {/* Calendar - desktop position */}
                   {!isMobile && (
-                    <div className="-mt-4 hidden sm:block">
-                      <Calendar />
-                    </div>
+                    <CalendarProvider>
+                      <div className="-mt-4 hidden sm:block">
+                        <Calendar />
+                      </div>
+                      <Schedule />
+                    </CalendarProvider>
                   )}
-                  
-                  {/* Schedule - only shown on desktop here */}
-                  {!isMobile && <Schedule />}
                 </div>
               </div>
             </div>

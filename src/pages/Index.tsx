@@ -8,17 +8,24 @@ import PersonalSection from '@/components/PersonalSection';
 import ResourcesSection from '@/components/ResourcesSection';
 import Schedule from '@/components/Schedule';
 import WelcomeMessage from '@/components/WelcomeMessage';
+import MobileNav from '@/components/MobileNav';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const Index = () => {
   const userName = "Nina";
   const isMobile = useIsMobile();
+  const [activePage, setActivePage] = useState('home');
+  
+  const handleNavigate = (page: string) => {
+    setActivePage(page);
+    // In a real app, you'd handle actual navigation here
+  };
   
   return (
-    <div className="app-background min-h-screen">
+    <div className="app-background min-h-screen pb-16 sm:pb-0">
       <div className="flex h-full">
-        {/* Sidebar */}
-        <Sidebar activePage="home" />
+        {/* Sidebar - only visible on desktop */}
+        {!isMobile && <Sidebar activePage={activePage} />}
         
         {/* Main Content */}
         <div className={`flex-1 p-3 sm:p-4 overflow-y-auto ${isMobile ? 'w-full' : ''}`}>
@@ -33,6 +40,14 @@ const Index = () => {
                 <div className="lg:col-span-2 space-y-6 sm:space-y-8">
                   {/* Welcome Message */}
                   <WelcomeMessage userName={userName} />
+                  
+                  {/* Calendar - moved higher for mobile */}
+                  {isMobile && (
+                    <section className="mt-4">
+                      <h2 className="text-xl font-bold mb-3">Calendar</h2>
+                      <Calendar />
+                    </section>
+                  )}
                   
                   {/* Modules Section */}
                   <section>
@@ -51,23 +66,26 @@ const Index = () => {
                   </section>
                 </div>
                 
-                {/* Right Column */}
+                {/* Right Column - Calendar only shown on desktop here */}
                 <div className="space-y-6 sm:space-y-8">
-                  {/* Calendar - adjusted to align with welcome message */}
-                  <div className="-mt-4 hidden sm:block">
-                    <Calendar />
-                  </div>
+                  {/* Calendar - desktop position */}
+                  {!isMobile && (
+                    <div className="-mt-4 hidden sm:block">
+                      <Calendar />
+                    </div>
+                  )}
                   
-                  {/* Schedule */}
+                  {/* Schedule - shown on both mobile and desktop */}
                   <Schedule />
                 </div>
               </div>
             </div>
-            
-            {/* Removed pagination footer completely */}
           </div>
         </div>
       </div>
+      
+      {/* Mobile Navigation - only visible on mobile */}
+      {isMobile && <MobileNav activePage={activePage} onNavigate={handleNavigate} />}
     </div>
   );
 };

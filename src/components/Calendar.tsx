@@ -3,9 +3,12 @@ import React from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from './Icons';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const Calendar: React.FC = () => {
   const days = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+  const isMobile = useIsMobile();
+  
   const dates = [
     [{ day: '1', isCurrentMonth: true }, { day: '2', isCurrentMonth: true }, { day: '3', isCurrentMonth: true }, 
      { day: '4', isCurrentMonth: true }, { day: '5', isCurrentMonth: true }, { day: '6', isCurrentMonth: true }, 
@@ -28,7 +31,7 @@ const Calendar: React.FC = () => {
     <div className="bg-white rounded-lg p-4 shadow-sm">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-end gap-2">
-          <h2 className="text-2xl font-bold">May 2025</h2>
+          <h2 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold`}>May 2025</h2>
           <Badge className="bg-rezilia-orange text-white mb-1">1014</Badge>
         </div>
         <div className="flex gap-2">

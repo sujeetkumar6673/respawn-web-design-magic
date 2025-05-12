@@ -1,13 +1,12 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   ReziliaLogo, HomeIcon, SimpliciaBadge, ReziliaAIIcon, 
   AdmiliaIcon, CalendarIcon, DocumentIcon, HeartIcon,
   ForumIcon, DirectoryIcon, ProfileIcon, SettingIcon 
 } from './Icons';
-import { useIsMobile } from '@/hooks/use-mobile';
-import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
-import { Menu, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface SidebarProps {
   activePage: string;
@@ -21,8 +20,22 @@ interface NavItem {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const isMobile = useIsMobile();
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  
+  // Check local storage for user preference on sidebar state
+  useEffect(() => {
+    const savedState = localStorage.getItem('sidebarCollapsed');
+    if (savedState !== null) {
+      setIsCollapsed(savedState === 'true');
+    }
+  }, []);
+  
+  // Save preference when changed
+  const toggleSidebar = () => {
+    const newState = !isCollapsed;
+    setIsCollapsed(newState);
+    localStorage.setItem('sidebarCollapsed', String(newState));
+  };
 
   const navItems: NavItem[] = [
     { id: 'home', name: 'Home', icon: <HomeIcon />, badge: '340' },
@@ -38,128 +51,66 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
     { id: 'settings', name: 'Settings', icon: <SettingIcon /> },
   ];
 
-  // Sidebar content component to be used in both desktop and mobile views
-  const SidebarContent = () => (
-    <div className="h-full flex flex-col">
-      <div className="flex justify-center py-6">
-        <div className="h-16 w-16 md:h-12 md:w-12 sm:h-10 sm:w-10">
-          <ReziliaLogo />
-        </div>
-      </div>
-      
-      <div className="flex-1 px-3 py-2">
-        {navItems.map((item) => (
-          <div 
-            key={item.id} 
-            className={`sidebar-item mb-1 ${activePage === item.id ? 'active' : ''}`}
-            onClick={() => isMobile && setIsOpen(false)}
-          >
-            <div className="icon-3d">
-              {item.icon}
-            </div>
-            <div className="flex-1 text-sm font-medium">
-              {item.name}
-            </div>
-            {item.badge && (
-              <div className="badge badge-orange">
-                {item.badge}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-      
-      <div className="p-4">
-        <div className="text-white text-xs opacity-70 mb-1">Powered by Rezilia AI</div>
-      </div>
-    </div>
-  );
-
-  // For Mobile: Use Drawer component
-  if (isMobile) {
-    return (
-      <>
-        {/* Mobile Hamburger Menu */}
-        <button 
-          onClick={() => setIsOpen(true)}
-          className="fixed top-4 left-4 z-50 bg-rezilia-purple p-2 rounded-md text-white"
-          aria-label="Open Menu"
-        >
-          <Menu size={24} />
-        </button>
-
-        {/* Mobile Drawer */}
-        <Drawer open={isOpen} onOpenChange={setIsOpen}>
-          <DrawerContent className="bg-rezilia-purple h-[80vh]">
-            <div className="absolute top-2 right-2">
-              <button 
-                onClick={() => setIsOpen(false)} 
-                className="text-white p-2 rounded-full hover:bg-white/10"
-                aria-label="Close Menu"
-              >
-                <X size={24} />
-              </button>
-            </div>
-            <SidebarContent />
-          </DrawerContent>
-        </Drawer>
-      </>
-    );
-  }
-
-  // For Desktop: Collapsible sidebar
   return (
-    <div className={`sidebar relative h-screen bg-rezilia-purple flex flex-col overflow-y-auto transition-all duration-300 ${isOpen ? 'w-[220px]' : 'w-[70px]'}`}>
-      {/* Toggle button */}
+    <div className={`sidebar relative h-screen bg-rezilia-purple flex flex-col overflow-y-auto transition-all duration-300 ${isCollapsed ? 'w-[70px]' : 'w-[220px]'}`}>
+      {/* Toggle button with improved visibility */}
       <button 
-        onClick={() => setIsOpen(!isOpen)} 
-        className="absolute -right-3 top-6 bg-rezilia-purple text-white p-1 rounded-full shadow-md"
-        aria-label={isOpen ? 'Collapse Sidebar' : 'Expand Sidebar'}
+        onClick={toggleSidebar} 
+        className="absolute -right-3 top-6 bg-white text-rezilia-purple p-1.5 rounded-full shadow-lg border border-gray-200 hover:bg-gray-100 transition-colors"
+        aria-label={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
       >
-        {isOpen ? (
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
-          </svg>
-        ) : (
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-          </svg>
-        )}
+        {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
       </button>
       
       <div className="flex justify-center py-6">
-        <div className={`${isOpen ? 'h-12 w-12' : 'h-10 w-10'} transition-all duration-300`}>
+        <div className={`${isCollapsed ? 'h-10 w-10' : 'h-12 w-12'} transition-all duration-300`}>
           <ReziliaLogo />
         </div>
       </div>
       
       <div className="flex-1 px-2 py-2">
-        {navItems.map((item) => (
-          <div 
-            key={item.id} 
-            className={`sidebar-item mb-1 ${activePage === item.id ? 'active' : ''} ${!isOpen ? 'justify-center' : ''}`}
-            title={!isOpen ? item.name : undefined}  // Show tooltip when collapsed
-          >
-            <div className="icon-3d">
-              {item.icon}
-            </div>
-            {isOpen && (
-              <>
-                <div className="flex-1 text-sm font-medium">
-                  {item.name}
-                </div>
-                {item.badge && (
-                  <div className="badge badge-orange">
-                    {item.badge}
+        <TooltipProvider delayDuration={300}>
+          {navItems.map((item) => (
+            <Tooltip key={item.id}>
+              <TooltipTrigger asChild>
+                <div 
+                  className={`sidebar-item mb-1 ${activePage === item.id ? 'active' : ''} ${!isCollapsed ? 'justify-start' : 'justify-center'}`}
+                >
+                  <div className="icon-3d">
+                    {item.icon}
                   </div>
-                )}
-              </>
-            )}
-          </div>
-        ))}
+                  {!isCollapsed && (
+                    <>
+                      <div className="flex-1 text-sm font-medium">
+                        {item.name}
+                      </div>
+                      {item.badge && (
+                        <div className="badge badge-orange">
+                          {item.badge}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              </TooltipTrigger>
+              {isCollapsed && (
+                <TooltipContent side="right">
+                  <div className="flex items-center gap-2">
+                    <span>{item.name}</span>
+                    {item.badge && (
+                      <div className="badge badge-orange">
+                        {item.badge}
+                      </div>
+                    )}
+                  </div>
+                </TooltipContent>
+              )}
+            </Tooltip>
+          ))}
+        </TooltipProvider>
       </div>
       
-      {isOpen && (
+      {!isCollapsed && (
         <div className="p-4">
           <div className="text-white text-xs opacity-70 mb-1">Powered by Rezilia AI</div>
         </div>

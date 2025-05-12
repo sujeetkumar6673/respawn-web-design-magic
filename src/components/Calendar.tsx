@@ -64,12 +64,14 @@ const Calendar: React.FC = () => {
         />
       </div>
 
-      <style jsx>{`
+      <style>
+        {`
         .event-day {
           font-weight: bold;
           position: relative;
         }
-      `}</style>
+        `}
+      </style>
     </div>
   );
 };

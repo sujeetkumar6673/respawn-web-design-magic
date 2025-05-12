@@ -70,6 +70,30 @@ const Calendar: React.FC = () => {
           font-weight: bold;
           position: relative;
         }
+        .rdp-day {
+          color: #333;
+        }
+        .rdp-day_selected {
+          background-color: var(--rezilia-purple);
+          color: white;
+        }
+        .rdp-button:hover:not([disabled]):not(.rdp-day_selected) {
+          background-color: rgba(39, 23, 165, 0.1);
+        }
+        .rdp {
+          --rdp-accent-color: var(--rezilia-purple);
+          margin: 0;
+        }
+        .rdp-months {
+          justify-content: center;
+        }
+        .rdp-caption {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0;
+          text-align: center;
+        }
         `}
       </style>
     </div>

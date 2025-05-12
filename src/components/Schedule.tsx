@@ -53,27 +53,28 @@ const Schedule: React.FC = () => {
         <h3 className="font-bold text-gray-800 px-1">TODAY</h3>
       </div>
       <div className="relative">
-        {/* Schedule items with vertical lines between them */}
+        {/* Schedule items with vertical lines */}
         {scheduleItems.map((item, index) => (
-          <div key={item.id} className="flex mb-4">
-            <div className="w-20 text-sm text-gray-500 pt-2 relative">
-              {item.time}
-              
-              {/* Colored vertical line after each time */}
-              {index < scheduleItems.length - 1 && (
-                <div 
-                  className="absolute right-0 top-6 w-0.5 h-10"
-                  style={{ backgroundColor: item.borderColor }}
-                ></div>
-              )}
-            </div>
-            <div className="relative flex-1">
+          <div key={item.id} className="relative">
+            {/* Vertical timeline line connecting to next item */}
+            {index < scheduleItems.length - 1 && (
               <div 
-                className={`h-full pl-5 py-3 pr-3 rounded-r-md ${item.color}`}
-                style={{ borderLeft: `4px solid ${item.borderColor}` }}
-              >
-                <div className="font-medium text-gray-800">{item.title}</div>
-                {item.subtitle && <div className="text-sm text-gray-600 mt-1">{item.subtitle}</div>}
+                className="absolute left-[20px] top-6 w-0.5 h-[calc(100%-10px)]"
+                style={{ backgroundColor: item.borderColor }}
+              ></div>
+            )}
+            <div className="flex mb-4">
+              <div className="w-20 text-sm text-gray-500 pt-2 relative">
+                {item.time}
+              </div>
+              <div className="relative flex-1">
+                <div 
+                  className={`h-full pl-5 py-3 pr-3 rounded-r-md ${item.color}`}
+                  style={{ borderLeft: `4px solid ${item.borderColor}` }}
+                >
+                  <div className="font-medium text-gray-800">{item.title}</div>
+                  {item.subtitle && <div className="text-sm text-gray-600 mt-1">{item.subtitle}</div>}
+                </div>
               </div>
             </div>
           </div>

@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface ScheduleItem {
   id: string;
@@ -11,6 +12,8 @@ interface ScheduleItem {
 }
 
 const Schedule: React.FC = () => {
+  const isMobile = useIsMobile();
+  
   const scheduleItems: ScheduleItem[] = [
     {
       id: 'meditation',
@@ -53,23 +56,26 @@ const Schedule: React.FC = () => {
         <h3 className="font-bold text-gray-800 px-1">TODAY</h3>
       </div>
       <div className="relative">
-        {/* Schedule items with vertical lines */}
         {scheduleItems.map((item, index) => (
-          <div key={item.id} className="relative">
-            {/* Vertical timeline line connecting to next item */}
-            {index < scheduleItems.length - 1 && (
-              <div 
-                className="absolute left-[20px] top-6 w-0.5 h-[calc(100%-10px)]"
-                style={{ backgroundColor: item.borderColor }}
-              ></div>
-            )}
-            <div className="flex mb-4">
-              <div className="w-20 text-sm text-gray-500 pt-2 relative">
-                {item.time}
+          <div key={item.id} className="relative mb-6 last:mb-0">
+            <div className="flex">
+              {/* Time column with vertical line */}
+              <div className="w-20 sm:w-24 text-sm text-gray-500 relative pr-2">
+                <div className="pt-2">{item.time}</div>
+                
+                {/* Vertical line extending from time */}
+                {index < scheduleItems.length - 1 && (
+                  <div 
+                    className="absolute left-0 top-8 w-0.5 h-[calc(100%+12px)]" 
+                    style={{ backgroundColor: item.borderColor }}
+                  ></div>
+                )}
               </div>
-              <div className="relative flex-1">
+              
+              {/* Task card */}
+              <div className="flex-1">
                 <div 
-                  className={`h-full pl-5 py-3 pr-3 rounded-r-md ${item.color}`}
+                  className={`pl-4 sm:pl-5 py-3 pr-3 rounded-r-md ${item.color}`}
                   style={{ borderLeft: `4px solid ${item.borderColor}` }}
                 >
                   <div className="font-medium text-gray-800">{item.title}</div>
@@ -88,12 +94,12 @@ const Schedule: React.FC = () => {
         {/* Upcoming items */}
         {upcomingItems.map((item) => (
           <div key={item.id} className="flex mb-4">
-            <div className="w-20 text-sm text-gray-500 pt-2 relative">
+            <div className="w-20 sm:w-24 text-sm text-gray-500 pt-2 relative pr-2">
               {item.time}
             </div>
-            <div className="relative flex-1">
+            <div className="flex-1">
               <div 
-                className={`h-full pl-5 py-3 pr-3 rounded-r-md ${item.color}`}
+                className={`pl-4 sm:pl-5 py-3 pr-3 rounded-r-md ${item.color}`}
                 style={{ borderLeft: `4px solid ${item.borderColor}` }}
               >
                 <div className="font-medium text-gray-800">{item.title}</div>

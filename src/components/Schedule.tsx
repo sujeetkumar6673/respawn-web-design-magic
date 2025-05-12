@@ -51,7 +51,7 @@ const Schedule: React.FC = () => {
   ];
 
   // Determine time column width based on device
-  const timeColWidth = isMobile ? "w-16" : "w-24";
+  const timeColWidth = isMobile ? "w-14" : "w-24";
 
   return (
     <div className="mt-4 px-1 sm:px-0">
@@ -59,20 +59,12 @@ const Schedule: React.FC = () => {
         <h3 className="font-bold text-gray-800">TODAY</h3>
       </div>
       <div className="relative">
-        {scheduleItems.map((item, index) => (
-          <div key={item.id} className="relative mb-8 last:mb-4">
+        {scheduleItems.map((item) => (
+          <div key={item.id} className="relative mb-4">
             <div className="flex">
               {/* Time column */}
               <div className={`${timeColWidth} relative`}>
                 <div className="text-sm text-gray-500 pt-2">{item.time}</div>
-                
-                {/* Vertical line */}
-                {index < scheduleItems.length - 1 && (
-                  <div 
-                    className="absolute left-[7px] top-7 w-0.5 h-[calc(100%+16px)]" 
-                    style={{ backgroundColor: item.borderColor }}
-                  ></div>
-                )}
               </div>
               
               {/* Task card */}
@@ -99,11 +91,6 @@ const Schedule: React.FC = () => {
           <div key={item.id} className="flex mb-4">
             <div className={`${timeColWidth} relative`}>
               <div className="text-sm text-gray-500 pt-2">{item.time}</div>
-              {/* Vertical line for upcoming items if needed */}
-              <div 
-                className="absolute left-[7px] top-2 bottom-0 w-0.5 h-full" 
-                style={{ backgroundColor: item.borderColor }}
-              ></div>
             </div>
             <div className="flex-1">
               <div 

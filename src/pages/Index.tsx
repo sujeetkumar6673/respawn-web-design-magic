@@ -47,25 +47,20 @@ const Index = () => {
             <Header userName={userName} />
             
             {/* Main Dashboard */}
-            <div className="bg-white rounded-b-xl p-3 sm:p-4">
+            <div className={`${isMobile ? 'bg-transparent' : 'bg-white'} rounded-b-xl p-3 sm:p-4`}>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
                 {/* Left Column */}
                 <div className="lg:col-span-2 space-y-6 sm:space-y-8">
                   {/* Welcome Message */}
                   <WelcomeMessage userName={userName} />
                   
-                  {/* Calendar and Schedule - side by side on mobile */}
+                  {/* Calendar and Schedule - stacked on mobile */}
                   {isMobile && (
                     <section className="mt-4">
-                      <h2 className="text-xl font-bold mb-3">Calendar & Schedule</h2>
                       <CalendarProvider>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <div>
-                            <Calendar />
-                          </div>
-                          <div>
-                            <Schedule />
-                          </div>
+                        <div className="space-y-4">
+                          <Calendar />
+                          <Schedule />
                         </div>
                       </CalendarProvider>
                     </section>

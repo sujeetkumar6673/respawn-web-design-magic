@@ -53,19 +53,19 @@ const Schedule: React.FC = () => {
         <h3 className="font-bold text-gray-800 px-1">TODAY</h3>
       </div>
       <div className="relative">
-        {/* Vertical timeline */}
-        <div className="absolute left-[79px] top-0 bottom-0 w-0.5 bg-gray-200"></div>
-        
-        {/* Schedule items */}
-        {scheduleItems.map((item) => (
+        {/* Schedule items with vertical lines between them */}
+        {scheduleItems.map((item, index) => (
           <div key={item.id} className="flex mb-4">
             <div className="w-20 text-sm text-gray-500 pt-2 relative">
               {item.time}
-              {/* Colored circle at the intersection */}
-              <div 
-                className="absolute right-[-4px] top-3 w-2 h-2 rounded-full z-10"
-                style={{ backgroundColor: item.borderColor }}
-              ></div>
+              
+              {/* Colored vertical line after each time */}
+              {index < scheduleItems.length - 1 && (
+                <div 
+                  className="absolute right-0 top-6 w-0.5 h-10"
+                  style={{ backgroundColor: item.borderColor }}
+                ></div>
+              )}
             </div>
             <div className="relative flex-1">
               <div 
@@ -83,20 +83,12 @@ const Schedule: React.FC = () => {
       <div className="mt-8 mb-4">
         <h3 className="font-bold text-gray-800 px-1">UPCOMING</h3>
       </div>
-      <div className="relative">
-        {/* Vertical timeline for upcoming section */}
-        <div className="absolute left-[79px] top-0 bottom-0 w-0.5 bg-gray-200"></div>
-        
+      <div className="relative">        
         {/* Upcoming items */}
         {upcomingItems.map((item) => (
           <div key={item.id} className="flex mb-4">
             <div className="w-20 text-sm text-gray-500 pt-2 relative">
               {item.time}
-              {/* Colored circle at the intersection */}
-              <div 
-                className="absolute right-[-4px] top-3 w-2 h-2 rounded-full z-10"
-                style={{ backgroundColor: item.borderColor }}
-              ></div>
             </div>
             <div className="relative flex-1">
               <div 

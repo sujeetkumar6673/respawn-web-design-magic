@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Separator } from "@/components/ui/separator";
 
 interface ScheduleItem {
   id: string;
@@ -52,44 +53,56 @@ const Schedule: React.FC = () => {
       <div className="mb-4">
         <h3 className="font-bold text-gray-800 px-1">TODAY</h3>
       </div>
-      <div className="space-y-4">
-        {scheduleItems.map(item => (
-          <div key={item.id} className="flex">
-            <div className="w-20 text-sm text-gray-500 pt-2">{item.time}</div>
-            <div className="relative flex-1">
-              {/* Direct left border implementation */}
-              <div 
-                className={`h-full pl-5 py-3 pr-3 rounded-r-md ${item.color}`}
-                style={{ borderLeft: `4px solid ${item.borderColor}` }}
-              >
-                <div className="font-medium text-gray-800">{item.title}</div>
-                {item.subtitle && <div className="text-sm text-gray-600 mt-1">{item.subtitle}</div>}
+      <div>
+        {scheduleItems.map((item, index) => (
+          <React.Fragment key={item.id}>
+            <div className="flex">
+              <div className="w-20 text-sm text-gray-500 pt-2">{item.time}</div>
+              <div className="relative flex-1">
+                <div 
+                  className={`h-full pl-5 py-3 pr-3 rounded-r-md ${item.color}`}
+                  style={{ borderLeft: `4px solid ${item.borderColor}` }}
+                >
+                  <div className="font-medium text-gray-800">{item.title}</div>
+                  {item.subtitle && <div className="text-sm text-gray-600 mt-1">{item.subtitle}</div>}
+                </div>
               </div>
             </div>
-          </div>
+            {index < scheduleItems.length - 1 && (
+              <div className="pl-20 pr-0 py-2">
+                <Separator className="bg-gray-200" />
+              </div>
+            )}
+          </React.Fragment>
         ))}
       </div>
 
       <div className="mt-8 mb-4">
         <h3 className="font-bold text-gray-800 px-1">UPCOMING</h3>
       </div>
-      <div className="space-y-4">
-        {upcomingItems.map(item => (
-          <div key={item.id} className="flex">
-            <div className="w-20 text-sm text-gray-500 pt-2">
-              {/* Placeholder for alignment */}
-            </div>
-            <div className="relative flex-1">
-              {/* Direct left border implementation */}
-              <div 
-                className={`h-full pl-5 py-3 pr-3 rounded-r-md ${item.color}`}
-                style={{ borderLeft: `4px solid ${item.borderColor}` }}
-              >
-                <div className="font-medium text-gray-800">{item.title}</div>
-                {item.subtitle && <div className="text-sm text-gray-600 mt-1">{item.subtitle}</div>}
+      <div>
+        {upcomingItems.map((item, index) => (
+          <React.Fragment key={item.id}>
+            <div className="flex">
+              <div className="w-20 text-sm text-gray-500 pt-2">
+                {/* Placeholder for alignment */}
+              </div>
+              <div className="relative flex-1">
+                <div 
+                  className={`h-full pl-5 py-3 pr-3 rounded-r-md ${item.color}`}
+                  style={{ borderLeft: `4px solid ${item.borderColor}` }}
+                >
+                  <div className="font-medium text-gray-800">{item.title}</div>
+                  {item.subtitle && <div className="text-sm text-gray-600 mt-1">{item.subtitle}</div>}
+                </div>
               </div>
             </div>
-          </div>
+            {index < upcomingItems.length - 1 && (
+              <div className="pl-20 pr-0 py-2">
+                <Separator className="bg-gray-200" />
+              </div>
+            )}
+          </React.Fragment>
         ))}
       </div>
     </div>

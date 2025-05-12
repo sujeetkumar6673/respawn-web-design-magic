@@ -5,8 +5,9 @@ import {
   AdmiliaIcon, CalendarIcon, DocumentIcon, HeartIcon,
   ForumIcon, DirectoryIcon, ProfileIcon, SettingIcon 
 } from './Icons';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { TooltipProvider, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Tooltip } from '@/components/ui/tooltip';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface SidebarProps {
   activePage: string;
@@ -29,13 +30,6 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
       setIsCollapsed(savedState === 'true');
     }
   }, []);
-  
-  // Save preference when changed
-  const toggleSidebar = () => {
-    const newState = !isCollapsed;
-    setIsCollapsed(newState);
-    localStorage.setItem('sidebarCollapsed', String(newState));
-  };
 
   const navItems: NavItem[] = [
     { id: 'home', name: 'Home', icon: <HomeIcon />, badge: '340' },
@@ -52,23 +46,14 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
   ];
 
   return (
-    <div className={`sidebar relative h-screen bg-rezilia-purple flex flex-col overflow-y-auto transition-all duration-300 ${isCollapsed ? 'w-[70px]' : 'w-[220px]'}`}>
-      {/* Toggle button with improved visibility */}
-      <button 
-        onClick={toggleSidebar} 
-        className="absolute -right-3 top-6 bg-white text-rezilia-purple p-1.5 rounded-full shadow-lg border border-gray-200 hover:bg-gray-100 transition-colors"
-        aria-label={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
-      >
-        {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
-      </button>
-      
+    <div className={`sidebar fixed h-screen bg-rezilia-purple flex flex-col overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-[70px]' : 'w-[220px]'}`}>
       <div className="flex justify-center py-6">
         <div className={`${isCollapsed ? 'h-10 w-10' : 'h-12 w-12'} transition-all duration-300`}>
           <ReziliaLogo />
         </div>
       </div>
       
-      <div className="flex-1 px-2 py-2">
+      <ScrollArea className="flex-1 px-2 py-2">
         <TooltipProvider delayDuration={300}>
           {navItems.map((item) => (
             <Tooltip key={item.id}>
@@ -108,11 +93,11 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
             </Tooltip>
           ))}
         </TooltipProvider>
-      </div>
+      </ScrollArea>
       
       {!isCollapsed && (
-        <div className="p-4">
-          <div className="text-white text-xs opacity-70 mb-1">Powered by Rezilia AI</div>
+        <div className="p-4 border-t border-white/10">
+          <div className="text-white text-xs opacity-70">Powered by Rezilia AI</div>
         </div>
       )}
     </div>

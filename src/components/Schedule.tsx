@@ -50,23 +50,26 @@ const Schedule: React.FC = () => {
     }
   ];
 
+  // Determine time column width based on device
+  const timeColWidth = isMobile ? "w-16" : "w-24";
+
   return (
-    <div className="mt-4">
+    <div className="mt-4 px-1 sm:px-0">
       <div className="mb-4">
-        <h3 className="font-bold text-gray-800 px-1">TODAY</h3>
+        <h3 className="font-bold text-gray-800">TODAY</h3>
       </div>
       <div className="relative">
         {scheduleItems.map((item, index) => (
-          <div key={item.id} className="relative mb-6 last:mb-0">
+          <div key={item.id} className="relative mb-8 last:mb-4">
             <div className="flex">
-              {/* Time column with vertical line */}
-              <div className="w-20 sm:w-24 text-sm text-gray-500 relative pr-2">
-                <div className="pt-2">{item.time}</div>
+              {/* Time column */}
+              <div className={`${timeColWidth} relative`}>
+                <div className="text-sm text-gray-500 pt-2">{item.time}</div>
                 
-                {/* Vertical line extending from time */}
+                {/* Vertical line */}
                 {index < scheduleItems.length - 1 && (
                   <div 
-                    className="absolute left-0 top-8 w-0.5 h-[calc(100%+12px)]" 
+                    className="absolute left-[7px] top-7 w-0.5 h-[calc(100%+16px)]" 
                     style={{ backgroundColor: item.borderColor }}
                   ></div>
                 )}
@@ -75,7 +78,7 @@ const Schedule: React.FC = () => {
               {/* Task card */}
               <div className="flex-1">
                 <div 
-                  className={`pl-4 sm:pl-5 py-3 pr-3 rounded-r-md ${item.color}`}
+                  className={`pl-4 py-3 pr-3 rounded-r-md ${item.color}`}
                   style={{ borderLeft: `4px solid ${item.borderColor}` }}
                 >
                   <div className="font-medium text-gray-800">{item.title}</div>
@@ -88,18 +91,23 @@ const Schedule: React.FC = () => {
       </div>
 
       <div className="mt-8 mb-4">
-        <h3 className="font-bold text-gray-800 px-1">UPCOMING</h3>
+        <h3 className="font-bold text-gray-800">UPCOMING</h3>
       </div>
       <div className="relative">        
         {/* Upcoming items */}
         {upcomingItems.map((item) => (
           <div key={item.id} className="flex mb-4">
-            <div className="w-20 sm:w-24 text-sm text-gray-500 pt-2 relative pr-2">
-              {item.time}
+            <div className={`${timeColWidth} relative`}>
+              <div className="text-sm text-gray-500 pt-2">{item.time}</div>
+              {/* Vertical line for upcoming items if needed */}
+              <div 
+                className="absolute left-[7px] top-2 bottom-0 w-0.5 h-full" 
+                style={{ backgroundColor: item.borderColor }}
+              ></div>
             </div>
             <div className="flex-1">
               <div 
-                className={`pl-4 sm:pl-5 py-3 pr-3 rounded-r-md ${item.color}`}
+                className={`pl-4 py-3 pr-3 rounded-r-md ${item.color}`}
                 style={{ borderLeft: `4px solid ${item.borderColor}` }}
               >
                 <div className="font-medium text-gray-800">{item.title}</div>

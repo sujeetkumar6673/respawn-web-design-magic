@@ -64,21 +64,21 @@ const Calendar: React.FC = () => {
         />
       </div>
 
-      <style jsx>
-        {`
+      <style>{`
         .event-day {
           font-weight: bold;
           position: relative;
         }
         .rdp-day {
-          color: #333;
+          color: #333 !important;
+          opacity: 1 !important;
         }
         .rdp-day_selected {
-          background-color: var(--rezilia-purple);
-          color: white;
+          background-color: var(--rezilia-purple) !important;
+          color: white !important;
         }
         .rdp-button:hover:not([disabled]):not(.rdp-day_selected) {
-          background-color: rgba(39, 23, 165, 0.1);
+          background-color: rgba(39, 23, 165, 0.1) !important;
         }
         .rdp {
           --rdp-accent-color: var(--rezilia-purple);
@@ -94,8 +94,20 @@ const Calendar: React.FC = () => {
           padding: 0;
           text-align: center;
         }
-        `}
-      </style>
+        .rdp-cell {
+          opacity: 1 !important;
+        }
+        .rdp-button {
+          opacity: 1 !important;
+        }
+        .rdp-day_today {
+          background-color: #f0f0f0 !important;
+        }
+        .rdp-head_cell {
+          color: #666 !important;
+          font-weight: 600 !important;
+        }
+      `}</style>
     </div>
   );
 };

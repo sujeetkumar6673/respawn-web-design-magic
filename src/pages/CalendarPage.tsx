@@ -5,7 +5,7 @@ import Header from '@/components/Header';
 import { Calendar as CalendarUI } from '@/components/ui/calendar';
 import { useCalendarContext } from '@/contexts/CalendarContext';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { format, addDays, isToday, startOfMonth, isSameDay } from 'date-fns';
+import { format, isToday, isSameDay } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
@@ -19,16 +19,6 @@ import * as z from 'zod';
 import { Table, TableBody, TableCell, TableHeader, TableHead, TableRow } from '@/components/ui/table';
 import { toast } from 'sonner';
 
-// Define the event type
-interface CalendarEvent {
-  id: string;
-  title: string;
-  date: Date;
-  time: string;
-  description: string;
-  color: string;
-}
-
 // Form validation schema
 const eventFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -41,34 +31,8 @@ const eventFormSchema = z.object({
 type EventFormValues = z.infer<typeof eventFormSchema>;
 
 const CalendarPage = () => {
-  const { selectedDate, setSelectedDate } = useCalendarContext();
+  const { selectedDate, setSelectedDate, events, setEvents, getEventsForDate, getUpcomingEvents } = useCalendarContext();
   const [isAddEventDialogOpen, setIsAddEventDialogOpen] = useState(false);
-  const [events, setEvents] = useState<CalendarEvent[]>([
-    {
-      id: '1',
-      title: 'Doctor Appointment',
-      date: new Date(),
-      time: '10:00',
-      description: 'Annual check-up',
-      color: '#2717A5'
-    },
-    {
-      id: '2',
-      title: 'Lunch with Family',
-      date: addDays(new Date(), 2),
-      time: '13:00',
-      description: 'At favorite restaurant',
-      color: '#FF9F46'
-    },
-    {
-      id: '3',
-      title: 'Medication Reminder',
-      date: addDays(new Date(), 1),
-      time: '09:00',
-      description: 'Take morning pills',
-      color: '#FF719A'
-    }
-  ]);
   
   const isMobile = useIsMobile();
   const [activePage, setActivePage] = useState('calendar');
@@ -90,20 +54,22 @@ const CalendarPage = () => {
   });
 
   // Get events for selected date
-  const eventsForSelectedDate = events.filter(event => 
-    isSameDay(event.date, selectedDate)
-  );
+  const eventsForSelectedDate = getEventsForDate(selectedDate);
 
   // Get upcoming events (next 7 days)
-  const upcomingEvents = events
-    .filter(event => event.date >= new Date() && 
-      event.date <= addDays(new Date(), 7))
-    .sort((a, b) => a.date.getTime() - b.date.getTime());
+  const upcomingEvents = getUpcomingEvents(7);
+
+  // Event dots for calendar
+  const eventDates: Record<string, number> = {};
+  events.forEach(event => {
+    const dateStr = format(event.date, 'yyyy-MM-dd');
+    eventDates[dateStr] = (eventDates[dateStr] || 0) + 1;
+  });
 
   // Handle form submission
   const onSubmit = (data: EventFormValues) => {
     // Create a new event with all required fields explicitly set
-    const newEvent: CalendarEvent = {
+    const newEvent = {
       id: Date.now().toString(),
       title: data.title,
       date: data.date,
@@ -112,7 +78,7 @@ const CalendarPage = () => {
       color: data.color
     };
     
-    setEvents([...events, newEvent]);
+    setEvents(prev => [...prev, newEvent]);
     setIsAddEventDialogOpen(false);
     form.reset();
     
@@ -121,13 +87,6 @@ const CalendarPage = () => {
       position: "top-center"
     });
   };
-
-  // Event dots for calendar
-  const eventDates: Record<string, number> = {};
-  events.forEach(event => {
-    const dateStr = format(event.date, 'yyyy-MM-dd');
-    eventDates[dateStr] = (eventDates[dateStr] || 0) + 1;
-  });
 
   return (
     <div className="app-background min-h-screen pb-16 sm:pb-0">
@@ -149,7 +108,7 @@ const CalendarPage = () => {
                   <h1 className="text-2xl sm:text-3xl font-bold text-rezilia-purple">Calendar</h1>
                   <Button 
                     onClick={() => setIsAddEventDialogOpen(true)}
-                    className="bg-rezilia-purple hover:bg-rezilia-purple/90 text-white"
+                    className="bg-rezilia-purple hover:bg-rezilia-purple/90 text-white rounded-full shadow-lg"
                     size={isMobile ? "sm" : "default"}
                   >
                     <CalendarPlus className="mr-2 h-5 w-5" />
@@ -406,18 +365,18 @@ const CalendarPage = () => {
                 )}
               />
 
-              <DialogFooter className="mt-6">
+              <DialogFooter className="mt-6 flex flex-col sm:flex-row gap-2 sm:gap-0">
                 <Button 
                   type="button" 
                   variant="outline" 
                   onClick={() => setIsAddEventDialogOpen(false)}
-                  className="text-lg px-6 py-5"
+                  className="text-lg px-6 py-5 w-full sm:w-auto"
                 >
                   Cancel
                 </Button>
                 <Button 
                   type="submit" 
-                  className="bg-rezilia-purple hover:bg-rezilia-purple/90 text-white text-lg px-6 py-5"
+                  className="bg-rezilia-purple hover:bg-rezilia-purple/90 text-white text-lg px-6 py-5 w-full sm:w-auto"
                 >
                   Add Event
                 </Button>

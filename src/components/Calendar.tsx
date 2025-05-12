@@ -3,23 +3,22 @@ import React from 'react';
 import { Calendar as CalendarUI } from '@/components/ui/calendar';
 import { Badge } from '@/components/ui/badge';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { format, addDays } from 'date-fns';
+import { format } from 'date-fns';
 import { useCalendarContext } from '@/contexts/CalendarContext';
+import { Link } from 'react-router-dom';
+import { CalendarPlus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const Calendar: React.FC = () => {
   const isMobile = useIsMobile();
-  const { selectedDate, setSelectedDate } = useCalendarContext();
-  const today = new Date();
+  const { selectedDate, setSelectedDate, events } = useCalendarContext();
 
-  // Create dummy event counts for the current month
-  const eventCounts: Record<string, number> = {
-    [format(today, 'yyyy-MM-dd')]: 4,
-    [format(addDays(today, 1), 'yyyy-MM-dd')]: 2,
-    [format(addDays(today, 3), 'yyyy-MM-dd')]: 1,
-    [format(addDays(today, 7), 'yyyy-MM-dd')]: 3,
-    [format(addDays(today, 14), 'yyyy-MM-dd')]: 2,
-    [format(addDays(today, 18), 'yyyy-MM-dd')]: 5,
-  };
+  // Create event counts for the calendar
+  const eventCounts: Record<string, number> = {};
+  events.forEach(event => {
+    const dateStr = format(event.date, 'yyyy-MM-dd');
+    eventCounts[dateStr] = (eventCounts[dateStr] || 0) + 1;
+  });
 
   return (
     <div className="bg-white rounded-lg p-3 sm:p-4 shadow-sm">
@@ -32,6 +31,16 @@ const Calendar: React.FC = () => {
             {Object.values(eventCounts).reduce((sum, count) => sum + count, 0)}
           </Badge>
         </div>
+        <Link to="/calendar">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="text-rezilia-purple hover:bg-rezilia-purple/10"
+          >
+            <CalendarPlus className="h-4 w-4 mr-1" />
+            <span>All Events</span>
+          </Button>
+        </Link>
       </div>
       
       <div className="calendar-container">

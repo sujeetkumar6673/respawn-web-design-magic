@@ -11,15 +11,27 @@ import WelcomeMessage from '@/components/WelcomeMessage';
 import MobileNav from '@/components/MobileNav';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { CalendarProvider } from '@/contexts/CalendarContext';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Index = () => {
   const userName = "Nina";
   const isMobile = useIsMobile();
   const [activePage, setActivePage] = useState('home');
+  const navigate = useNavigate();
   
   const handleNavigate = (page: string) => {
     setActivePage(page);
-    // In a real app, you'd handle actual navigation here
+    
+    // Handle navigation based on the selected page
+    switch(page) {
+      case 'calendar':
+        navigate('/calendar');
+        break;
+      // Add other navigation cases as needed
+      default:
+        // Default to home
+        navigate('/');
+    }
   };
   
   return (

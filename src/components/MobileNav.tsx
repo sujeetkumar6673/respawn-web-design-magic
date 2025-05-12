@@ -1,9 +1,7 @@
 
 import React from 'react';
-import { 
-  HomeIcon, SimpliciaBadge, 
-  DocumentIcon, ProfileIcon, CalendarIcon 
-} from './Icons';
+import { HomeIcon, CalendarIcon, ProfileIcon, SettingIcon } from './Icons';
+import { Link, useLocation } from 'react-router-dom';
 
 interface MobileNavProps {
   activePage: string;
@@ -11,32 +9,39 @@ interface MobileNavProps {
 }
 
 const MobileNav: React.FC<MobileNavProps> = ({ activePage, onNavigate }) => {
+  const location = useLocation();
+  
+  // Navigation items with their routes
   const navItems = [
-    { id: 'home', name: 'Home', icon: <HomeIcon /> },
-    { id: 'simplicia', name: 'Simplicia', icon: <SimpliciaBadge /> },
-    { id: 'calendar', name: 'Calendar', icon: <CalendarIcon /> },
-    { id: 'documents', name: 'Docs', icon: <DocumentIcon /> },
-    { id: 'profile', name: 'Profile', icon: <ProfileIcon /> },
+    { id: 'home', icon: <HomeIcon />, label: 'Home', path: '/' },
+    { id: 'calendar', icon: <CalendarIcon />, label: 'Calendar', path: '/calendar' },
+    { id: 'profile', icon: <ProfileIcon />, label: 'Profile', path: '/profile' },
+    { id: 'settings', icon: <SettingIcon />, label: 'Settings', path: '/settings' },
   ];
-
+  
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
-      <div className="flex justify-around px-1 py-2">
-        {navItems.map((item) => (
-          <button
-            key={item.id}
-            className={`flex flex-col items-center justify-center p-2 rounded-lg ${
-              activePage === item.id ? 'text-rezilia-purple' : 'text-gray-500'
-            }`}
-            onClick={() => onNavigate(item.id)}
-            aria-label={item.name}
-          >
-            <div className="h-6 w-6 mb-1">
-              {item.icon}
-            </div>
-            <span className="text-xs font-medium">{item.name}</span>
-          </button>
-        ))}
+      <div className="grid grid-cols-4">
+        {navItems.map((item) => {
+          const isActive = location.pathname === item.path || 
+                          (location.pathname === '/' && item.id === 'home');
+          
+          return (
+            <Link 
+              key={item.id}
+              to={item.path}
+              className={`flex flex-col items-center py-3 ${
+                isActive ? 'text-rezilia-purple' : 'text-gray-500'
+              }`}
+              onClick={() => onNavigate(item.id)}
+            >
+              <div className={`mb-1 ${isActive ? 'text-rezilia-purple' : 'text-gray-500'}`}>
+                {item.icon}
+              </div>
+              <span className="text-xs">{item.label}</span>
+            </Link>
+          );
+        })}
       </div>
     </div>
   );

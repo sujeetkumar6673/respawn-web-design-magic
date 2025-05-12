@@ -8,6 +8,7 @@ import {
 import { TooltipProvider, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Tooltip } from '@/components/ui/tooltip';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Link, useLocation } from 'react-router-dom';
 
 interface SidebarProps {
   activePage: string;
@@ -18,10 +19,12 @@ interface NavItem {
   name: string;
   icon: React.ReactNode;
   badge?: string;
+  path: string;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const location = useLocation();
   
   // Check local storage for user preference on sidebar state
   useEffect(() => {
@@ -32,17 +35,17 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
   }, []);
 
   const navItems: NavItem[] = [
-    { id: 'home', name: 'Home', icon: <HomeIcon />, badge: '340' },
-    { id: 'simplicia', name: 'Simplicia', icon: <SimpliciaBadge /> },
-    { id: 'rezilia-ai', name: 'Rezilia AI', icon: <ReziliaAIIcon /> },
-    { id: 'admilia', name: 'Admilia', icon: <AdmiliaIcon /> },
-    { id: 'calendar', name: 'Calendar', icon: <CalendarIcon /> },
-    { id: 'documents', name: 'Documents', icon: <DocumentIcon /> },
-    { id: 'family-hearts', name: 'Family Hearts', icon: <HeartIcon /> },
-    { id: 'forum', name: 'Forum & Resources', icon: <ForumIcon /> },
-    { id: 'directory', name: 'Directory', icon: <DirectoryIcon /> },
-    { id: 'profile', name: 'Profile', icon: <ProfileIcon /> },
-    { id: 'settings', name: 'Settings', icon: <SettingIcon /> },
+    { id: 'home', name: 'Home', icon: <HomeIcon />, badge: '340', path: '/' },
+    { id: 'simplicia', name: 'Simplicia', icon: <SimpliciaBadge />, path: '/simplicia' },
+    { id: 'rezilia-ai', name: 'Rezilia AI', icon: <ReziliaAIIcon />, path: '/rezilia-ai' },
+    { id: 'admilia', name: 'Admilia', icon: <AdmiliaIcon />, path: '/admilia' },
+    { id: 'calendar', name: 'Calendar', icon: <CalendarIcon />, path: '/calendar' },
+    { id: 'documents', name: 'Documents', icon: <DocumentIcon />, path: '/documents' },
+    { id: 'family-hearts', name: 'Family Hearts', icon: <HeartIcon />, path: '/family-hearts' },
+    { id: 'forum', name: 'Forum & Resources', icon: <ForumIcon />, path: '/forum' },
+    { id: 'directory', name: 'Directory', icon: <DirectoryIcon />, path: '/directory' },
+    { id: 'profile', name: 'Profile', icon: <ProfileIcon />, path: '/profile' },
+    { id: 'settings', name: 'Settings', icon: <SettingIcon />, path: '/settings' },
   ];
 
   return (
@@ -55,43 +58,51 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
       
       <ScrollArea className="flex-1 px-2 py-2">
         <TooltipProvider delayDuration={300}>
-          {navItems.map((item) => (
-            <Tooltip key={item.id}>
-              <TooltipTrigger asChild>
-                <div 
-                  className={`sidebar-item mb-1 ${activePage === item.id ? 'active' : ''} ${!isCollapsed ? 'justify-start' : 'justify-center'}`}
-                >
-                  <div className="icon-3d">
-                    {item.icon}
-                  </div>
-                  {!isCollapsed && (
-                    <>
-                      <div className="flex-1 text-sm font-medium">
-                        {item.name}
+          {navItems.map((item) => {
+            // Check if this item's path matches the current location
+            const isActive = location.pathname === item.path || 
+                            (location.pathname === '/' && item.id === 'home');
+              
+            return (
+              <Tooltip key={item.id}>
+                <TooltipTrigger asChild>
+                  <Link to={item.path} className="block">
+                    <div 
+                      className={`sidebar-item mb-1 ${isActive ? 'active' : ''} ${!isCollapsed ? 'justify-start' : 'justify-center'}`}
+                    >
+                      <div className="icon-3d">
+                        {item.icon}
                       </div>
+                      {!isCollapsed && (
+                        <>
+                          <div className="flex-1 text-sm font-medium">
+                            {item.name}
+                          </div>
+                          {item.badge && (
+                            <div className="badge badge-orange">
+                              {item.badge}
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </Link>
+                </TooltipTrigger>
+                {isCollapsed && (
+                  <TooltipContent side="right">
+                    <div className="flex items-center gap-2">
+                      <span>{item.name}</span>
                       {item.badge && (
                         <div className="badge badge-orange">
                           {item.badge}
                         </div>
                       )}
-                    </>
-                  )}
-                </div>
-              </TooltipTrigger>
-              {isCollapsed && (
-                <TooltipContent side="right">
-                  <div className="flex items-center gap-2">
-                    <span>{item.name}</span>
-                    {item.badge && (
-                      <div className="badge badge-orange">
-                        {item.badge}
-                      </div>
-                    )}
-                  </div>
-                </TooltipContent>
-              )}
-            </Tooltip>
-          ))}
+                    </div>
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            );
+          })}
         </TooltipProvider>
       </ScrollArea>
       

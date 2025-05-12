@@ -47,13 +47,13 @@ const Calendar: React.FC = () => {
             eventDay: "event-day" 
           }}
           components={{
-            DayContent: ({ date, ...props }) => {
+            DayContent: ({ date }) => {
               const formattedDate = format(date, 'yyyy-MM-dd');
               const hasEvents = Boolean(eventCounts[formattedDate]);
               
               return (
                 <div className="relative flex items-center justify-center w-full h-full">
-                  <div {...props} />
+                  <div>{date.getDate()}</div>
                   {hasEvents && (
                     <span className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-rezilia-purple rounded-full" />
                   )}

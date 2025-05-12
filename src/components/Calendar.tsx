@@ -8,7 +8,6 @@ import { useCalendarContext } from '@/contexts/CalendarContext';
 import { Link } from 'react-router-dom';
 import { CalendarPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import CalendarStyles from './calendar/CalendarStyles';
 
 const Calendar: React.FC = () => {
   const isMobile = useIsMobile();
@@ -21,48 +20,35 @@ const Calendar: React.FC = () => {
     eventCounts[dateStr] = (eventCounts[dateStr] || 0) + 1;
   });
 
-  // Format month and date for mobile view
-  const currentMonth = format(selectedDate, 'MMMM').toUpperCase();
-  const currentDay = format(selectedDate, 'd');
-
   return (
-    <div className={`${isMobile ? 'bg-transparent' : 'bg-white'} rounded-lg p-3 sm:p-4 ${!isMobile && 'shadow-sm'}`}>
-      {!isMobile ? (
-        <div className="flex items-center justify-between mb-3 sm:mb-4">
-          <div className="flex items-end gap-2">
-            <h2 className={`${isMobile ? 'text-lg' : 'text-2xl'} font-bold`}>
-              {format(selectedDate, 'MMMM yyyy')}
-            </h2>
-            <Badge className="bg-rezilia-orange text-white mb-1">
-              {Object.values(eventCounts).reduce((sum, count) => sum + count, 0)}
-            </Badge>
-          </div>
-          <Link to="/calendar">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="text-rezilia-purple hover:bg-rezilia-purple/10"
-            >
-              <CalendarPlus className="h-4 w-4 mr-1" />
-              <span>All Events</span>
-            </Button>
-          </Link>
-        </div>
-      ) : (
-        <div className="flex items-center justify-between mb-2 text-white">
-          <h2 className="text-lg font-bold">
+    <div className="bg-white rounded-lg p-3 sm:p-4 shadow-sm">
+      <div className="flex items-center justify-between mb-3 sm:mb-4">
+        <div className="flex items-end gap-2">
+          <h2 className={`${isMobile ? 'text-lg' : 'text-2xl'} font-bold`}>
             {format(selectedDate, 'MMMM yyyy')}
           </h2>
-          <div className="text-white">{currentDay} {currentMonth}</div>
+          <Badge className="bg-rezilia-orange text-white mb-1">
+            {Object.values(eventCounts).reduce((sum, count) => sum + count, 0)}
+          </Badge>
         </div>
-      )}
+        <Link to="/calendar">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="text-rezilia-purple hover:bg-rezilia-purple/10"
+          >
+            <CalendarPlus className="h-4 w-4 mr-1" />
+            <span>All Events</span>
+          </Button>
+        </Link>
+      </div>
       
       <div className="calendar-container">
         <CalendarUI
           mode="single"
           selected={selectedDate}
           onSelect={(date) => date && setSelectedDate(date)}
-          className={`pointer-events-auto ${isMobile ? 'mobile-calendar' : ''}`}
+          className="pointer-events-auto"
           modifiers={{
             eventDay: (date) => Boolean(eventCounts[format(date, 'yyyy-MM-dd')])
           }}
@@ -78,7 +64,7 @@ const Calendar: React.FC = () => {
                 <div className="relative flex items-center justify-center w-full h-full">
                   <div>{date.getDate()}</div>
                   {hasEvents && (
-                    <span className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-rezilia-blue rounded-full" />
+                    <span className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-rezilia-purple rounded-full" />
                   )}
                 </div>
               );
@@ -87,8 +73,68 @@ const Calendar: React.FC = () => {
         />
       </div>
 
-      {/* Add Calendar styles */}
-      <CalendarStyles />
+      <style>{`
+        .event-day {
+          font-weight: bold;
+          position: relative;
+        }
+        .rdp-day {
+          color: #333 !important;
+          opacity: 1 !important;
+        }
+        .rdp-day_selected {
+          background-color: var(--rezilia-purple) !important;
+          color: white !important;
+        }
+        .rdp-button:hover:not([disabled]):not(.rdp-day_selected) {
+          background-color: rgba(39, 23, 165, 0.1) !important;
+        }
+        .rdp {
+          --rdp-accent-color: var(--rezilia-purple);
+          margin: 0;
+        }
+        .rdp-months {
+          justify-content: center;
+        }
+        .rdp-caption {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0;
+          text-align: center;
+        }
+        .rdp-cell {
+          opacity: 1 !important;
+        }
+        .rdp-button {
+          opacity: 1 !important;
+        }
+        .rdp-day_today {
+          background-color: #f0f0f0 !important;
+        }
+        .rdp-head_cell {
+          color: #666 !important;
+          font-weight: 600 !important;
+        }
+        .rdp-day:not(.rdp-day_outside) {
+          font-weight: normal !important;
+          color: #333 !important;
+          display: block !important;
+          visibility: visible !important;
+        }
+        .calendar-container {
+          min-height: 300px;
+        }
+        .rdp-tbody {
+          visibility: visible !important;
+        }
+        .rdp-button_reset {
+          visibility: visible !important;
+          display: flex !important;
+          align-items: center;
+          justify-content: center;
+        }
+      `}</style>
     </div>
   );
 };

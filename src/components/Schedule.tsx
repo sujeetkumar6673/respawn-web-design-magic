@@ -18,12 +18,12 @@ const Schedule: React.FC = () => {
   const upcomingItems = getUpcomingEvents(isMobile ? 2 : 3);
 
   // Determine time column width based on device
-  const timeColWidth = isMobile ? "w-8" : "w-24";
+  const timeColWidth = isMobile ? "w-6" : "w-24";
   const fontSize = isMobile ? "text-xs" : "text-sm";
   
   return (
     <div className={`${isMobile ? 'px-0' : 'mt-4 px-1 sm:px-0'}`}>
-      <div className="mb-2 sm:mb-4 flex justify-between items-center">
+      <div className="mb-1 sm:mb-4 flex justify-between items-center">
         <h3 className="font-bold text-gray-800 text-xs sm:text-base">
           {isEqual(
             new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate()),
@@ -51,31 +51,33 @@ const Schedule: React.FC = () => {
       <div className="relative max-h-[300px] overflow-y-auto pr-1">
         {scheduleItems.length > 0 ? (
           scheduleItems.map((item) => (
-            <div key={item.id} className="relative mb-2">
+            <div key={item.id} className="relative mb-1 sm:mb-2">
               <div className="flex">
                 {/* Time column */}
                 <div className={`${timeColWidth} relative`}>
-                  <div className={`${fontSize} text-gray-500 pt-1`}>{item.time.split(':')[0]}</div>
+                  <div className={`${fontSize} text-gray-500 pt-0.5 sm:pt-1`}>{item.time.split(':')[0]}</div>
                 </div>
                 
                 {/* Task card */}
                 <div className="flex-1">
                   <div 
-                    className={`pl-2 sm:pl-4 py-1 sm:py-3 pr-1 sm:pr-3 rounded-r-md bg-opacity-10`}
+                    className={`pl-1 sm:pl-4 py-0.5 sm:py-3 pr-1 sm:pr-3 rounded-r-md bg-opacity-10`}
                     style={{ 
-                      borderLeft: `3px solid ${item.color}`,
+                      borderLeft: `2px solid ${item.color}`,
                       backgroundColor: `${item.color}10` 
                     }}
                   >
-                    <div className={`font-medium text-gray-800 ${fontSize}`}>{item.title}</div>
-                    {!isMobile && item.description && <div className="text-sm text-gray-600 mt-1">{item.description}</div>}
+                    <div className={`font-medium text-gray-800 ${fontSize} truncate`}>{item.title}</div>
+                    {(!isMobile || item.title.length < 15) && item.description && 
+                      <div className="text-xs sm:text-sm text-gray-600 mt-0.5 sm:mt-1 truncate">{item.description}</div>
+                    }
                   </div>
                 </div>
               </div>
             </div>
           ))
         ) : (
-          <div className="text-center py-3">
+          <div className="text-center py-1 sm:py-3">
             <p className={`text-gray-500 ${fontSize}`}>No tasks for this day</p>
           </div>
         )}

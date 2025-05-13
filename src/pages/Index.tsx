@@ -54,16 +54,16 @@ const Index = () => {
                   {/* Welcome Message */}
                   <WelcomeMessage userName={userName} />
                   
-                  {/* Calendar and Schedule - horizontal layout on mobile */}
+                  {/* Calendar and Schedule - layout for mobile */}
                   {isMobile && (
                     <section className="mt-4">
                       <h2 className="text-xl font-bold mb-3">Calendar & Schedule</h2>
                       <CalendarProvider>
-                        <div className="flex flex-row overflow-x-auto space-x-4">
-                          <div className="min-w-[60%]">
+                        <div className="grid grid-cols-12 gap-4">
+                          <div className="col-span-5">
                             <Calendar />
                           </div>
-                          <div className="min-w-[60%]">
+                          <div className="col-span-7">
                             <Schedule />
                           </div>
                         </div>

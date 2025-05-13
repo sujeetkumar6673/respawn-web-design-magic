@@ -21,15 +21,17 @@ const Calendar: React.FC = () => {
   });
 
   return (
-    <div className="bg-white rounded-lg p-1 sm:p-4 shadow-sm">
-      <div className="flex items-center justify-between mb-1 sm:mb-4">
+    <div className="bg-white rounded-lg p-1 shadow-sm">
+      <div className="flex items-center justify-between mb-1">
         <div className="flex items-end gap-1">
           <h2 className={`${isMobile ? 'text-xs' : 'text-2xl'} font-bold`}>
             {format(selectedDate, isMobile ? 'MMM yyyy' : 'MMMM yyyy')}
           </h2>
-          <Badge className="bg-rezilia-orange text-white mb-1 text-xs">
-            {Object.values(eventCounts).reduce((sum, count) => sum + count, 0)}
-          </Badge>
+          {!isMobile && (
+            <Badge className="bg-rezilia-orange text-white mb-1 text-xs">
+              {Object.values(eventCounts).reduce((sum, count) => sum + count, 0)}
+            </Badge>
+          )}
         </div>
         {!isMobile && (
           <Link to="/calendar">
@@ -45,7 +47,7 @@ const Calendar: React.FC = () => {
         )}
       </div>
       
-      <div className="calendar-container">
+      <div className={`calendar-container ${isMobile ? 'scale-[0.85] origin-top-left -mr-5' : ''}`}>
         <CalendarUI
           mode="single"
           selected={selectedDate}
@@ -125,7 +127,7 @@ const Calendar: React.FC = () => {
           visibility: visible !important;
         }
         .calendar-container {
-          min-height: ${isMobile ? '180px' : '300px'};
+          min-height: ${isMobile ? '170px' : '300px'};
         }
         .rdp-tbody {
           visibility: visible !important;
@@ -138,14 +140,16 @@ const Calendar: React.FC = () => {
         }
         ${isMobile ? `
         .rdp-table {
-          font-size: 0.7rem;
+          font-size: 0.65rem;
         }
         .rdp-button {
-          width: 22px !important;
-          height: 22px !important;
+          width: 20px !important;
+          height: 20px !important;
+          padding: 0 !important;
         }
         .rdp-head_cell {
-          font-size: 0.6rem;
+          font-size: 0.55rem;
+          padding: 0 !important;
         }
         .rdp-caption_label {
           font-size: 0.7rem;

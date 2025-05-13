@@ -38,7 +38,7 @@ export const CalendarProvider: React.FC<{ children: ReactNode }> = ({ children }
     {
       id: '2',
       title: 'Lunch with Family',
-      date: addDays(new Date(), 2),
+      date: new Date(),
       time: '13:00',
       description: 'At favorite restaurant',
       color: '#FF9F46'
@@ -46,10 +46,42 @@ export const CalendarProvider: React.FC<{ children: ReactNode }> = ({ children }
     {
       id: '3',
       title: 'Medication Reminder',
-      date: addDays(new Date(), 1),
+      date: new Date(),
       time: '09:00',
       description: 'Take morning pills',
       color: '#FF719A'
+    },
+    {
+      id: '4',
+      title: 'Physical Therapy',
+      date: new Date(),
+      time: '15:30',
+      description: 'With Dr. Johnson',
+      color: '#62E884'
+    },
+    {
+      id: '5',
+      title: 'Evening Walk',
+      date: new Date(),
+      time: '18:00',
+      description: 'Around the park',
+      color: '#67d6ff'
+    },
+    {
+      id: '6',
+      title: 'Book Club',
+      date: addDays(new Date(), 1),
+      time: '16:00',
+      description: 'Discussing "The Great Gatsby"',
+      color: '#FF9F46'
+    },
+    {
+      id: '7',
+      title: 'Grocery Shopping',
+      date: addDays(new Date(), 2),
+      time: '11:00',
+      description: 'Pick up weekly essentials',
+      color: '#2717A5'
     }
   ]);
 
@@ -60,13 +92,24 @@ export const CalendarProvider: React.FC<{ children: ReactNode }> = ({ children }
   const getEventsForDate = (date: Date) => {
     return events.filter(event => 
       isSameDay(event.date, date)
-    );
+    ).sort((a, b) => {
+      const aTime = parseInt(a.time.replace(':', ''));
+      const bTime = parseInt(b.time.replace(':', ''));
+      return aTime - bTime;
+    });
   };
 
   const getUpcomingEvents = (limit?: number) => {
     const filteredEvents = events
       .filter(event => event.date >= new Date())
-      .sort((a, b) => a.date.getTime() - b.date.getTime());
+      .sort((a, b) => {
+        if (a.date.getTime() !== b.date.getTime()) {
+          return a.date.getTime() - b.date.getTime();
+        }
+        const aTime = parseInt(a.time.replace(':', ''));
+        const bTime = parseInt(b.time.replace(':', ''));
+        return aTime - bTime;
+      });
       
     return limit ? filteredEvents.slice(0, limit) : filteredEvents;
   };

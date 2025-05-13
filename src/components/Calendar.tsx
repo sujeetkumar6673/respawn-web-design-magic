@@ -47,7 +47,7 @@ const Calendar: React.FC = () => {
         )}
       </div>
       
-      <div className={`calendar-container ${isMobile ? 'scale-[0.7] origin-top-left -mr-12 -mb-8' : ''}`}>
+      <div className={`calendar-container ${isMobile ? 'scale-[0.65] origin-top-left -mr-14 -mb-10' : ''}`}>
         <CalendarUI
           mode="single"
           selected={selectedDate}
@@ -140,22 +140,22 @@ const Calendar: React.FC = () => {
         }
         ${isMobile ? `
         .rdp-table {
-          font-size: 0.65rem;
+          font-size: 0.6rem;
         }
         .rdp-button {
-          width: 20px !important;
-          height: 20px !important;
+          width: 18px !important;
+          height: 18px !important;
           padding: 0 !important;
         }
         .rdp-head_cell {
-          font-size: 0.55rem;
+          font-size: 0.5rem;
           padding: 0 !important;
         }
         .rdp-caption_label {
           font-size: 0.7rem;
         }
         .rdp-nav {
-          transform: scale(0.7);
+          transform: scale(0.6);
         }
         ` : ''}
       `}</style>

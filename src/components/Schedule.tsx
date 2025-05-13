@@ -26,13 +26,13 @@ const Schedule: React.FC = () => {
   const upcomingItems = getUpcomingEvents(isMobile ? 1 : 3);
 
   // Determine time column width based on device
-  const timeColWidth = isMobile ? "w-[60px]" : "w-24";
-  const fontSize = isMobile ? "text-xs" : "text-sm";
+  const timeColWidth = isMobile ? "w-[45px]" : "w-24";
+  const fontSize = isMobile ? "text-[10px]" : "text-sm";
   
   return (
     <div className={`${isMobile ? 'px-0' : 'mt-4 px-1 sm:px-0'}`}>
-      <div className="mb-2 flex justify-between items-center">
-        <h3 className="font-bold text-gray-800 text-sm sm:text-base">
+      <div className="mb-1 flex justify-between items-center">
+        <h3 className="font-bold text-gray-800 text-xs">
           {isEqual(
             new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate()),
             new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
@@ -56,28 +56,28 @@ const Schedule: React.FC = () => {
           </div>
         )}
       </div>
-      <div className={`relative ${isMobile ? 'max-h-[100px]' : 'max-h-[300px]'} overflow-y-auto pr-1`}>
+      <div className={`relative ${isMobile ? 'max-h-[220px]' : 'max-h-[300px]'} overflow-y-auto ${isMobile ? 'pr-0' : 'pr-1'}`}>
         {scheduleItems.length > 0 ? (
-          scheduleItems.map((item) => (
-            <div key={item.id} className="relative mb-2">
+          scheduleItems.map((item, index) => (
+            <div key={item.id} className={`relative mb-1 ${index > 0 ? 'mt-1' : ''}`}>
               <div className="flex">
                 {/* Time column */}
-                <div className={`${timeColWidth} relative`}>
+                <div className={`${timeColWidth} flex-shrink-0 relative`}>
                   <div className={`${fontSize} text-gray-500 pt-1 pl-1`}>{formatTimeWithAMPM(item.time)}</div>
                 </div>
                 
                 {/* Task card */}
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <div 
-                    className={`pl-2 sm:pl-4 py-1 sm:py-3 pr-1 rounded-r-md bg-opacity-10`}
+                    className={`pl-1.5 py-1 pr-1 rounded-r-md bg-opacity-10 overflow-hidden`}
                     style={{ 
-                      borderLeft: `2px solid ${item.color}`,
+                      borderLeft: `1.5px solid ${item.color}`,
                       backgroundColor: `${item.color}10` 
                     }}
                   >
                     <div className={`font-medium text-gray-800 ${fontSize} truncate`}>{item.title}</div>
                     {!isMobile && item.description && 
-                      <div className="text-xs sm:text-sm text-gray-600 mt-0.5 sm:mt-1 truncate">{item.description}</div>
+                      <div className="text-xs text-gray-600 mt-0.5 truncate">{item.description}</div>
                     }
                   </div>
                 </div>
@@ -85,27 +85,20 @@ const Schedule: React.FC = () => {
             </div>
           ))
         ) : (
-          <div className="text-center py-2">
+          <div className="text-center py-1">
             <p className={`text-gray-500 ${fontSize}`}>No tasks</p>
           </div>
         )}
       </div>
 
-      {upcomingItems.length > 0 && (
+      {upcomingItems.length > 0 && !isMobile && (
         <>
-          <div className="mt-3 mb-2 flex justify-between items-center">
-            <h3 className="font-bold text-gray-800 text-sm sm:text-base">
-              {isMobile ? "NEXT" : "UPCOMING"}
-            </h3>
-            {isMobile && upcomingItems.length > 1 && (
-              <Link to="/calendar" className="block">
-                <span className="text-[10px] text-rezilia-purple">More →</span>
-              </Link>
-            )}
+          <div className="mt-3 mb-1 flex justify-between items-center">
+            <h3 className="font-bold text-gray-800 text-sm">UPCOMING</h3>
           </div>
           <div className="relative">        
             {upcomingItems.map((item, index) => (
-              <div key={item.id} className={`flex ${index > 0 && isMobile ? 'hidden' : 'mb-2 sm:mb-4'}`}>
+              <div key={item.id} className="mb-2">
                 <div className={`${timeColWidth} relative`}>
                   <div className={`${fontSize} text-gray-500 pt-1 pl-1`}>
                     <div>{format(item.date, 'M/d')}</div>
@@ -114,16 +107,14 @@ const Schedule: React.FC = () => {
                 </div>
                 <div className="flex-1">
                   <div 
-                    className={`pl-2 sm:pl-4 py-1 sm:py-3 pr-1 rounded-r-md bg-opacity-10`}
+                    className="pl-2 sm:pl-4 py-1 sm:py-3 pr-1 rounded-r-md bg-opacity-10"
                     style={{ 
                       borderLeft: `2px solid ${item.color}`,
                       backgroundColor: `${item.color}20` 
                     }}
                   >
                     <div className={`font-medium text-gray-800 ${fontSize} truncate`}>{item.title}</div>
-                    {!isMobile && item.description && 
-                      <div className={`text-xs sm:text-sm text-gray-600 mt-1 truncate`}>{item.description}</div>
-                    }
+                    <div className={`text-xs sm:text-sm text-gray-600 mt-1 truncate`}>{item.description}</div>
                   </div>
                 </div>
               </div>

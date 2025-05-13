@@ -26,7 +26,7 @@ const Schedule: React.FC = () => {
   const upcomingItems = getUpcomingEvents(isMobile ? 2 : 3);
 
   // Determine time column width based on device
-  const timeColWidth = isMobile ? "w-[45px]" : "w-24";
+  const timeColWidth = isMobile ? "w-[60px]" : "w-24";
   const fontSize = isMobile ? "text-[10px]" : "text-sm";
   
   return (
@@ -63,7 +63,7 @@ const Schedule: React.FC = () => {
               <div className="flex">
                 {/* Time column */}
                 <div className={`${timeColWidth} flex-shrink-0 relative`}>
-                  <div className={`${fontSize} text-gray-500 pt-1 pl-1`}>{formatTimeWithAMPM(item.time)}</div>
+                  <div className={`${fontSize} text-gray-500 pt-1 pl-1 whitespace-nowrap`}>{formatTimeWithAMPM(item.time)}</div>
                 </div>
                 
                 {/* Task card */}
@@ -104,7 +104,7 @@ const Schedule: React.FC = () => {
                 <div className={`${timeColWidth} flex-shrink-0 relative`}>
                   <div className={`${fontSize} text-gray-500 pt-1 pl-1`}>
                     <div>{format(item.date, 'M/d')}</div>
-                    <div>{formatTimeWithAMPM(item.time)}</div>
+                    <div className="whitespace-nowrap">{formatTimeWithAMPM(item.time)}</div>
                   </div>
                 </div>
                 

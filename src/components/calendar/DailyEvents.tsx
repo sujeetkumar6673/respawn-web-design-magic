@@ -43,7 +43,7 @@ const DailyEvents: React.FC<DailyEventsProps> = ({ onAddEvent }) => {
       ) : (
         <div className="text-center py-8 text-gray-500">
           <CalendarIcon className="mx-auto h-12 w-12 text-gray-300 mb-2" />
-          <p className="text-lg">No events scheduled for this day</p>
+          <p className="text-lg">No events. Enjoy today!</p>
           <Button 
             variant="outline" 
             className="mt-4 border-rezilia-purple text-rezilia-purple hover:bg-rezilia-purple hover:text-white"

@@ -22,8 +22,8 @@ const Schedule: React.FC = () => {
   // Get events for the selected date
   const scheduleItems = getEventsForDate(selectedDate);
   
-  // Get upcoming events (limited to 3)
-  const upcomingItems = getUpcomingEvents(isMobile ? 1 : 3);
+  // Get upcoming events (limited to 3 for desktop, 2 for mobile)
+  const upcomingItems = getUpcomingEvents(isMobile ? 2 : 3);
 
   // Determine time column width based on device
   const timeColWidth = isMobile ? "w-[45px]" : "w-24";
@@ -86,35 +86,43 @@ const Schedule: React.FC = () => {
           ))
         ) : (
           <div className="text-center py-1">
-            <p className={`text-gray-500 ${fontSize}`}>No tasks</p>
+            <p className={`text-gray-500 ${fontSize}`}>No events. Enjoy today!</p>
           </div>
         )}
       </div>
 
-      {upcomingItems.length > 0 && !isMobile && (
+      {/* Show upcoming events for both mobile and desktop */}
+      {upcomingItems.length > 0 && (
         <>
           <div className="mt-3 mb-1 flex justify-between items-center">
-            <h3 className="font-bold text-gray-800 text-sm">UPCOMING</h3>
+            <h3 className="font-bold text-gray-800 text-xs">UPCOMING</h3>
           </div>
           <div className="relative">        
             {upcomingItems.map((item, index) => (
-              <div key={item.id} className="mb-2">
-                <div className={`${timeColWidth} relative`}>
+              <div key={item.id} className="mb-2 flex">
+                {/* Time and date column */}
+                <div className={`${timeColWidth} flex-shrink-0 relative`}>
                   <div className={`${fontSize} text-gray-500 pt-1 pl-1`}>
                     <div>{format(item.date, 'M/d')}</div>
                     <div>{formatTimeWithAMPM(item.time)}</div>
                   </div>
                 </div>
-                <div className="flex-1">
+                
+                {/* Event card */}
+                <div className="flex-1 min-w-0">
                   <div 
-                    className="pl-2 sm:pl-4 py-1 sm:py-3 pr-1 rounded-r-md bg-opacity-10"
+                    className={`pl-1.5 py-1 pr-1 rounded-r-md bg-opacity-10 overflow-hidden`}
                     style={{ 
-                      borderLeft: `2px solid ${item.color}`,
-                      backgroundColor: `${item.color}20` 
+                      borderLeft: `1.5px solid ${item.color}`,
+                      backgroundColor: `${item.color}10` 
                     }}
                   >
                     <div className={`font-medium text-gray-800 ${fontSize} truncate`}>{item.title}</div>
-                    <div className={`text-xs sm:text-sm text-gray-600 mt-1 truncate`}>{item.description}</div>
+                    {item.description && 
+                      <div className={`${isMobile ? 'text-[8px]' : 'text-xs'} text-gray-600 mt-0.5 truncate`}>
+                        {item.description}
+                      </div>
+                    }
                   </div>
                 </div>
               </div>

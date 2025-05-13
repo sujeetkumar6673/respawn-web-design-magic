@@ -35,7 +35,7 @@ const DailyEvents: React.FC<DailyEventsProps> = ({ onAddEvent }) => {
                 <span className="text-lg">{event.time}</span>
               </div>
               {event.description && (
-                <p className="text-gray-600 mt-1">{event.description}</p>
+                <p className="text-gray-600 mt-1 line-clamp-2">{event.description}</p>
               )}
             </div>
           ))}

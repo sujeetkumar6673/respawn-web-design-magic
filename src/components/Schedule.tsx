@@ -76,8 +76,10 @@ const Schedule: React.FC = () => {
                     }}
                   >
                     <div className={`font-medium text-gray-800 ${fontSize} truncate`}>{item.title}</div>
-                    {!isMobile && item.description && 
-                      <div className="text-xs text-gray-600 mt-0.5 truncate">{item.description}</div>
+                    {item.description && 
+                      <div className={`text-xs text-gray-600 mt-0.5 line-clamp-2 ${fontSize}`}>
+                        {item.description}
+                      </div>
                     }
                   </div>
                 </div>
@@ -119,7 +121,7 @@ const Schedule: React.FC = () => {
                   >
                     <div className={`font-medium text-gray-800 ${fontSize} truncate`}>{item.title}</div>
                     {item.description && 
-                      <div className={`${isMobile ? 'text-[8px]' : 'text-xs'} text-gray-600 mt-0.5 truncate`}>
+                      <div className={`${isMobile ? 'text-[8px]' : 'text-xs'} text-gray-600 mt-0.5 line-clamp-2`}>
                         {item.description}
                       </div>
                     }

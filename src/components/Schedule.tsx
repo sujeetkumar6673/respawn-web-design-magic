@@ -7,6 +7,14 @@ import { Link } from 'react-router-dom';
 import { CalendarPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
+// Helper function to format time to 12-hour format with AM/PM
+const formatTimeWithAMPM = (time: string): string => {
+  const [hours, minutes] = time.split(':').map(Number);
+  const period = hours >= 12 ? 'PM' : 'AM';
+  const hour12 = hours % 12 || 12;
+  return `${hour12}:${minutes.toString().padStart(2, '0')} ${period}`;
+};
+
 const Schedule: React.FC = () => {
   const isMobile = useIsMobile();
   const { selectedDate, getEventsForDate, getUpcomingEvents } = useCalendarContext();
@@ -18,11 +26,11 @@ const Schedule: React.FC = () => {
   const upcomingItems = getUpcomingEvents(isMobile ? 1 : 3);
 
   // Determine time column width based on device
-  const timeColWidth = isMobile ? "w-5" : "w-24";
+  const timeColWidth = isMobile ? "w-[40px]" : "w-24";
   const fontSize = isMobile ? "text-xs" : "text-sm";
   
   return (
-    <div className={`${isMobile ? 'px-0' : 'mt-4 px-1 sm:px-0'}`}>
+    <div className={`${isMobile ? 'px-0 mt-2' : 'mt-4 px-1 sm:px-0'}`}>
       <div className="mb-1 flex justify-between items-center">
         <h3 className="font-bold text-gray-800 text-xs sm:text-base">
           {isEqual(
@@ -48,14 +56,14 @@ const Schedule: React.FC = () => {
           </div>
         )}
       </div>
-      <div className={`relative ${isMobile ? 'max-h-[170px]' : 'max-h-[300px]'} overflow-y-auto pr-1`}>
+      <div className={`relative ${isMobile ? 'max-h-[80px]' : 'max-h-[300px]'} overflow-y-auto pr-1`}>
         {scheduleItems.length > 0 ? (
           scheduleItems.map((item) => (
             <div key={item.id} className="relative mb-1 sm:mb-2">
               <div className="flex">
                 {/* Time column */}
                 <div className={`${timeColWidth} relative`}>
-                  <div className={`${fontSize} text-gray-500 pt-0.5`}>{item.time.split(':')[0]}</div>
+                  <div className={`${fontSize} text-gray-500 pt-0.5`}>{formatTimeWithAMPM(item.time)}</div>
                 </div>
                 
                 {/* Task card */}
@@ -100,7 +108,8 @@ const Schedule: React.FC = () => {
               <div key={item.id} className={`flex ${index > 0 && isMobile ? 'hidden' : 'mb-1 sm:mb-4'}`}>
                 <div className={`${timeColWidth} relative`}>
                   <div className={`${fontSize} text-gray-500 pt-1`}>
-                    {format(item.date, 'M/d')}
+                    <div>{format(item.date, 'M/d')}</div>
+                    <div>{formatTimeWithAMPM(item.time)}</div>
                   </div>
                 </div>
                 <div className="flex-1">

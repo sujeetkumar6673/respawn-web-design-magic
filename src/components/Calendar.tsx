@@ -47,7 +47,7 @@ const Calendar: React.FC = () => {
         )}
       </div>
       
-      <div className={`calendar-container ${isMobile ? 'scale-[0.85] origin-top-left -mr-5' : ''}`}>
+      <div className={`calendar-container ${isMobile ? 'scale-[0.75] origin-top-left -mr-10 -mb-4' : ''}`}>
         <CalendarUI
           mode="single"
           selected={selectedDate}
@@ -127,7 +127,7 @@ const Calendar: React.FC = () => {
           visibility: visible !important;
         }
         .calendar-container {
-          min-height: ${isMobile ? '170px' : '300px'};
+          min-height: ${isMobile ? '160px' : '300px'};
         }
         .rdp-tbody {
           visibility: visible !important;

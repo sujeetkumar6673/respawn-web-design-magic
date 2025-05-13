@@ -24,7 +24,7 @@ const Calendar: React.FC = () => {
     <div className="bg-white rounded-lg p-1 shadow-sm">
       <div className="flex items-center justify-between mb-1">
         <div className="flex items-end gap-1">
-          <h2 className={`${isMobile ? 'text-xs' : 'text-2xl'} font-bold`}>
+          <h2 className={`${isMobile ? 'text-sm' : 'text-2xl'} font-bold`}>
             {format(selectedDate, isMobile ? 'MMM yyyy' : 'MMMM yyyy')}
           </h2>
           {!isMobile && (
@@ -47,7 +47,7 @@ const Calendar: React.FC = () => {
         )}
       </div>
       
-      <div className={`calendar-container ${isMobile ? 'scale-[0.75] origin-top-left -mr-10 -mb-4' : ''}`}>
+      <div className={`calendar-container ${isMobile ? 'scale-[0.7] origin-top-left -mr-12 -mb-8' : ''}`}>
         <CalendarUI
           mode="single"
           selected={selectedDate}
@@ -127,7 +127,7 @@ const Calendar: React.FC = () => {
           visibility: visible !important;
         }
         .calendar-container {
-          min-height: ${isMobile ? '160px' : '300px'};
+          min-height: ${isMobile ? '150px' : '300px'};
         }
         .rdp-tbody {
           visibility: visible !important;

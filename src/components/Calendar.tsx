@@ -21,26 +21,28 @@ const Calendar: React.FC = () => {
   });
 
   return (
-    <div className="bg-white rounded-lg p-3 sm:p-4 shadow-sm">
-      <div className="flex items-center justify-between mb-3 sm:mb-4">
+    <div className="bg-white rounded-lg p-2 sm:p-4 shadow-sm">
+      <div className="flex items-center justify-between mb-2 sm:mb-4">
         <div className="flex items-end gap-2">
-          <h2 className={`${isMobile ? 'text-lg' : 'text-2xl'} font-bold`}>
+          <h2 className={`${isMobile ? 'text-base' : 'text-2xl'} font-bold`}>
             {format(selectedDate, 'MMMM yyyy')}
           </h2>
           <Badge className="bg-rezilia-orange text-white mb-1">
             {Object.values(eventCounts).reduce((sum, count) => sum + count, 0)}
           </Badge>
         </div>
-        <Link to="/calendar">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="text-rezilia-purple hover:bg-rezilia-purple/10"
-          >
-            <CalendarPlus className="h-4 w-4 mr-1" />
-            <span>All Events</span>
-          </Button>
-        </Link>
+        {!isMobile && (
+          <Link to="/calendar">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="text-rezilia-purple hover:bg-rezilia-purple/10"
+            >
+              <CalendarPlus className="h-4 w-4 mr-1" />
+              <span>All Events</span>
+            </Button>
+          </Link>
+        )}
       </div>
       
       <div className="calendar-container">
@@ -123,7 +125,7 @@ const Calendar: React.FC = () => {
           visibility: visible !important;
         }
         .calendar-container {
-          min-height: 300px;
+          min-height: ${isMobile ? '220px' : '300px'};
         }
         .rdp-tbody {
           visibility: visible !important;
@@ -134,6 +136,18 @@ const Calendar: React.FC = () => {
           align-items: center;
           justify-content: center;
         }
+        ${isMobile ? `
+        .rdp-table {
+          font-size: 0.8rem;
+        }
+        .rdp-button {
+          width: 28px !important;
+          height: 28px !important;
+        }
+        .rdp-head_cell {
+          font-size: 0.7rem;
+        }
+        ` : ''}
       `}</style>
     </div>
   );

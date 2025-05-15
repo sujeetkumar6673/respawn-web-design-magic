@@ -23,8 +23,8 @@ const Schedule: React.FC = () => {
   // Get events for the selected date
   const scheduleItems = getEventsForDate(selectedDate);
   
-  // Get upcoming events (limited to 3 for desktop, 2 for mobile)
-  const upcomingItems = getUpcomingEvents(isMobile ? 2 : 3);
+  // Get upcoming events (limited to 3 for desktop, 1 for mobile)
+  const upcomingItems = getUpcomingEvents(isMobile ? 1 : 3);
 
   // Determine time column width based on device
   const timeColWidth = isMobile ? "w-[50px]" : "w-24";
@@ -58,7 +58,7 @@ const Schedule: React.FC = () => {
         )}
       </div>
       
-      <ScrollArea className={`flex-1 ${isMobile ? 'max-h-[130px]' : ''}`}>
+      <ScrollArea className={`flex-1 ${isMobile ? 'max-h-[150px]' : ''}`}>
         {scheduleItems.length > 0 ? (
           scheduleItems.map((item, index) => (
             <div key={item.id} className={`relative mb-1 ${index > 0 ? 'mt-1' : ''}`}>

@@ -56,7 +56,7 @@ const Index = () => {
                   
                   {/* Calendar and Schedule - layout for mobile */}
                   {isMobile && (
-                    <section className="mt-4">
+                    <section className="mt-4 mb-6">
                       <h2 className="text-xl font-bold mb-3">Calendar & Schedule</h2>
                       <CalendarProvider>
                         <div className="grid grid-cols-12 gap-2">

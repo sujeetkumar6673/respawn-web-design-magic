@@ -13,7 +13,7 @@ const UpcomingEvents: React.FC = () => {
   const upcomingEvents = getUpcomingEvents(isMobile ? 2 : 7);
 
   return (
-    <div className={`col-span-1 lg:col-span-1 bg-white rounded-xl p-4 shadow-sm border border-gray-100 ${isMobile ? 'h-full' : ''}`}>
+    <div className={`col-span-1 lg:col-span-1 bg-white rounded-xl p-4 shadow-sm border border-gray-100 h-full`}>
       <h2 className="text-xl font-bold text-rezilia-purple mb-4">Upcoming Events</h2>
       
       {upcomingEvents.length > 0 ? (

@@ -60,7 +60,7 @@ const Index = () => {
                       <h2 className="text-xl font-bold mb-3">Calendar & Schedule</h2>
                       <CalendarProvider>
                         <div className="grid grid-cols-12 gap-2">
-                          <div className="col-span-7">
+                          <div className="col-span-7 h-full">
                             <Calendar />
                           </div>
                           <div className="col-span-5 border-l pl-1 flex flex-col h-full">

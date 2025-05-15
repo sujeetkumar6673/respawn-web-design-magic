@@ -3,19 +3,21 @@ import React from 'react';
 import { useCalendarContext } from '@/contexts/CalendarContext';
 import { isToday, format } from 'date-fns';
 import { Table, TableBody, TableCell, TableHeader, TableHead, TableRow } from '@/components/ui/table';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const UpcomingEvents: React.FC = () => {
   const { setSelectedDate, getUpcomingEvents } = useCalendarContext();
+  const isMobile = useIsMobile();
   
-  // Get upcoming events (limited to 7)
-  const upcomingEvents = getUpcomingEvents(7);
+  // Get upcoming events (limited to 7 for desktop, 2 for mobile)
+  const upcomingEvents = getUpcomingEvents(isMobile ? 2 : 7);
 
   return (
-    <div className="col-span-1 lg:col-span-1 bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+    <div className={`col-span-1 lg:col-span-1 bg-white rounded-xl p-4 shadow-sm border border-gray-100 ${isMobile ? 'h-full' : ''}`}>
       <h2 className="text-xl font-bold text-rezilia-purple mb-4">Upcoming Events</h2>
       
       {upcomingEvents.length > 0 ? (
-        <div className="overflow-y-auto max-h-[400px]">
+        <div className={`overflow-y-auto ${isMobile ? 'max-h-[220px]' : 'max-h-[400px]'}`}>
           <Table>
             <TableHeader>
               <TableRow>
@@ -47,7 +49,7 @@ const UpcomingEvents: React.FC = () => {
                       {event.title}
                     </div>
                   </TableCell>
-                  <TableCell>{event.time}</TableCell>
+                  <TableCell className="whitespace-nowrap">{event.time}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

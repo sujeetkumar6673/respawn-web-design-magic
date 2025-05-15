@@ -4,6 +4,7 @@ import { useCalendarContext } from '@/contexts/CalendarContext';
 import { isToday, format } from 'date-fns';
 import { Table, TableBody, TableCell, TableHeader, TableHead, TableRow } from '@/components/ui/table';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const UpcomingEvents: React.FC = () => {
   const { setSelectedDate, getUpcomingEvents } = useCalendarContext();
@@ -13,11 +14,11 @@ const UpcomingEvents: React.FC = () => {
   const upcomingEvents = getUpcomingEvents(isMobile ? 2 : 7);
 
   return (
-    <div className={`col-span-1 lg:col-span-1 bg-white rounded-xl p-4 shadow-sm border border-gray-100 h-full`}>
+    <div className="col-span-1 lg:col-span-1 bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex flex-col">
       <h2 className="text-xl font-bold text-rezilia-purple mb-4">Upcoming Events</h2>
       
       {upcomingEvents.length > 0 ? (
-        <div className={`overflow-y-auto ${isMobile ? 'max-h-[220px]' : 'max-h-[400px]'}`}>
+        <ScrollArea className={`flex-1 ${isMobile ? 'max-h-[220px]' : 'max-h-[400px]'}`}>
           <Table>
             <TableHeader>
               <TableRow>
@@ -54,7 +55,7 @@ const UpcomingEvents: React.FC = () => {
               ))}
             </TableBody>
           </Table>
-        </div>
+        </ScrollArea>
       ) : (
         <div className="text-center py-8 text-gray-500">
           <p className="text-lg">No upcoming events</p>

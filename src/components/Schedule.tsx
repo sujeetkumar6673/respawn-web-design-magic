@@ -6,6 +6,7 @@ import { useCalendarContext } from '@/contexts/CalendarContext';
 import { Link } from 'react-router-dom';
 import { CalendarPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 // Helper function to format time to 12-hour format with AM/PM
 const formatTimeWithAMPM = (time: string): string => {
@@ -30,7 +31,7 @@ const Schedule: React.FC = () => {
   const fontSize = isMobile ? "text-[10px]" : "text-sm";
   
   return (
-    <div className={`${isMobile ? 'px-0 h-full flex flex-col' : 'mt-4 px-1 sm:px-0'}`}>
+    <div className={`${isMobile ? 'px-0 flex flex-col h-full' : 'mt-4 px-1 sm:px-0'}`}>
       <div className="mb-1 flex justify-between items-center">
         <h3 className="font-bold text-gray-800 text-xs">
           {isEqual(
@@ -56,7 +57,8 @@ const Schedule: React.FC = () => {
           </div>
         )}
       </div>
-      <div className={`relative ${isMobile ? 'flex-1 min-h-0 overflow-y-auto' : 'max-h-[300px] overflow-y-auto'} ${isMobile ? 'pr-0' : 'pr-1'}`}>
+      
+      <ScrollArea className={`flex-1 ${isMobile ? 'max-h-[130px]' : ''}`}>
         {scheduleItems.length > 0 ? (
           scheduleItems.map((item, index) => (
             <div key={item.id} className={`relative mb-1 ${index > 0 ? 'mt-1' : ''}`}>
@@ -91,7 +93,7 @@ const Schedule: React.FC = () => {
             <p className={`text-gray-500 ${fontSize}`}>No events. Enjoy today!</p>
           </div>
         )}
-      </div>
+      </ScrollArea>
 
       {/* Show upcoming events for both mobile and desktop */}
       {upcomingItems.length > 0 && (

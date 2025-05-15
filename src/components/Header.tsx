@@ -41,7 +41,7 @@ const Header: React.FC<HeaderProps> = ({ userName }) => {
           <span className="absolute -top-1 -right-1 bg-rezilia-orange text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">3</span>
         </Button>
         <Avatar>
-          <AvatarImage src="/lovable-uploads/6fc2af35-6587-4e5e-872e-874ef4f857c4.png" alt={userName} />
+          <AvatarImage src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=500&auto=format&fit=crop" alt={userName} />
           <AvatarFallback>NA</AvatarFallback>
         </Avatar>
       </div>

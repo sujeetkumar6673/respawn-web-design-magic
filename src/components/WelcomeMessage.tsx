@@ -12,7 +12,7 @@ const WelcomeMessage: React.FC<WelcomeMessageProps> = ({ userName }) => {
     <Card className="bg-white rounded-xl p-4 flex items-center gap-4 mb-6">
       <div className="relative">
         <Avatar className="h-16 w-16 border-2 border-rezilia-blue">
-          <AvatarImage src="/lovable-uploads/6fc2af35-6587-4e5e-872e-874ef4f857c4.png" alt={userName} />
+          <AvatarImage src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=500&auto=format&fit=crop" alt={userName} />
           <AvatarFallback>NA</AvatarFallback>
         </Avatar>
         <div className="absolute -top-2 -left-2 bg-blue-500 text-white text-xs rounded-full px-2 py-0.5">

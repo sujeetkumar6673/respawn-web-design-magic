@@ -59,11 +59,11 @@ const Index = () => {
                     <section className="mt-4">
                       <h2 className="text-xl font-bold mb-3">Calendar & Schedule</h2>
                       <CalendarProvider>
-                        <div className="grid grid-cols-5 gap-2">
-                          <div className="col-span-3">
+                        <div className="grid grid-cols-12 gap-2">
+                          <div className="col-span-7">
                             <Calendar />
                           </div>
-                          <div className="col-span-2 border-l pl-1 h-full flex flex-col">
+                          <div className="col-span-5 border-l pl-1 flex flex-col h-full">
                             <Schedule />
                           </div>
                         </div>
@@ -73,6 +73,7 @@ const Index = () => {
                   
                   {/* Modules Section */}
                   <section>
+                    <h2 className="text-xl font-bold mb-3">Modules</h2>
                     <ModulesSection />
                   </section>
                   

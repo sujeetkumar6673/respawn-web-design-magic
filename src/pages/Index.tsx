@@ -35,28 +35,28 @@ const Index = () => {
   };
   
   return (
-    <div className="app-background min-h-screen pb-16 sm:pb-0">
-      <div className="flex h-full">
+    <div className="app-background min-h-screen h-screen flex flex-col pb-16 sm:pb-0">
+      <div className="flex h-full overflow-hidden">
         {/* Sidebar - only visible on desktop */}
         {!isMobile && <Sidebar activePage={activePage} />}
         
         {/* Main Content */}
-        <div className={`flex-1 p-3 sm:p-4 overflow-y-auto ${isMobile ? 'w-full' : 'ml-[220px]'}`}>
-          <div className="max-w-[1200px] mx-auto">
+        <div className={`flex-1 p-3 sm:p-4 flex flex-col overflow-hidden ${isMobile ? 'w-full' : 'ml-[220px]'}`}>
+          <div className="max-w-[1200px] mx-auto flex flex-col h-full overflow-hidden">
             {/* Header */}
             <Header userName={userName} />
             
             {/* Main Dashboard */}
-            <div className="bg-white rounded-b-xl p-3 sm:p-4">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
+            <div className="bg-white rounded-b-xl p-3 sm:p-4 flex-1 overflow-hidden flex flex-col">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 overflow-y-auto">
                 {/* Left Column */}
-                <div className="lg:col-span-2 space-y-6 sm:space-y-8">
+                <div className="lg:col-span-2 space-y-4 sm:space-y-6">
                   {/* Welcome Message */}
                   <WelcomeMessage userName={userName} />
                   
                   {/* Calendar and Schedule - layout for mobile */}
                   {isMobile && (
-                    <section className="mt-4 mb-6">
+                    <section className="mt-2 mb-4">
                       <h2 className="text-xl font-bold mb-3">Calendar & Schedule</h2>
                       <CalendarProvider>
                         <div className="grid grid-cols-12 gap-2">
@@ -84,17 +84,17 @@ const Index = () => {
                   
                   {/* Resources Section */}
                   <section>
-                    <h2 className="text-xl font-bold mb-4">Resources</h2>
+                    <h2 className="text-xl font-bold mb-3">Resources</h2>
                     <ResourcesSection />
                   </section>
                 </div>
                 
                 {/* Right Column - Calendar and Schedule only shown on desktop here */}
-                <div className="space-y-6 sm:space-y-8">
+                <div className="space-y-4 sm:space-y-6">
                   {/* Calendar - desktop position */}
                   {!isMobile && (
                     <CalendarProvider>
-                      <div className="-mt-4 hidden sm:block">
+                      <div className="-mt-2 hidden sm:block">
                         <Calendar />
                       </div>
                       <Schedule />

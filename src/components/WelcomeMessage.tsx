@@ -9,7 +9,7 @@ interface WelcomeMessageProps {
 
 const WelcomeMessage: React.FC<WelcomeMessageProps> = ({ userName }) => {
   return (
-    <Card className="bg-white rounded-xl p-4 flex items-center gap-4 mb-6">
+    <Card className="bg-white rounded-xl p-4 flex items-center gap-4">
       <div className="relative">
         <Avatar className="h-16 w-16 border-2 border-rezilia-blue">
           <AvatarImage src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=500&auto=format&fit=crop" alt={userName} />

@@ -14,11 +14,11 @@ const UpcomingEvents: React.FC = () => {
   const upcomingEvents = getUpcomingEvents(isMobile ? 1 : 7);
 
   return (
-    <div className="col-span-1 lg:col-span-1 bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex flex-col">
+    <div className="col-span-1 lg:col-span-1 bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex flex-col h-full">
       <h2 className="text-xl font-bold text-rezilia-purple mb-4">Upcoming Events</h2>
       
       {upcomingEvents.length > 0 ? (
-        <ScrollArea className={`flex-1 ${isMobile ? 'max-h-[220px]' : 'max-h-[400px]'}`}>
+        <ScrollArea className="flex-1">
           <Table>
             <TableHeader>
               <TableRow>

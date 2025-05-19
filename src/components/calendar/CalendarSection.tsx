@@ -29,7 +29,7 @@ const DAYS_OF_WEEK = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 const CalendarSection: React.FC<CalendarSectionProps> = ({ eventDates }) => {
   const { selectedDate, setSelectedDate } = useCalendarContext();
-  const [viewMode, setViewMode] = useState<'5day' | 'week' | 'month'>('month');
+  const [viewMode, setViewMode] = useState<'daily' | 'week' | 'month'>('month');
   
   // Get days based on the view mode
   const getDaysForView = () => {
@@ -54,8 +54,8 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({ eventDates }) => {
         end: weekEnd
       });
     } else {
-      // 5-day view (Current day and 4 days after)
-      return Array.from({ length: 5 }, (_, i) => addDays(selectedDate, i));
+      // Daily view (just the current day)
+      return [selectedDate];
     }
   };
   
@@ -63,55 +63,42 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({ eventDates }) => {
   
   // Navigation functions based on view mode
   const handlePrev = () => {
-    const newDate = new Date(selectedDate);
-    
     if (viewMode === 'month') {
+      const newDate = new Date(selectedDate);
       newDate.setMonth(selectedDate.getMonth() - 1);
+      setSelectedDate(newDate);
     } else if (viewMode === 'week') {
       setSelectedDate(subWeeks(selectedDate, 1));
-      return;
     } else {
-      // 5-day view
-      setSelectedDate(subDays(selectedDate, 5));
-      return;
+      // Daily view
+      setSelectedDate(subDays(selectedDate, 1));
     }
-    
-    setSelectedDate(newDate);
   };
   
   const handleNext = () => {
-    const newDate = new Date(selectedDate);
-    
     if (viewMode === 'month') {
+      const newDate = new Date(selectedDate);
       newDate.setMonth(selectedDate.getMonth() + 1);
+      setSelectedDate(newDate);
     } else if (viewMode === 'week') {
       setSelectedDate(addWeeks(selectedDate, 1));
-      return;
     } else {
-      // 5-day view
-      setSelectedDate(addDays(selectedDate, 5));
-      return;
+      // Daily view
+      setSelectedDate(addDays(selectedDate, 1));
     }
-    
-    setSelectedDate(newDate);
   };
   
   // Format the header text based on view mode
   const getHeaderText = () => {
     if (viewMode === 'month') {
-      return format(selectedDate, 'MMM yyyy');
+      return format(selectedDate, 'MMMM yyyy');
     } else if (viewMode === 'week') {
       const weekStart = startOfWeek(selectedDate, { weekStartsOn: 1 });
       const weekEnd = endOfWeek(selectedDate, { weekStartsOn: 1 });
       return `${format(weekStart, 'MMM d')} - ${format(weekEnd, 'MMM d, yyyy')}`;
     } else {
-      // 5-day view
-      const endDate = addDays(selectedDate, 4);
-      if (selectedDate.getMonth() === endDate.getMonth()) {
-        return `${format(selectedDate, 'MMM d')} - ${format(endDate, 'd, yyyy')}`;
-      } else {
-        return `${format(selectedDate, 'MMM d')} - ${format(endDate, 'MMM d, yyyy')}`;
-      }
+      // Daily view
+      return format(selectedDate, 'MMMM d, yyyy');
     }
   };
 
@@ -133,18 +120,18 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({ eventDates }) => {
             type="single" 
             value={viewMode} 
             onValueChange={(value) => {
-              if (value) setViewMode(value as '5day' | 'week' | 'month');
+              if (value) setViewMode(value as 'daily' | 'week' | 'month');
             }}
-            className="border rounded-md"
+            className="border rounded-md calendar-view-toggle"
           >
-            <ToggleGroupItem value="5day" aria-label="5 days view" className="text-xs sm:text-sm px-2 sm:px-3">
-              5-Day
+            <ToggleGroupItem value="daily" aria-label="Daily view" className="text-xs sm:text-sm px-2 sm:px-3">
+              Daily
             </ToggleGroupItem>
             <ToggleGroupItem value="week" aria-label="Week view" className="text-xs sm:text-sm px-2 sm:px-3">
-              Week
+              Weekly
             </ToggleGroupItem>
             <ToggleGroupItem value="month" aria-label="Month view" className="text-xs sm:text-sm px-2 sm:px-3">
-              Month
+              Monthly
             </ToggleGroupItem>
           </ToggleGroup>
           
@@ -171,20 +158,22 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({ eventDates }) => {
       
       {/* Calendar Grid */}
       <div className="rounded-lg bg-white overflow-hidden">
-        {/* Days of week headers */}
-        <div className={`grid ${viewMode === 'month' ? 'grid-cols-7' : viewMode === 'week' ? 'grid-cols-7' : 'grid-cols-5'} gap-0 border-b`}>
-          {DAYS_OF_WEEK.slice(0, viewMode === '5day' ? 5 : 7).map((day) => (
-            <div 
-              key={day} 
-              className="py-2 text-center text-sm font-medium text-gray-500"
-            >
-              {day}
-            </div>
-          ))}
-        </div>
+        {viewMode !== 'daily' && (
+          /* Days of week headers - only show for week and month views */
+          <div className={`grid ${viewMode === 'month' ? 'grid-cols-7' : 'grid-cols-7'} gap-0 border-b`}>
+            {DAYS_OF_WEEK.map((day) => (
+              <div 
+                key={day} 
+                className="py-2 text-center text-sm font-medium text-gray-500"
+              >
+                {day}
+              </div>
+            ))}
+          </div>
+        )}
         
         {/* Calendar cells */}
-        <div className={`grid ${viewMode === 'month' ? 'grid-cols-7' : viewMode === 'week' ? 'grid-cols-7' : 'grid-cols-5'} gap-0`}>
+        <div className={`grid ${viewMode === 'month' ? 'grid-cols-7' : viewMode === 'week' ? 'grid-cols-7' : 'grid-cols-1'} gap-0`}>
           {calendarDays.map((date, index) => {
             const formattedDate = format(date, 'yyyy-MM-dd');
             const isCurrentMonth = isSameMonth(date, selectedDate);
@@ -199,17 +188,17 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({ eventDates }) => {
               <div 
                 key={index} 
                 className={`
-                  min-h-[80px] p-1 border-b border-r 
+                  ${viewMode === 'daily' ? 'min-h-[400px]' : 'min-h-[80px]'} p-1 border-b border-r 
                   ${isDimmed ? 'bg-gray-50 text-gray-400' : 'bg-white'}
                   ${isSelected ? 'bg-rezilia-purple/5' : ''}
                   ${viewMode === 'month' && index % 7 === 6 ? 'border-r-0' : ''}
                   ${viewMode === 'week' && index % 7 === 6 ? 'border-r-0' : ''}
-                  ${viewMode === '5day' && index % 5 === 4 ? 'border-r-0' : ''}
+                  ${viewMode === 'daily' ? 'border-r-0' : ''}
                   ${viewMode === 'month' && index >= calendarDays.length - 7 ? 'border-b-0' : ''}
                   ${viewMode === 'week' && index >= calendarDays.length - 7 ? 'border-b-0' : ''}
-                  ${viewMode === '5day' && index >= calendarDays.length - 5 ? 'border-b-0' : ''}
+                  ${viewMode === 'daily' ? 'border-b-0' : ''}
                 `}
-                onClick={() => setSelectedDate(date)}
+                onClick={() => setViewMode === 'daily' ? null : setSelectedDate(date)}
               >
                 <div className="flex flex-col h-full">
                   {/* Date number */}
@@ -222,27 +211,39 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({ eventDates }) => {
                     >
                       {date.getDate()}
                     </div>
-                    {hasEvents && !isToday(date) && (
+                    {hasEvents && !isToday(date) && viewMode !== 'daily' && (
                       <div className="w-1.5 h-1.5 rounded-full bg-rezilia-purple"></div>
                     )}
                   </div>
                   
                   {/* Event indicators */}
                   <div className="mt-1 space-y-1">
-                    {hasEvents && (viewMode !== 'month' || isCurrentMonth) && (
+                    {hasEvents && (viewMode === 'daily' || isCurrentMonth) && (
                       <div className="flex flex-col space-y-1">
-                        {[...Array(Math.min(events, 2))].map((_, i) => (
-                          <div 
-                            key={i} 
-                            className="text-[10px] px-1 py-0.5 rounded-sm bg-rezilia-purple/10 text-rezilia-purple truncate"
-                          >
-                            {i === 0 && events > 2 
-                              ? `${events} events` 
-                              : i === 0 
-                                ? "Event" 
-                                : "Another event"}
+                        {viewMode === 'daily' ? (
+                          /* For daily view, show all events with more details */
+                          <div className="mt-4">
+                            {events > 0 && (
+                              <div className="text-sm font-medium text-gray-700 mb-2">
+                                All Events ({events})
+                              </div>
+                            )}
                           </div>
-                        ))}
+                        ) : (
+                          /* For week and month views, show compact event indicators */
+                          [...Array(Math.min(events, 2))].map((_, i) => (
+                            <div 
+                              key={i} 
+                              className="text-[10px] px-1 py-0.5 rounded-sm bg-rezilia-purple/10 text-rezilia-purple truncate"
+                            >
+                              {i === 0 && events > 2 
+                                ? `${events} events` 
+                                : i === 0 
+                                  ? "Event" 
+                                  : "Another event"}
+                            </div>
+                          ))
+                        )}
                       </div>
                     )}
                   </div>

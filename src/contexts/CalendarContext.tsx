@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { addDays, isSameDay } from 'date-fns';
+import { addDays, addWeeks, subDays, isSameDay } from 'date-fns';
 
 // Define the event type
 export interface CalendarEvent {
@@ -24,9 +24,20 @@ interface CalendarContextType {
 
 const CalendarContext = createContext<CalendarContextType | undefined>(undefined);
 
+// Helper function to generate a random time between 8:00 and 18:00
+const randomTime = () => {
+  const hour = Math.floor(Math.random() * 10) + 8; // 8 to 18
+  const minute = Math.floor(Math.random() * 4) * 15; // 0, 15, 30, 45
+  return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+};
+
+// Color palette
+const eventColors = ['#2717A5', '#FF9F46', '#FF719A', '#62E884', '#67d6ff', '#9467ff', '#ff6767'];
+
 export const CalendarProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [events, setEvents] = useState<CalendarEvent[]>([
+    // Today's events
     {
       id: '1',
       title: 'Doctor Appointment',
@@ -67,6 +78,8 @@ export const CalendarProvider: React.FC<{ children: ReactNode }> = ({ children }
       description: 'Around the park',
       color: '#67d6ff'
     },
+    
+    // Tomorrow's events
     {
       id: '6',
       title: 'Book Club',
@@ -82,7 +95,105 @@ export const CalendarProvider: React.FC<{ children: ReactNode }> = ({ children }
       time: '11:00',
       description: 'Pick up weekly essentials',
       color: '#2717A5'
-    }
+    },
+    
+    // Later this week
+    {
+      id: '8',
+      title: 'Dentist Appointment',
+      date: addDays(new Date(), 3),
+      time: '14:00',
+      description: 'Teeth cleaning',
+      color: '#9467ff'
+    },
+    {
+      id: '9',
+      title: 'Family Dinner',
+      date: addDays(new Date(), 3),
+      time: '19:00',
+      description: 'At mom\'s house',
+      color: '#FF719A'
+    },
+    {
+      id: '10',
+      title: 'Movie Night',
+      date: addDays(new Date(), 4),
+      time: '20:00',
+      description: 'Watch new release',
+      color: '#67d6ff'
+    },
+    
+    // Next week
+    {
+      id: '11',
+      title: 'Eye Doctor',
+      date: addDays(new Date(), 7),
+      time: '11:30',
+      description: 'Annual eye exam',
+      color: '#2717A5'
+    },
+    {
+      id: '12',
+      title: 'Birthday Party',
+      date: addDays(new Date(), 8),
+      time: '15:00',
+      description: 'John\'s 60th birthday',
+      color: '#FF9F46'
+    },
+    {
+      id: '13',
+      title: 'Yoga Class',
+      date: addDays(new Date(), 9),
+      time: '08:00',
+      description: 'Morning stretching',
+      color: '#62E884'
+    },
+    
+    // Next month
+    {
+      id: '14',
+      title: 'Annual Checkup',
+      date: addWeeks(new Date(), 4),
+      time: '09:30',
+      description: 'With Dr. Smith',
+      color: '#FF719A'
+    },
+    {
+      id: '15',
+      title: 'Concert',
+      date: addWeeks(new Date(), 4),
+      time: '19:30',
+      description: 'Symphony Orchestra',
+      color: '#9467ff'
+    },
+    
+    // Last month
+    {
+      id: '16',
+      title: 'Flu Shot',
+      date: subDays(new Date(), 25),
+      time: '10:00',
+      description: 'Annual vaccination',
+      color: '#ff6767'
+    },
+    {
+      id: '17',
+      title: 'Cooking Class',
+      date: subDays(new Date(), 20),
+      time: '17:00',
+      description: 'Learn to make pasta',
+      color: '#FF9F46'
+    },
+    
+    // Generate some more random events for better demonstration
+    ...Array.from({ length: 15 }, (_, i) => ({
+      id: `random-${i + 18}`,
+      title: `Event ${i + 1}`,
+      date: addDays(new Date(), Math.floor(Math.random() * 60) - 30), // Random date between -30 and +30 days
+      time: randomTime(),
+      description: `Random event description ${i + 1}`,
+      color: eventColors[Math.floor(Math.random() * eventColors.length)]
+    }))
   ]);
 
   const addEvent = (event: CalendarEvent) => {

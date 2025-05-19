@@ -119,6 +119,30 @@ const CalendarStyles: React.FC = () => {
       .calendar-view-toggle {
         border-color: var(--rezilia-purple);
       }
+      
+      .calendar-view-toggle [role="tab"] {
+        transition: all 0.2s ease;
+      }
+      
+      .calendar-view-toggle [role="tab"]:hover:not([data-state="on"]) {
+        background-color: rgba(39, 23, 165, 0.05);
+      }
+      
+      /* Daily view styling */
+      .daily-view-container {
+        min-height: 400px;
+        border-radius: 8px;
+        background-color: white;
+        padding: 16px;
+      }
+      
+      /* Week view styling */
+      .week-day-header {
+        text-align: center;
+        font-weight: 500;
+        padding: 8px 0;
+        border-bottom: 1px solid #f0f0f0;
+      }
       `}
     </style>
   );

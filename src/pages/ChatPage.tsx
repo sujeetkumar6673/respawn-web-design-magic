@@ -54,7 +54,7 @@ const ChatPage = () => {
       timestamp: new Date(Date.now() - 86400000 * 3),
       unreadCount: 0,
       status: 'online'
-    },
+    }
   ];
   
   const currentUser = {

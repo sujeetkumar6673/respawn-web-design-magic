@@ -1,10 +1,25 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useCalendarContext } from '@/contexts/CalendarContext';
-import { format, isToday, isSameMonth, startOfMonth, endOfMonth, eachDayOfInterval, addDays, subDays, isSameDay } from 'date-fns';
+import { 
+  format, 
+  isToday, 
+  isSameMonth, 
+  startOfMonth, 
+  endOfMonth, 
+  eachDayOfInterval, 
+  addDays, 
+  subDays, 
+  isSameDay, 
+  startOfWeek,
+  endOfWeek,
+  addWeeks,
+  subWeeks
+} from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 interface CalendarSectionProps {
   eventDates: Record<string, number>;
@@ -14,69 +29,151 @@ const DAYS_OF_WEEK = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 const CalendarSection: React.FC<CalendarSectionProps> = ({ eventDates }) => {
   const { selectedDate, setSelectedDate } = useCalendarContext();
+  const [viewMode, setViewMode] = useState<'5day' | 'week' | 'month'>('month');
   
-  // Get days in month for the calendar grid
-  const firstDayOfMonth = startOfMonth(selectedDate);
-  const lastDayOfMonth = endOfMonth(selectedDate);
+  // Get days based on the view mode
+  const getDaysForView = () => {
+    if (viewMode === 'month') {
+      // Month view (original implementation)
+      const firstDayOfMonth = startOfMonth(selectedDate);
+      const lastDayOfMonth = endOfMonth(selectedDate);
+      const startDate = subDays(firstDayOfMonth, (firstDayOfMonth.getDay() + 6) % 7); // Monday as first day
+      const endDate = addDays(lastDayOfMonth, 7 - lastDayOfMonth.getDay());
+      
+      return eachDayOfInterval({
+        start: startDate,
+        end: endDate
+      });
+    } else if (viewMode === 'week') {
+      // Week view (Monday to Sunday)
+      const weekStart = startOfWeek(selectedDate, { weekStartsOn: 1 }); // Start on Monday
+      const weekEnd = endOfWeek(selectedDate, { weekStartsOn: 1 }); // End on Sunday
+      
+      return eachDayOfInterval({
+        start: weekStart,
+        end: weekEnd
+      });
+    } else {
+      // 5-day view (Current day and 4 days after)
+      return Array.from({ length: 5 }, (_, i) => addDays(selectedDate, i));
+    }
+  };
   
-  // Include some days from previous and next month to fill the calendar grid
-  const startDate = subDays(firstDayOfMonth, (firstDayOfMonth.getDay() + 6) % 7); // Monday as first day
-  const endDate = addDays(lastDayOfMonth, 7 - lastDayOfMonth.getDay());
+  const calendarDays = getDaysForView();
   
-  const calendarDays = eachDayOfInterval({
-    start: startDate,
-    end: endDate
-  });
-  
-  const handlePrevMonth = () => {
+  // Navigation functions based on view mode
+  const handlePrev = () => {
     const newDate = new Date(selectedDate);
-    newDate.setMonth(selectedDate.getMonth() - 1);
+    
+    if (viewMode === 'month') {
+      newDate.setMonth(selectedDate.getMonth() - 1);
+    } else if (viewMode === 'week') {
+      setSelectedDate(subWeeks(selectedDate, 1));
+      return;
+    } else {
+      // 5-day view
+      setSelectedDate(subDays(selectedDate, 5));
+      return;
+    }
+    
     setSelectedDate(newDate);
   };
   
-  const handleNextMonth = () => {
+  const handleNext = () => {
     const newDate = new Date(selectedDate);
-    newDate.setMonth(selectedDate.getMonth() + 1);
+    
+    if (viewMode === 'month') {
+      newDate.setMonth(selectedDate.getMonth() + 1);
+    } else if (viewMode === 'week') {
+      setSelectedDate(addWeeks(selectedDate, 1));
+      return;
+    } else {
+      // 5-day view
+      setSelectedDate(addDays(selectedDate, 5));
+      return;
+    }
+    
     setSelectedDate(newDate);
+  };
+  
+  // Format the header text based on view mode
+  const getHeaderText = () => {
+    if (viewMode === 'month') {
+      return format(selectedDate, 'MMM yyyy');
+    } else if (viewMode === 'week') {
+      const weekStart = startOfWeek(selectedDate, { weekStartsOn: 1 });
+      const weekEnd = endOfWeek(selectedDate, { weekStartsOn: 1 });
+      return `${format(weekStart, 'MMM d')} - ${format(weekEnd, 'MMM d, yyyy')}`;
+    } else {
+      // 5-day view
+      const endDate = addDays(selectedDate, 4);
+      if (selectedDate.getMonth() === endDate.getMonth()) {
+        return `${format(selectedDate, 'MMM d')} - ${format(endDate, 'd, yyyy')}`;
+      } else {
+        return `${format(selectedDate, 'MMM d')} - ${format(endDate, 'MMM d, yyyy')}`;
+      }
+    }
   };
 
   return (
     <div className="bg-white rounded-xl p-4 shadow-sm">
-      {/* Header with month and event count */}
-      <div className="flex items-center justify-between mb-4">
+      {/* Header with view options, month and event count */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
         <div className="flex items-center">
           <h2 className="text-xl font-bold text-rezilia-purple">
-            {format(selectedDate, 'MMM yyyy')}
+            {getHeaderText()}
           </h2>
           <Badge className="ml-2 bg-rezilia-orange text-white">
             {Object.values(eventDates).reduce((sum, count) => sum + count, 0)} Events
           </Badge>
         </div>
-        <div className="flex gap-2">
-          <Button 
-            variant="outline" 
-            size="icon" 
-            className="h-8 w-8 rounded-full border-rezilia-purple text-rezilia-purple" 
-            onClick={handlePrevMonth}
+        
+        <div className="flex flex-wrap gap-2 items-center">
+          <ToggleGroup 
+            type="single" 
+            value={viewMode} 
+            onValueChange={(value) => {
+              if (value) setViewMode(value as '5day' | 'week' | 'month');
+            }}
+            className="border rounded-md"
           >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          <Button 
-            variant="outline" 
-            size="icon" 
-            className="h-8 w-8 rounded-full border-rezilia-purple text-rezilia-purple" 
-            onClick={handleNextMonth}
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
+            <ToggleGroupItem value="5day" aria-label="5 days view" className="text-xs sm:text-sm px-2 sm:px-3">
+              5-Day
+            </ToggleGroupItem>
+            <ToggleGroupItem value="week" aria-label="Week view" className="text-xs sm:text-sm px-2 sm:px-3">
+              Week
+            </ToggleGroupItem>
+            <ToggleGroupItem value="month" aria-label="Month view" className="text-xs sm:text-sm px-2 sm:px-3">
+              Month
+            </ToggleGroupItem>
+          </ToggleGroup>
+          
+          <div className="flex gap-2">
+            <Button 
+              variant="outline" 
+              size="icon" 
+              className="h-8 w-8 rounded-full border-rezilia-purple text-rezilia-purple" 
+              onClick={handlePrev}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <Button 
+              variant="outline" 
+              size="icon" 
+              className="h-8 w-8 rounded-full border-rezilia-purple text-rezilia-purple" 
+              onClick={handleNext}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </div>
       
       {/* Calendar Grid */}
       <div className="rounded-lg bg-white overflow-hidden">
         {/* Days of week headers */}
-        <div className="grid grid-cols-7 gap-0 border-b">
-          {DAYS_OF_WEEK.map((day) => (
+        <div className={`grid ${viewMode === 'month' ? 'grid-cols-7' : viewMode === 'week' ? 'grid-cols-7' : 'grid-cols-5'} gap-0 border-b`}>
+          {DAYS_OF_WEEK.slice(0, viewMode === '5day' ? 5 : 7).map((day) => (
             <div 
               key={day} 
               className="py-2 text-center text-sm font-medium text-gray-500"
@@ -87,7 +184,7 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({ eventDates }) => {
         </div>
         
         {/* Calendar cells */}
-        <div className="grid grid-cols-7 gap-0">
+        <div className={`grid ${viewMode === 'month' ? 'grid-cols-7' : viewMode === 'week' ? 'grid-cols-7' : 'grid-cols-5'} gap-0`}>
           {calendarDays.map((date, index) => {
             const formattedDate = format(date, 'yyyy-MM-dd');
             const isCurrentMonth = isSameMonth(date, selectedDate);
@@ -95,15 +192,22 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({ eventDates }) => {
             const hasEvents = Boolean(eventDates[formattedDate]);
             const events = eventDates[formattedDate] || 0;
             
+            // Only show different background for other months in month view
+            const isDimmed = viewMode === 'month' && !isCurrentMonth;
+            
             return (
               <div 
                 key={index} 
                 className={`
                   min-h-[80px] p-1 border-b border-r 
-                  ${isCurrentMonth ? 'bg-white' : 'bg-gray-50 text-gray-400'}
+                  ${isDimmed ? 'bg-gray-50 text-gray-400' : 'bg-white'}
                   ${isSelected ? 'bg-rezilia-purple/5' : ''}
-                  ${index % 7 === 6 ? 'border-r-0' : ''}
-                  ${index >= calendarDays.length - 7 ? 'border-b-0' : ''}
+                  ${viewMode === 'month' && index % 7 === 6 ? 'border-r-0' : ''}
+                  ${viewMode === 'week' && index % 7 === 6 ? 'border-r-0' : ''}
+                  ${viewMode === '5day' && index % 5 === 4 ? 'border-r-0' : ''}
+                  ${viewMode === 'month' && index >= calendarDays.length - 7 ? 'border-b-0' : ''}
+                  ${viewMode === 'week' && index >= calendarDays.length - 7 ? 'border-b-0' : ''}
+                  ${viewMode === '5day' && index >= calendarDays.length - 5 ? 'border-b-0' : ''}
                 `}
                 onClick={() => setSelectedDate(date)}
               >
@@ -125,7 +229,7 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({ eventDates }) => {
                   
                   {/* Event indicators */}
                   <div className="mt-1 space-y-1">
-                    {hasEvents && isCurrentMonth && (
+                    {hasEvents && (viewMode !== 'month' || isCurrentMonth) && (
                       <div className="flex flex-col space-y-1">
                         {[...Array(Math.min(events, 2))].map((_, i) => (
                           <div 

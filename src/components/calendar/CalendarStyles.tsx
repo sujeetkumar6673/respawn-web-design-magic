@@ -109,6 +109,16 @@ const CalendarStyles: React.FC = () => {
         text-overflow: ellipsis;
         white-space: nowrap;
       }
+      
+      /* Toggle Group Styling */
+      .calendar-view-toggle [data-state="on"] {
+        background-color: var(--rezilia-purple);
+        color: white;
+      }
+      
+      .calendar-view-toggle {
+        border-color: var(--rezilia-purple);
+      }
       `}
     </style>
   );

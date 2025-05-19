@@ -56,20 +56,28 @@ const CalendarPage = () => {
                     size={isMobile ? "sm" : "default"}
                   >
                     <CalendarPlus className="mr-2 h-5 w-5" />
-                    <span className="text-lg">Add Event</span>
+                    <span>Add Event</span>
                   </Button>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  {/* Calendar Section */}
-                  <CalendarSection eventDates={eventDates} />
-
-                  {/* Selected Date Events */}
-                  <DailyEvents onAddEvent={() => setIsAddEventDialogOpen(true)} />
-
-                  {/* Upcoming Events */}
-                  <UpcomingEvents />
-                </div>
+                {/* Calendar Layout */}
+                {isMobile ? (
+                  <div className="flex flex-col space-y-4">
+                    <CalendarSection eventDates={eventDates} />
+                    <DailyEvents onAddEvent={() => setIsAddEventDialogOpen(true)} />
+                    <UpcomingEvents />
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    <div className="lg:col-span-3">
+                      <CalendarSection eventDates={eventDates} />
+                    </div>
+                    <div className="flex flex-col space-y-6">
+                      <DailyEvents onAddEvent={() => setIsAddEventDialogOpen(true)} />
+                      <UpcomingEvents />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>

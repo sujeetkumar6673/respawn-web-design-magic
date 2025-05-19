@@ -1,58 +1,153 @@
 
 import React from 'react';
-import { Calendar as CalendarUI } from '@/components/ui/calendar';
 import { useCalendarContext } from '@/contexts/CalendarContext';
-import { format, isToday } from 'date-fns';
+import { format, isToday, isSameMonth, startOfMonth, endOfMonth, eachDayOfInterval, addDays, subDays, isSameDay } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface CalendarSectionProps {
   eventDates: Record<string, number>;
 }
 
+const DAYS_OF_WEEK = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
 const CalendarSection: React.FC<CalendarSectionProps> = ({ eventDates }) => {
   const { selectedDate, setSelectedDate } = useCalendarContext();
+  
+  // Get days in month for the calendar grid
+  const firstDayOfMonth = startOfMonth(selectedDate);
+  const lastDayOfMonth = endOfMonth(selectedDate);
+  
+  // Include some days from previous and next month to fill the calendar grid
+  const startDate = subDays(firstDayOfMonth, (firstDayOfMonth.getDay() + 6) % 7); // Monday as first day
+  const endDate = addDays(lastDayOfMonth, 7 - lastDayOfMonth.getDay());
+  
+  const calendarDays = eachDayOfInterval({
+    start: startDate,
+    end: endDate
+  });
+  
+  const handlePrevMonth = () => {
+    const newDate = new Date(selectedDate);
+    newDate.setMonth(selectedDate.getMonth() - 1);
+    setSelectedDate(newDate);
+  };
+  
+  const handleNextMonth = () => {
+    const newDate = new Date(selectedDate);
+    newDate.setMonth(selectedDate.getMonth() + 1);
+    setSelectedDate(newDate);
+  };
 
   return (
-    <div className="bg-rezilia-lightblue rounded-xl p-4 shadow-sm">
+    <div className="bg-white rounded-xl p-4 shadow-sm">
+      {/* Header with month and event count */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold text-rezilia-purple">
-          {format(selectedDate, 'MMMM yyyy')}
-        </h2>
-        <Badge className="bg-rezilia-orange text-white">
-          {Object.values(eventDates).reduce((sum, count) => sum + count, 0)} Events
-        </Badge>
+        <div className="flex items-center">
+          <h2 className="text-xl font-bold text-rezilia-purple">
+            {format(selectedDate, 'MMM yyyy')}
+          </h2>
+          <Badge className="ml-2 bg-rezilia-orange text-white">
+            {Object.values(eventDates).reduce((sum, count) => sum + count, 0)} Events
+          </Badge>
+        </div>
+        <div className="flex gap-2">
+          <Button 
+            variant="outline" 
+            size="icon" 
+            className="h-8 w-8 rounded-full border-rezilia-purple text-rezilia-purple" 
+            onClick={handlePrevMonth}
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <Button 
+            variant="outline" 
+            size="icon" 
+            className="h-8 w-8 rounded-full border-rezilia-purple text-rezilia-purple" 
+            onClick={handleNextMonth}
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
       
-      <CalendarUI
-        mode="single"
-        selected={selectedDate}
-        onSelect={(date) => date && setSelectedDate(date)}
-        className="border-none rounded-lg bg-white p-2 shadow-sm pointer-events-auto"
-        modifiers={{
-          eventDay: (date) => Boolean(eventDates[format(date, 'yyyy-MM-dd')])
-        }}
-        modifiersClassNames={{
-          today: "bg-rezilia-green text-white",
-          eventDay: "font-bold"
-        }}
-        components={{
-          DayContent: ({ date }) => {
+      {/* Calendar Grid */}
+      <div className="rounded-lg bg-white overflow-hidden">
+        {/* Days of week headers */}
+        <div className="grid grid-cols-7 gap-0 border-b">
+          {DAYS_OF_WEEK.map((day) => (
+            <div 
+              key={day} 
+              className="py-2 text-center text-sm font-medium text-gray-500"
+            >
+              {day}
+            </div>
+          ))}
+        </div>
+        
+        {/* Calendar cells */}
+        <div className="grid grid-cols-7 gap-0">
+          {calendarDays.map((date, index) => {
             const formattedDate = format(date, 'yyyy-MM-dd');
+            const isCurrentMonth = isSameMonth(date, selectedDate);
+            const isSelected = isSameDay(date, selectedDate);
             const hasEvents = Boolean(eventDates[formattedDate]);
+            const events = eventDates[formattedDate] || 0;
             
             return (
-              <div className="relative flex items-center justify-center w-full h-full">
-                <div className={isToday(date) ? "text-white font-bold" : ""}>
-                  {date.getDate()}
+              <div 
+                key={index} 
+                className={`
+                  min-h-[80px] p-1 border-b border-r 
+                  ${isCurrentMonth ? 'bg-white' : 'bg-gray-50 text-gray-400'}
+                  ${isSelected ? 'bg-rezilia-purple/5' : ''}
+                  ${index % 7 === 6 ? 'border-r-0' : ''}
+                  ${index >= calendarDays.length - 7 ? 'border-b-0' : ''}
+                `}
+                onClick={() => setSelectedDate(date)}
+              >
+                <div className="flex flex-col h-full">
+                  {/* Date number */}
+                  <div className="flex justify-between items-center">
+                    <div 
+                      className={`
+                        w-6 h-6 flex items-center justify-center text-sm
+                        ${isToday(date) ? 'bg-rezilia-green text-white rounded-full font-medium' : ''}
+                      `}
+                    >
+                      {date.getDate()}
+                    </div>
+                    {hasEvents && !isToday(date) && (
+                      <div className="w-1.5 h-1.5 rounded-full bg-rezilia-purple"></div>
+                    )}
+                  </div>
+                  
+                  {/* Event indicators */}
+                  <div className="mt-1 space-y-1">
+                    {hasEvents && isCurrentMonth && (
+                      <div className="flex flex-col space-y-1">
+                        {[...Array(Math.min(events, 2))].map((_, i) => (
+                          <div 
+                            key={i} 
+                            className="text-[10px] px-1 py-0.5 rounded-sm bg-rezilia-purple/10 text-rezilia-purple truncate"
+                          >
+                            {i === 0 && events > 2 
+                              ? `${events} events` 
+                              : i === 0 
+                                ? "Event" 
+                                : "Another event"}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
-                {hasEvents && (
-                  <span className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-rezilia-purple rounded-full" />
-                )}
               </div>
             );
-          }
-        }}
-      />
+          })}
+        </div>
+      </div>
     </div>
   );
 };

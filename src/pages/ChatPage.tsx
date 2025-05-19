@@ -8,8 +8,9 @@ import ChatContactList, { Contact } from '@/components/chat/ChatContactList';
 import ChatContainer from '@/components/chat/ChatContainer';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 const ChatPage = () => {
   const isMobile = useIsMobile();
@@ -81,6 +82,11 @@ const ChatPage = () => {
     }
   };
 
+  // Function to go back to contact list on mobile
+  const handleBackToContacts = () => {
+    setSelectedContactId(undefined);
+  };
+
   return (
     <div className="app-background min-h-screen h-screen flex flex-col pb-16 sm:pb-0">
       <div className="flex h-full overflow-hidden">
@@ -95,42 +101,60 @@ const ChatPage = () => {
             
             {/* Chat Interface */}
             <div className="bg-white rounded-b-xl flex-1 overflow-hidden flex flex-col">
-              <div className="flex h-full">
-                {/* Contact List - Only shown on desktop or in drawer on mobile */}
-                {isMobile ? (
-                  <Drawer>
-                    <DrawerTrigger asChild>
-                      <Button variant="outline" className="m-3 w-[180px]">
-                        <MessageCircle className="mr-2 h-4 w-4" />
-                        Contact List
+              {isMobile ? (
+                // Mobile layout - show either contact list or chat based on selection
+                selectedContactId ? (
+                  // Show chat with back button
+                  <div className="flex flex-col h-full">
+                    <div className="p-2 border-b">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={handleBackToContacts}
+                        className="flex items-center"
+                      >
+                        <ArrowLeft className="h-4 w-4 mr-1" />
+                        Back to contacts
                       </Button>
-                    </DrawerTrigger>
-                    <DrawerContent className="h-[85vh]">
-                      <ChatContactList 
-                        contacts={contacts} 
-                        selectedContactId={selectedContactId}
-                        onSelectContact={setSelectedContactId}
-                      />
-                    </DrawerContent>
-                  </Drawer>
+                    </div>
+                    <div className="flex-1">
+                      {selectedContact && (
+                        <ChatContainer 
+                          currentUser={currentUser} 
+                          contact={selectedContact} 
+                        />
+                      )}
+                    </div>
+                  </div>
                 ) : (
+                  // Show contact list
                   <ChatContactList 
                     contacts={contacts} 
                     selectedContactId={selectedContactId}
                     onSelectContact={setSelectedContactId}
                   />
-                )}
-                
-                {/* Chat Container */}
-                {selectedContact && (
-                  <div className="flex-1">
-                    <ChatContainer 
-                      currentUser={currentUser} 
-                      contact={selectedContact} 
-                    />
-                  </div>
-                )}
-              </div>
+                )
+              ) : (
+                // Desktop layout - side by side
+                <div className="flex h-full">
+                  {/* Contact List */}
+                  <ChatContactList 
+                    contacts={contacts} 
+                    selectedContactId={selectedContactId}
+                    onSelectContact={setSelectedContactId}
+                  />
+                  
+                  {/* Chat Container */}
+                  {selectedContact && (
+                    <div className="flex-1">
+                      <ChatContainer 
+                        currentUser={currentUser} 
+                        contact={selectedContact} 
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>

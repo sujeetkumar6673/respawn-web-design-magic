@@ -23,7 +23,7 @@ const ChatPage = () => {
       id: '1',
       name: 'Sarah Johnson',
       avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop',
-      lastMessage: 'She's doing well! We just finished her therapy session.',
+      lastMessage: "She's doing well! We just finished her therapy session.",
       timestamp: new Date(Date.now() - 3600000 * 2),
       unreadCount: 0,
       status: 'online'
@@ -32,7 +32,7 @@ const ChatPage = () => {
       id: '2',
       name: 'Mark Wilson',
       avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop',
-      lastMessage: 'I'll send the medication schedule tonight',
+      lastMessage: "I'll send the medication schedule tonight",
       timestamp: new Date(Date.now() - 86400000),
       unreadCount: 2,
       status: 'away'
@@ -41,7 +41,7 @@ const ChatPage = () => {
       id: '3',
       name: 'Dr. Emily Chen',
       avatar: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=200&auto=format&fit=crop',
-      lastMessage: 'Let's discuss the treatment plan next week',
+      lastMessage: "Let's discuss the treatment plan next week",
       timestamp: new Date(Date.now() - 86400000 * 2),
       unreadCount: 0,
       status: 'offline'

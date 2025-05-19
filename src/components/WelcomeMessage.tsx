@@ -22,6 +22,12 @@ const WelcomeMessage: React.FC<WelcomeMessageProps> = ({ userName }) => {
       <div className="text-left">
         <h2 className="text-2xl font-bold">HELLO, {userName.toUpperCase()}</h2>
         <p className="text-gray-600">How can we help you today ?</p>
+        <a 
+          href="/chat" 
+          className="mt-2 inline-block text-sm text-rezilia-purple hover:text-rezilia-purple/80"
+        >
+          Check messages (3 unread)
+        </a>
       </div>
     </Card>
   );

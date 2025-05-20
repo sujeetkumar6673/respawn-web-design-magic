@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode, useCallback } from 'react';
 import { addDays, addWeeks, subDays, isSameDay, isAfter, startOfDay } from 'date-fns';
 
@@ -214,20 +213,12 @@ export const CalendarProvider: React.FC<{ children: ReactNode }> = ({ children }
     // Convert startDate to start of day to ensure proper comparison
     const startOfSelectedDay = startOfDay(startDate);
     
-    // Filter events that are on or after the selected date
+    // Filter events that are STRICTLY AFTER the selected date (not including the selected date)
     const filteredEvents = events
       .filter(event => {
         const eventStartOfDay = startOfDay(event.date);
-        return isAfter(eventStartOfDay, startOfSelectedDay) || isSameDay(event.date, startDate);
-      })
-      .filter(event => {
-        // If the event is on the same day as the selected date,
-        // only include it if we haven't already passed its time
-        if (isSameDay(event.date, startDate)) {
-          // For simplicity, we'll include all events on the selected date
-          return true;
-        }
-        return true;
+        // Only include events that are strictly after the selected date
+        return isAfter(eventStartOfDay, startOfSelectedDay);
       })
       .sort((a, b) => {
         // First sort by date

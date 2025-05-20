@@ -42,7 +42,7 @@ const UpcomingEvents: React.FC = () => {
         eventDate.setHours(0, 0, 0, 0);
         
         // Only include events that occur after the current date (not including today)
-        return eventDate > currentDate;
+        return eventDate.getTime() > currentDate.getTime();
       })
       .sort((a, b) => {
         // Sort by date first
@@ -66,16 +66,6 @@ const UpcomingEvents: React.FC = () => {
     // Update state with the new filtered events
     setUpcomingEvents(filtered);
   }, [selectedDate, events]);
-
-  // Force a re-render when the component mounts
-  useEffect(() => {
-    const updateTimer = setTimeout(() => {
-      // This empty state update forces a re-render
-      setUpcomingEvents(prev => [...prev]);
-    }, 100);
-    
-    return () => clearTimeout(updateTimer);
-  }, []);
 
   return (
     <div className="col-span-1 lg:col-span-1 bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex flex-col h-full">

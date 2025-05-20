@@ -40,6 +40,17 @@ const CalendarPage = () => {
     eventDates[dateStr] = (eventDates[dateStr] || 0) + 1;
   });
 
+  // Recreate this component if the selected date changes
+  useEffect(() => {
+    // This is a more reliable way to force a complete re-render of the page
+    const timer = setTimeout(() => {
+      console.log("Forcing complete page re-render");
+      setRefreshKey(Date.now());
+    }, 10);
+    
+    return () => clearTimeout(timer);
+  }, [selectedDate, events]);
+
   return (
     <div className="app-background min-h-screen pb-16 sm:pb-0">
       <div className="flex h-full">

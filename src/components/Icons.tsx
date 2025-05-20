@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Leaf } from 'lucide-react';
 
 export const ReziliaLogo: React.FC = () => (
   <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
@@ -28,10 +29,12 @@ export const HomeIcon: React.FC = () => (
 
 export const SimpliciaBadge: React.FC = () => (
   <div className="icon-3d-wrapper">
-    <div className="flex flex-col items-center gap-1">
-      <div className="w-3 h-3 bg-simplicia-green-1 rounded shadow-simplicia"></div>
-      <div className="w-3 h-3 bg-simplicia-green-2 rounded shadow-simplicia"></div>
-      <div className="w-3 h-3 bg-simplicia-green-3 rounded shadow-simplicia"></div>
+    <div className="flex flex-col items-center">
+      <div className="relative">
+        <div className="w-3 h-6 bg-gradient-to-b from-simplicia-green-1 via-simplicia-green-2 to-simplicia-green-3 rounded-md shadow-simplicia"></div>
+        <div className="absolute -right-1 -top-1 w-2 h-2 bg-simplicia-green-1 rounded-full shadow-simplicia"></div>
+        <div className="absolute -left-1 bottom-1 w-2 h-2 bg-simplicia-green-3 rounded-full shadow-simplicia"></div>
+      </div>
     </div>
   </div>
 );

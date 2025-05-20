@@ -83,17 +83,23 @@ const ResourcesSection: React.FC = () => {
         ))}
       </div>
       
-      <div className="flex flex-wrap items-center justify-center gap-8 my-6">
-        {partners.map(partner => (
-          <div key={partner.id} className="h-12 bg-white rounded-md px-6 py-2 flex items-center justify-center shadow-md">
-            <img 
-              src={partner.logo} 
-              alt={`${partner.name} logo`}
-              className="h-8 max-w-[120px] object-contain" 
-              onError={(e) => handleImageError(e, partner.fallbackLogo, partner.name)}
-            />
-          </div>
-        ))}
+      <div className="mt-8 mb-4 border-t pt-4">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          {partners.map(partner => (
+            <div 
+              key={partner.id} 
+              className="flex items-center justify-center p-2 bg-white"
+            >
+              <img 
+                src={partner.logo} 
+                alt={`${partner.name} logo`}
+                className="h-8 max-w-[120px] object-contain" 
+                style={{ filter: "brightness(1)" }}
+                onError={(e) => handleImageError(e, partner.fallbackLogo, partner.name)}
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

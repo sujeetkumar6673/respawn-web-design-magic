@@ -50,9 +50,9 @@ const Index = () => {
             {/* Main Dashboard */}
             <div className="bg-white rounded-b-xl p-3 flex-1 flex flex-col">
               {isMobile ? (
-                // Mobile view - Make content scrollable with proper padding for the nav bar
-                <div className="flex-1 overflow-y-auto h-full pb-20">
-                  <div className="space-y-3 mb-16">
+                // Mobile view - Fixed mobile scrolling with appropriate spacing
+                <div className="h-[calc(100vh-130px)] overflow-y-auto pb-24">
+                  <div className="space-y-3">
                     {/* Welcome Message */}
                     <WelcomeMessage userName={userName} />
                     
@@ -83,7 +83,7 @@ const Index = () => {
                     </section>
                     
                     {/* Resources Section */}
-                    <section className="mt-3">
+                    <section className="mt-3 mb-10">
                       <h2 className="text-base font-bold mb-2">Resources</h2>
                       <ResourcesSection />
                     </section>

@@ -1,11 +1,7 @@
-
 import React from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { format, isEqual } from 'date-fns';
 import { useCalendarContext } from '@/contexts/CalendarContext';
-import { Link } from 'react-router-dom';
-import { CalendarPlus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 // Helper function to format time to 12-hour format with AM/PM
@@ -39,18 +35,6 @@ const Schedule: React.FC = () => {
             new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
           ) ? 'TODAY' : format(selectedDate, 'MMM d').toUpperCase()}
         </h3>
-        {!isMobile && (
-          <Link to="/calendar">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="border-rezilia-purple text-rezilia-purple hover:bg-rezilia-purple hover:text-white hidden sm:flex h-7 text-xs"
-            >
-              <CalendarPlus className="h-3 w-3 mr-1" />
-              <span>View Calendar</span>
-            </Button>
-          </Link>
-        )}
       </div>
       
       <ScrollArea className={`${isMobile ? 'h-[150px]' : 'h-[200px]'}`}>

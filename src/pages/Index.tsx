@@ -48,63 +48,63 @@ const Index = () => {
             <Header userName={userName} />
             
             {/* Main Dashboard */}
-            <div className="bg-white rounded-b-xl p-3 sm:p-4 flex-1 overflow-hidden flex flex-col">
-              <ScrollArea className="flex-1">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4">
-                  {/* Left Column */}
-                  <div className="lg:col-span-2 space-y-3 sm:space-y-4">
-                    {/* Welcome Message */}
-                    <WelcomeMessage userName={userName} />
-                    
-                    {/* Calendar and Schedule - layout for mobile */}
-                    {isMobile && (
-                      <section className="mt-2 mb-3">
-                        <h2 className="text-lg font-bold mb-2">Calendar & Schedule</h2>
-                        <CalendarProvider>
-                          <div className="grid grid-cols-12 gap-2">
-                            <div className="col-span-7" style={{ height: '220px' }}>
-                              <Calendar />
+            <div className="bg-white rounded-b-xl p-3 sm:p-4 flex-1 overflow-hidden">
+              <div className="h-full grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4">
+                {/* Left Column */}
+                <div className="lg:col-span-2 h-full">
+                  <ScrollArea className="h-full pr-2">
+                    <div className="space-y-3 sm:space-y-4 pb-3">
+                      {/* Welcome Message */}
+                      <WelcomeMessage userName={userName} />
+                      
+                      {/* Calendar and Schedule - layout for mobile */}
+                      {isMobile && (
+                        <section className="mt-2 mb-3">
+                          <h2 className="text-lg font-bold mb-2">Calendar & Schedule</h2>
+                          <CalendarProvider>
+                            <div className="grid grid-cols-12 gap-2">
+                              <div className="col-span-7" style={{ height: '220px' }}>
+                                <Calendar />
+                              </div>
+                              <div className="col-span-5 border-l pl-1 flex flex-col" style={{ height: '220px' }}>
+                                <Schedule />
+                              </div>
                             </div>
-                            <div className="col-span-5 border-l pl-1 flex flex-col" style={{ height: '220px' }}>
-                              <Schedule />
-                            </div>
-                          </div>
-                        </CalendarProvider>
+                          </CalendarProvider>
+                        </section>
+                      )}
+                      
+                      {/* Modules Section */}
+                      <section>
+                        <h2 className="text-lg font-bold mb-2">Modules</h2>
+                        <ModulesSection />
                       </section>
-                    )}
-                    
-                    {/* Modules Section */}
-                    <section>
-                      <h2 className="text-lg font-bold mb-2">Modules</h2>
-                      <ModulesSection />
-                    </section>
-                    
-                    {/* Personal Section */}
-                    <section>
-                      <PersonalSection />
-                    </section>
-                    
-                    {/* Resources Section */}
-                    <section>
-                      <h2 className="text-lg font-bold mb-2">Resources</h2>
-                      <ResourcesSection />
-                    </section>
-                  </div>
-                  
-                  {/* Right Column - Calendar and Schedule only shown on desktop here */}
-                  <div className="space-y-3 sm:space-y-4">
-                    {/* Calendar - desktop position */}
-                    {!isMobile && (
-                      <CalendarProvider>
-                        <div className="-mt-2 hidden sm:block">
-                          <Calendar />
-                        </div>
-                        <Schedule />
-                      </CalendarProvider>
-                    )}
-                  </div>
+                      
+                      {/* Personal Section */}
+                      <section>
+                        <PersonalSection />
+                      </section>
+                      
+                      {/* Resources Section */}
+                      <section>
+                        <h2 className="text-lg font-bold mb-2">Resources</h2>
+                        <ResourcesSection />
+                      </section>
+                    </div>
+                  </ScrollArea>
                 </div>
-              </ScrollArea>
+                
+                {/* Right Column - Calendar and Schedule only shown on desktop here */}
+                <div className="h-full hidden lg:block">
+                  {/* Calendar - desktop position */}
+                  <CalendarProvider>
+                    <div className="-mt-2">
+                      <Calendar />
+                    </div>
+                    <Schedule />
+                  </CalendarProvider>
+                </div>
+              </div>
             </div>
           </div>
         </div>

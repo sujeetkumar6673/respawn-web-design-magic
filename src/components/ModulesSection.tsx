@@ -34,9 +34,9 @@ const ModulesSection: React.FC = () => {
         {modules.map((module) => (
           <Card 
             key={module.id} 
-            className={`module-card ${module.className} cursor-pointer h-[90px] flex items-center`}
+            className={`module-card ${module.className} cursor-pointer h-[80px] flex items-center`}
           >
-            <CardContent className="p-3 flex flex-col justify-center w-full">
+            <CardContent className="p-2 flex flex-col justify-center w-full">
               <h3 className="text-sm font-bold">{module.name}</h3>
               <p className="text-[10px] opacity-75 line-clamp-2">{module.description}</p>
               {module.secondLine && <p className="text-[10px] opacity-75">{module.secondLine}</p>}
@@ -50,7 +50,7 @@ const ModulesSection: React.FC = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
       {modules.map((module) => (
-        <Card key={module.id} className={`module-card ${module.className} cursor-pointer h-24`}>
+        <Card key={module.id} className={`module-card ${module.className} cursor-pointer h-[90px]`}>
           <CardContent className="p-3">
             <h3 className="text-base font-bold">{module.name}</h3>
             <p className="text-xs opacity-75">{module.description}</p>

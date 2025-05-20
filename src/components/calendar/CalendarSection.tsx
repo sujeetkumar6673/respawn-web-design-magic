@@ -188,7 +188,7 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({ eventDates }) => {
               <div 
                 key={index} 
                 className={`
-                  ${viewMode === 'daily' ? 'min-h-[400px]' : 'min-h-[80px]'} p-1 border-b border-r 
+                  ${viewMode === 'daily' ? 'max-h-[300px]' : 'min-h-[60px]'} p-1 border-b border-r 
                   ${isDimmed ? 'bg-gray-50 text-gray-400' : 'bg-white'}
                   ${isSelected ? 'bg-rezilia-purple/5' : ''}
                   ${viewMode === 'month' && index % 7 === 6 ? 'border-r-0' : ''}

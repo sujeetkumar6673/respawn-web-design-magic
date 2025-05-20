@@ -54,10 +54,11 @@ const Index = () => {
             
             {/* Main Dashboard */}
             <div className="bg-white rounded-b-xl p-3 sm:p-4 flex-1 overflow-hidden flex flex-col">
-              <ScrollArea className="h-full">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+              {/* Use a container with fixed height to prevent scrolling */}
+              <div className="h-full overflow-hidden flex flex-col">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 h-full">
                   {/* Left Column */}
-                  <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+                  <div className="lg:col-span-2 space-y-4 sm:space-y-6 overflow-auto">
                     {/* Welcome Message */}
                     <WelcomeMessage userName={userName} />
                     
@@ -97,7 +98,7 @@ const Index = () => {
                   </div>
                   
                   {/* Right Column - Calendar and Schedule only shown on desktop here */}
-                  <div className="space-y-4 sm:space-y-6">
+                  <div className="space-y-4 sm:space-y-6 overflow-auto">
                     {/* Calendar - desktop position */}
                     {!isMobile && (
                       <CalendarProvider>
@@ -109,7 +110,7 @@ const Index = () => {
                     )}
                   </div>
                 </div>
-              </ScrollArea>
+              </div>
             </div>
           </div>
         </div>

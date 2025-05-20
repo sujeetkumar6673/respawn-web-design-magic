@@ -3,7 +3,6 @@ import React from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from './Icons';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router-dom';
 
 interface HeaderProps {
@@ -19,10 +18,7 @@ const Header: React.FC<HeaderProps> = ({ userName }) => {
         </Button>
         <div className="flex flex-col md:flex-row md:items-center gap-2">
           <div>
-            <span className="relative">
-              Welcome to Rezilia ;)
-              <Badge className="absolute -top-2 -right-8 bg-rezilia-orange text-white">NEW</Badge>
-            </span>
+            <span>Welcome to Rezilia ;)</span>
           </div>
         </div>
       </div>

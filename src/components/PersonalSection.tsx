@@ -7,7 +7,7 @@ const PersonalSection: React.FC = () => {
   const personalItems = [
     { 
       id: 'talk',
-      title: 'Talk :) - Where Life Connects',
+      title: 'Talk',
       icon: '💬',
       type: 'mom'
     },
@@ -22,27 +22,13 @@ const PersonalSection: React.FC = () => {
       title: 'Expenses',
       icon: '📊',
       badge: '7d'
-    },
-    { 
-      id: 'partners',
-      title: 'Partners Offers',
-      icon: '🎁',
-      type: 'mom'
     }
   ];
 
   const notesItems = [
-    'Remember to ask doctor about medication side effects',
+    'Remember to ask doctor about medication',
     'Workout schedule with Michael',
-    'Need to schedule eye exam - check available dates with Dr.L'
-  ];
-
-  const groceryItems = [
-    'tomato (for salads)',
-    'whole grain bread',
-    'pick up fresh bananas',
-    'olive oil',
-    'read more cereals, peanut butter, and herbal tea'
+    'Need to schedule eye exam'
   ];
 
   return (
@@ -76,15 +62,6 @@ const PersonalSection: React.FC = () => {
               <li key={index} className="text-sm">{note}</li>
             ))}
           </ul>
-
-          <div className="mt-4">
-            <h4 className="font-medium mb-2">Groceries & Shopping</h4>
-            <ul className="list-disc pl-5 space-y-1">
-              {groceryItems.map((item, index) => (
-                <li key={index} className="text-sm">{item}</li>
-              ))}
-            </ul>
-          </div>
         </CardContent>
       </Card>
     </div>

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { AlertCircle } from 'lucide-react';
@@ -7,6 +7,7 @@ import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
 const ResourcesSection: React.FC = () => {
   const { toast } = useToast();
+  const [logoErrors, setLogoErrors] = useState<{[key: string]: boolean}>({});
   
   const resources = [
     {
@@ -29,35 +30,31 @@ const ResourcesSection: React.FC = () => {
     }
   ];
 
-  // Updated partners with more reliable image URLs
+  // Updated partners with simpler, more reliable logos
   const partners = [
     {
-      id: 'microsoft',
-      name: 'Microsoft',
-      logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Microsoft_logo.svg/800px-Microsoft_logo.svg.png',
-      fallbackLogo: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=150&auto=format&fit=crop'
+      id: 'partner1',
+      name: 'Partner 1',
+      logo: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=150&auto=format&fit=crop'
     },
     {
-      id: 'amazon',
-      name: 'Amazon',
-      logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/2560px-Amazon_logo.svg.png',
-      fallbackLogo: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=150&auto=format&fit=crop'
+      id: 'partner2',
+      name: 'Partner 2',
+      logo: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=150&auto=format&fit=crop'
     },
     {
-      id: 'google',
-      name: 'Google',
-      logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/1280px-Google_2015_logo.svg.png',
-      fallbackLogo: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?q=80&w=150&auto=format&fit=crop'
+      id: 'partner3',
+      name: 'Partner 3',
+      logo: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?q=80&w=150&auto=format&fit=crop'
     }
   ];
 
-  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>, fallbackUrl: string, partnerName: string) => {
-    const target = e.target as HTMLImageElement;
-    target.src = fallbackUrl;
+  const handleImageError = (partnerId: string) => {
+    setLogoErrors(prev => ({...prev, [partnerId]: true}));
     toast({
       title: "Image Load Error",
-      description: `Switched to fallback image for ${partnerName}`,
-      variant: "default",
+      description: `Could not load image for ${partnerId}`,
+      variant: "destructive",
     });
   };
 
@@ -85,35 +82,45 @@ const ResourcesSection: React.FC = () => {
         ))}
       </div>
       
-      <div className="mt-8 mb-4 border-t pt-4">
-        <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="mt-8 border-t pt-4">
+        <h3 className="text-sm font-medium mb-4">Our Partners</h3>
+        <div className="flex flex-wrap gap-6 justify-center">
           {partners.map(partner => (
             <div 
               key={partner.id} 
-              className="flex items-center justify-center p-2 bg-white"
+              className="flex items-center justify-center bg-white p-4 rounded"
+              style={{
+                width: '120px',
+                height: '80px',
+                overflow: 'hidden'
+              }}
             >
-              <img 
-                src={partner.logo} 
-                alt={`${partner.name} logo`}
-                className="h-8 max-w-[120px] object-contain" 
-                style={{ filter: "brightness(1)" }}
-                onError={(e) => {
-                  handleImageError(e, partner.fallbackLogo, partner.name);
-                  // Display an alert when fallback is used
-                  const errorAlert = document.createElement('div');
-                  errorAlert.className = 'absolute bottom-0 left-0 right-0';
-                  errorAlert.innerHTML = `<div class="text-xs text-red-500">Using fallback</div>`;
-                }}
-              />
+              {logoErrors[partner.id] ? (
+                <div className="text-gray-400 text-center text-sm font-medium">
+                  {partner.name}
+                </div>
+              ) : (
+                <img 
+                  src={partner.logo} 
+                  alt={`${partner.name} logo`}
+                  className="max-h-full max-w-full object-contain" 
+                  onError={() => handleImageError(partner.id)}
+                />
+              )}
             </div>
           ))}
         </div>
       </div>
 
-      {/* Error display for debugging */}
-      <div className="mt-2 text-xs text-gray-500">
-        <p>If you're seeing image load errors, try refreshing the page or check your internet connection.</p>
-      </div>
+      {logoErrors && Object.keys(logoErrors).length > 0 && (
+        <Alert variant="destructive" className="mt-4">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Image Loading Issue</AlertTitle>
+          <AlertDescription>
+            Some partner logos couldn't be loaded. Please check your network connection.
+          </AlertDescription>
+        </Alert>
+      )}
     </div>
   );
 };

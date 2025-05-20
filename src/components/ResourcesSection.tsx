@@ -60,13 +60,13 @@ const ResourcesSection: React.FC = () => {
 
   return (
     <div>
-      {/* Responsive resource cards with better small screen handling */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5 sm:gap-2 md:gap-3 mb-1.5 sm:mb-2 md:mb-3">
+      {/* Resource cards with proper responsive sizing */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-2">
         {resources.map(resource => (
           <div key={resource.id}>
-            <h3 className="text-[10px] sm:text-xs md:text-sm font-medium mb-0.5 sm:mb-1 md:mb-2">{resource.category}</h3>
+            <h3 className="text-xs font-medium mb-1">{resource.category}</h3>
             <Card className="overflow-hidden">
-              <div className="h-16 sm:h-20 md:h-32 bg-gray-100">
+              <div className="h-24 sm:h-28 md:h-32 bg-gray-100">
                 <img
                   src={resource.image}
                   alt={resource.title}
@@ -77,29 +77,29 @@ const ResourcesSection: React.FC = () => {
                   }}
                 />
               </div>
-              <CardContent className="p-1 sm:p-2 md:p-3">
-                <p className="text-[10px] sm:text-xs md:text-sm font-medium">{resource.title}</p>
+              <CardContent className="p-2">
+                <p className="text-xs sm:text-sm font-medium">{resource.title}</p>
               </CardContent>
             </Card>
           </div>
         ))}
       </div>
       
-      {/* Partner section - responsive layout */}
-      <div className="mt-1.5 sm:mt-2 md:mt-3 border-t pt-1.5 sm:pt-2 md:pt-3">
-        <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2 md:gap-3">
+      {/* Partner section */}
+      <div className="mt-2 border-t pt-2">
+        <div className="flex flex-wrap justify-center gap-2">
           {partners.map(partner => (
             <div 
               key={partner.id} 
               className="flex items-center justify-center rounded-sm shadow-sm" 
               style={{
-                width: '60px', 
-                height: '22px',
+                width: '70px', 
+                height: '24px',
                 backgroundColor: partner.color,
                 color: 'white'
               }}
             >
-              <span className="text-[9px] sm:text-xs md:text-sm font-bold">{partner.name}</span>
+              <span className="text-xs font-bold">{partner.name}</span>
             </div>
           ))}
         </div>
@@ -107,10 +107,10 @@ const ResourcesSection: React.FC = () => {
 
       {/* Alert for image errors */}
       {Object.keys(imageErrors).length > 0 && (
-        <Alert variant="destructive" className="mt-1.5 sm:mt-2 md:mt-3 py-1 sm:py-2 md:py-3">
-          <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5" />
-          <AlertTitle className="text-[10px] sm:text-xs md:text-sm">Image Loading Issue</AlertTitle>
-          <AlertDescription className="text-[9px] sm:text-xs md:text-sm">
+        <Alert variant="destructive" className="mt-2 py-2">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle className="text-xs">Image Loading Issue</AlertTitle>
+          <AlertDescription className="text-xs">
             Some images couldn't be loaded.
           </AlertDescription>
         </Alert>

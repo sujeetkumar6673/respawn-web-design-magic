@@ -48,35 +48,35 @@ const ResourcesSection: React.FC = () => {
 
   return (
     <div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         {resources.map(resource => (
           <div key={resource.id}>
-            <h3 className="text-xs font-medium mb-1">{resource.category}</h3>
+            <h3 className="text-sm font-medium mb-2">{resource.category}</h3>
             <Card className="overflow-hidden">
               <img
                 src={resource.image}
                 alt={resource.title}
-                className="w-full h-24 object-cover"
+                className="w-full h-32 object-cover"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.src = "https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=300&auto=format&fit=crop";
                 }}
               />
-              <CardContent className="p-2">
-                <p className="text-xs font-medium line-clamp-2">{resource.title}</p>
+              <CardContent className="p-3">
+                <p className="text-sm font-medium">{resource.title}</p>
               </CardContent>
             </Card>
           </div>
         ))}
       </div>
       
-      <div className="flex flex-wrap items-center justify-center gap-4 my-3">
+      <div className="flex flex-wrap items-center justify-center gap-8 my-6">
         {partners.map(partner => (
-          <div key={partner.id} className="h-10 bg-rezilia-purple rounded-md px-4 py-1 flex items-center justify-center">
+          <div key={partner.id} className="h-12 bg-rezilia-purple rounded-md px-6 py-2 flex items-center justify-center">
             <img 
               src={partner.logo} 
               alt={`${partner.name} logo`}
-              className="h-6 max-w-[100px] object-contain" 
+              className="h-8 max-w-[120px] object-contain" 
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.src = partner.fallbackLogo;

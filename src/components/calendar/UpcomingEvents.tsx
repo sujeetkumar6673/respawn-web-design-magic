@@ -1,78 +1,24 @@
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useCalendarContext } from '@/contexts/CalendarContext';
-import { isToday, format, isAfter } from 'date-fns';
+import { isToday, format } from 'date-fns';
 import { Table, TableBody, TableCell, TableHeader, TableHead, TableRow } from '@/components/ui/table';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { CalendarEvent } from '@/contexts/CalendarContext';
 
 const UpcomingEvents: React.FC = () => {
-  const { selectedDate, setSelectedDate, events } = useCalendarContext();
+  const { setSelectedDate, getUpcomingEvents } = useCalendarContext();
   const isMobile = useIsMobile();
-  const [upcomingEvents, setUpcomingEvents] = useState<CalendarEvent[]>([]);
   
-  // Filter and update upcoming events whenever selected date or events change
-  useEffect(() => {
-    // Safety check for selectedDate
-    if (!(selectedDate instanceof Date)) {
-      console.error("Selected date is not a Date object:", selectedDate);
-      return;
-    }
-    
-    console.log(`UpcomingEvents - Finding events after ${selectedDate.toDateString()}`);
-    
-    // Create a copy of the selected date to avoid mutating the original
-    const currentDate = new Date(selectedDate);
-    // Reset time to start of day for accurate date comparison
-    currentDate.setHours(0, 0, 0, 0);
-    
-    // Filter and sort upcoming events
-    const filtered = events
-      .filter(event => {
-        // Ensure event.date is a Date object
-        if (!(event.date instanceof Date)) {
-          console.error("Event date is not a Date object:", event);
-          return false;
-        }
-        
-        // Create a copy of the event date to avoid mutating the original
-        const eventDate = new Date(event.date);
-        // Reset time to start of day for accurate date comparison
-        eventDate.setHours(0, 0, 0, 0);
-        
-        // Only include events that occur after the current date (not including today)
-        return eventDate.getTime() > currentDate.getTime();
-      })
-      .sort((a, b) => {
-        // Sort by date first
-        const dateComparison = a.date.getTime() - b.date.getTime();
-        if (dateComparison !== 0) return dateComparison;
-        
-        // Then by time if dates are equal
-        const aTime = a.time.replace(':', '');
-        const bTime = b.time.replace(':', '');
-        return parseInt(aTime) - parseInt(bTime);
-      });
-    
-    console.log(`UpcomingEvents - Found ${filtered.length} events after ${selectedDate.toDateString()}`);
-    
-    filtered.forEach((event, index) => {
-      if (index < 3) {
-        console.log(`Upcoming event ${index+1}: ${event.title} on ${format(event.date, 'M/d')} at ${event.time}`);
-      }
-    });
-    
-    // Update state with the new filtered events
-    setUpcomingEvents(filtered);
-  }, [selectedDate, events]);
+  // Get upcoming events (limited to 7 for desktop, 1 for mobile)
+  const upcomingEvents = getUpcomingEvents(isMobile ? 1 : 7);
 
   return (
     <div className="col-span-1 lg:col-span-1 bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex flex-col h-full">
       <h2 className="text-xl font-bold text-rezilia-purple mb-4">Upcoming Events</h2>
       
       {upcomingEvents.length > 0 ? (
-        <ScrollArea className="flex-1 h-[180px]">
+        <ScrollArea className="flex-1">
           <Table>
             <TableHeader>
               <TableRow>
@@ -92,7 +38,7 @@ const UpcomingEvents: React.FC = () => {
                     {isToday(event.date) ? (
                       <span className="text-rezilia-green font-bold">Today</span>
                     ) : (
-                      format(event.date, 'M/d')
+                      format(event.date, 'MMM d')
                     )}
                   </TableCell>
                   <TableCell>

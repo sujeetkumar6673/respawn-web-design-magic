@@ -8,7 +8,6 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import CalendarPage from "./pages/CalendarPage";
 import ChatPage from "./pages/ChatPage";
-import ProfilePage from "./pages/ProfilePage";
 import { CalendarProvider } from "./contexts/CalendarContext";
 
 const queryClient = new QueryClient();
@@ -24,7 +23,6 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/chat" element={<ChatPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

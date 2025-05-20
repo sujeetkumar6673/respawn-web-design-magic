@@ -1,6 +1,6 @@
 
-import React, { createContext, useContext, useState, ReactNode, useCallback, useEffect } from 'react';
-import { addDays, addWeeks, subDays, isSameDay, isAfter, startOfDay } from 'date-fns';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { addDays, addWeeks, subDays, isSameDay } from 'date-fns';
 
 // Define the event type
 export interface CalendarEvent {
@@ -19,7 +19,7 @@ interface CalendarContextType {
   setEvents: React.Dispatch<React.SetStateAction<CalendarEvent[]>>;
   addEvent: (event: CalendarEvent) => void;
   getEventsForDate: (date: Date) => CalendarEvent[];
-  getUpcomingEvents: (limit?: number, startDate?: Date) => CalendarEvent[];
+  getUpcomingEvents: (limit?: number) => CalendarEvent[];
 }
 
 const CalendarContext = createContext<CalendarContextType | undefined>(undefined);
@@ -196,19 +196,11 @@ export const CalendarProvider: React.FC<{ children: ReactNode }> = ({ children }
     }))
   ]);
 
-  // Make sure selectedDate is a Date object
-  useEffect(() => {
-    if (!(selectedDate instanceof Date)) {
-      console.error('selectedDate is not a Date object:', selectedDate);
-      setSelectedDate(new Date());
-    }
-  }, [selectedDate]);
-
   const addEvent = (event: CalendarEvent) => {
     setEvents(prevEvents => [...prevEvents, event]);
   };
 
-  const getEventsForDate = useCallback((date: Date) => {
+  const getEventsForDate = (date: Date) => {
     return events.filter(event => 
       isSameDay(event.date, date)
     ).sort((a, b) => {
@@ -216,69 +208,33 @@ export const CalendarProvider: React.FC<{ children: ReactNode }> = ({ children }
       const bTime = parseInt(b.time.replace(':', ''));
       return aTime - bTime;
     });
-  }, [events]);
+  };
 
-  const getUpcomingEvents = useCallback((limit?: number, startDate: Date = new Date()) => {
-    // Make sure startDate is a valid Date
-    if (!(startDate instanceof Date)) {
-      console.error("Invalid startDate passed to getUpcomingEvents:", startDate);
-      startDate = new Date();
-    }
-    
-    // Make a copy of the date to avoid mutation
-    const baseDate = new Date(startDate);
-    
-    // Get the start of the current day for comparison
-    const startOfCurrentDay = startOfDay(baseDate);
-    
-    // Debug information
-    console.log(`Filtering future events from: ${baseDate.toDateString()}`);
-    
-    // Filter events that are strictly AFTER the selected date's day
-    const futureEvents = events
-      .filter(event => {
-        if (!(event.date instanceof Date)) {
-          console.error("Event date is not a Date object:", event);
-          return false;
-        }
-        
-        const eventDay = startOfDay(new Date(event.date));
-        // Only include events that are AFTER the current day
-        return isAfter(eventDay, startOfCurrentDay);
-      })
+  const getUpcomingEvents = (limit?: number) => {
+    const filteredEvents = events
+      .filter(event => event.date >= new Date())
       .sort((a, b) => {
-        // First sort by date
-        const dateCompare = a.date.getTime() - b.date.getTime();
-        if (dateCompare !== 0) return dateCompare;
-        
-        // Then sort by time if dates are the same
+        if (a.date.getTime() !== b.date.getTime()) {
+          return a.date.getTime() - b.date.getTime();
+        }
         const aTime = parseInt(a.time.replace(':', ''));
         const bTime = parseInt(b.time.replace(':', ''));
         return aTime - bTime;
       });
-    
-    console.log(`Found ${futureEvents.length} future events after ${baseDate.toDateString()}`);
-    
-    if (futureEvents.length > 0) {
-      console.log(`First upcoming event: ${futureEvents[0].title} on ${futureEvents[0].date.toDateString()}`);
-    }
-    
-    return limit ? futureEvents.slice(0, limit) : futureEvents;
-  }, [events]);
-
-  // Create the context value object
-  const contextValue: CalendarContextType = {
-    selectedDate, 
-    setSelectedDate, 
-    events, 
-    setEvents, 
-    addEvent,
-    getEventsForDate,
-    getUpcomingEvents
+      
+    return limit ? filteredEvents.slice(0, limit) : filteredEvents;
   };
 
   return (
-    <CalendarContext.Provider value={contextValue}>
+    <CalendarContext.Provider value={{ 
+      selectedDate, 
+      setSelectedDate, 
+      events, 
+      setEvents, 
+      addEvent,
+      getEventsForDate,
+      getUpcomingEvents
+    }}>
       {children}
     </CalendarContext.Provider>
   );

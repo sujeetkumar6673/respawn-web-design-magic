@@ -42,6 +42,7 @@ const CalendarStyles: React.FC = () => {
       /* Custom calendar styling */
       .calendar-grid {
         display: grid;
+        grid-template-columns: repeat(7, 1fr);
         gap: 1px;
         background-color: #f0f0f0;
         border: 1px solid #f0f0f0;
@@ -50,15 +51,13 @@ const CalendarStyles: React.FC = () => {
       }
       
       .calendar-day {
-        aspect-ratio: auto;
+        aspect-ratio: 1;
         display: flex;
         flex-direction: column;
         padding: 8px;
         background-color: white;
         cursor: pointer;
-        min-height: 110px;
-        max-height: 140px;
-        overflow: hidden;
+        min-height: 80px;
       }
       
       .calendar-day:hover {
@@ -109,8 +108,6 @@ const CalendarStyles: React.FC = () => {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        display: flex;
-        align-items: center;
       }
       
       /* Toggle Group Styling */

@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
 import { useCalendarContext } from '@/contexts/CalendarContext';
@@ -9,29 +9,28 @@ import { Button } from '@/components/ui/button';
 import MobileNav from '@/components/MobileNav';
 import { CalendarPlus } from 'lucide-react';
 import EventFormDialog from '@/components/calendar/EventFormDialog';
-import Calendar from '@/components/Calendar';
-import { Card } from '@/components/ui/card';
+import CalendarSection from '@/components/calendar/CalendarSection';
 import DailyEvents from '@/components/calendar/DailyEvents';
 import UpcomingEvents from '@/components/calendar/UpcomingEvents';
+import CalendarStyles from '@/components/calendar/CalendarStyles';
 
 const CalendarPage = () => {
   const { selectedDate, events } = useCalendarContext();
   const [isAddEventDialogOpen, setIsAddEventDialogOpen] = useState(false);
-  const [refreshKey, setRefreshKey] = useState(0);
   
   const isMobile = useIsMobile();
   const [activePage, setActivePage] = useState('calendar');
   
-  // Force the component to rerender when selectedDate changes
-  useEffect(() => {
-    console.log(`CalendarPage - Date changed to: ${selectedDate.toDateString()}`);
-    // Force a rerender of child components by updating the refresh key
-    setRefreshKey(prevKey => prevKey + 1);
-  }, [selectedDate]);
-  
   const handleNavigate = (page: string) => {
     setActivePage(page);
   };
+
+  // Event dots for calendar
+  const eventDates: Record<string, number> = {};
+  events.forEach(event => {
+    const dateStr = format(event.date, 'yyyy-MM-dd');
+    eventDates[dateStr] = (eventDates[dateStr] || 0) + 1;
+  });
 
   return (
     <div className="app-background min-h-screen pb-16 sm:pb-0">
@@ -62,28 +61,23 @@ const CalendarPage = () => {
                 </div>
 
                 {/* Calendar Layout */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {/* Left Column - Calendar */}
-                  <Card className="md:col-span-2">
-                    <Calendar key={`calendar-${refreshKey}`} />
-                  </Card>
-                  
-                  {/* Right Column - Events */}
-                  <div className="flex flex-col space-y-6">
-                    {/* Today's Events */}
-                    <Card className="p-4">
-                      <DailyEvents 
-                        date={selectedDate}
-                        onAddEvent={() => setIsAddEventDialogOpen(true)} 
-                      />
-                    </Card>
-                    
-                    {/* Upcoming Events */}
-                    <Card className="p-4">
-                      <UpcomingEvents />
-                    </Card>
+                {isMobile ? (
+                  <div className="flex flex-col space-y-4">
+                    <CalendarSection eventDates={eventDates} />
+                    <DailyEvents onAddEvent={() => setIsAddEventDialogOpen(true)} />
+                    <UpcomingEvents />
                   </div>
-                </div>
+                ) : (
+                  <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    <div className="lg:col-span-3">
+                      <CalendarSection eventDates={eventDates} />
+                    </div>
+                    <div className="flex flex-col space-y-6">
+                      <DailyEvents onAddEvent={() => setIsAddEventDialogOpen(true)} />
+                      <UpcomingEvents />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -98,6 +92,9 @@ const CalendarPage = () => {
 
       {/* Mobile Navigation - only visible on mobile */}
       {isMobile && <MobileNav activePage={activePage} onNavigate={handleNavigate} />}
+
+      {/* Calendar Styles */}
+      <CalendarStyles />
     </div>
   );
 };

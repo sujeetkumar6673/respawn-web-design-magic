@@ -42,7 +42,7 @@ const ModulesSection: React.FC = () => {
           >
             <CardContent className="p-2 flex flex-col justify-center w-full">
               <div className="flex items-center gap-1 mb-1">
-                <div className="w-4 h-4">{module.icon}</div>
+                <div className="w-4 h-5">{module.icon}</div>
                 <h3 className="text-xs font-bold">{module.name}</h3>
               </div>
               <p className="text-[10px] opacity-75 line-clamp-2">{module.description}</p>
@@ -63,7 +63,7 @@ const ModulesSection: React.FC = () => {
         >
           <CardContent className="p-3">
             <div className="flex items-center gap-2 mb-1.5">
-              <div className="w-5 h-5">{module.icon}</div>
+              <div className="w-5 h-6">{module.icon}</div>
               <h3 className="text-sm font-bold">{module.name}</h3>
             </div>
             <p className="text-xs opacity-75">{module.description}</p>

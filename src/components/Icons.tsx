@@ -28,7 +28,7 @@ export const HomeIcon: React.FC = () => (
 
 export const SimpliciaBadge: React.FC = () => (
   <div className="icon-3d-wrapper">
-    <div className="flex items-center gap-1">
+    <div className="flex flex-col items-center gap-1">
       <div className="w-3 h-3 bg-simplicia-green-1 rounded shadow-simplicia"></div>
       <div className="w-3 h-3 bg-simplicia-green-2 rounded shadow-simplicia"></div>
       <div className="w-3 h-3 bg-simplicia-green-3 rounded shadow-simplicia"></div>

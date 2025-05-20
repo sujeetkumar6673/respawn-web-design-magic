@@ -219,18 +219,29 @@ export const CalendarProvider: React.FC<{ children: ReactNode }> = ({ children }
   }, [events]);
 
   const getUpcomingEvents = useCallback((limit?: number, startDate: Date = new Date()) => {
-    // Make a copy of the date to avoid mutation and ensure it's a Date object
-    const baseDate = startDate instanceof Date ? new Date(startDate) : new Date();
+    // Make sure startDate is a valid Date
+    if (!(startDate instanceof Date)) {
+      console.error("Invalid startDate passed to getUpcomingEvents:", startDate);
+      startDate = new Date();
+    }
     
-    // We need to find events STRICTLY AFTER the selected date
+    // Make a copy of the date to avoid mutation
+    const baseDate = new Date(startDate);
+    
+    // Get the start of the current day for comparison
     const startOfCurrentDay = startOfDay(baseDate);
     
     // Debug information
     console.log(`Filtering future events from: ${baseDate.toDateString()}`);
     
-    // Filter events that are strictly AFTER the selected date
+    // Filter events that are strictly AFTER the selected date's day
     const futureEvents = events
       .filter(event => {
+        if (!(event.date instanceof Date)) {
+          console.error("Event date is not a Date object:", event);
+          return false;
+        }
+        
         const eventDay = startOfDay(new Date(event.date));
         // Only include events that are AFTER the current day
         return isAfter(eventDay, startOfCurrentDay);

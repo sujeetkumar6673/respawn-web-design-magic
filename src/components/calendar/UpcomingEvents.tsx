@@ -14,17 +14,25 @@ const UpcomingEvents: React.FC = () => {
   
   // Update upcoming events whenever selected date or events change
   useEffect(() => {
+    if (!(selectedDate instanceof Date)) {
+      console.error("Selected date is not a Date object:", selectedDate);
+      return;
+    }
+    
     console.log(`UpcomingEvents - Refreshing with selectedDate: ${selectedDate.toDateString()}`);
     
-    // Get events after the selected date (not including events on the selected date)
-    const upcoming = getUpcomingEvents(undefined, selectedDate);
-    setUpcomingEvents(upcoming);
-    
-    console.log(`UpcomingEvents - Found ${upcoming.length} events after ${selectedDate.toDateString()}`);
-    
-    if (upcoming.length > 0) {
-      console.log(`UpcomingEvents - First upcoming event: ${upcoming[0].title} on ${upcoming[0].date.toDateString()}`);
-    }
+    // Force this into a new execution context to ensure state updates
+    setTimeout(() => {
+      // Get events after the selected date (not including events on the selected date)
+      const upcoming = getUpcomingEvents(undefined, selectedDate);
+      console.log(`UpcomingEvents - Found ${upcoming.length} events after ${selectedDate.toDateString()}`);
+      
+      if (upcoming.length > 0) {
+        console.log(`UpcomingEvents - First upcoming event: ${upcoming[0].title} on ${upcoming[0].date.toDateString()}`);
+      }
+      
+      setUpcomingEvents(upcoming);
+    }, 0);
   }, [selectedDate, events, getUpcomingEvents]);
 
   return (

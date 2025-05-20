@@ -9,11 +9,14 @@ import { cn } from "@/lib/utils";
 import { useCalendarContext } from '@/contexts/CalendarContext';
 
 interface CalendarSectionProps {
-  onDateClick: (date: Date) => void;
+  onDateClick?: (date: Date) => void;
   eventDates?: Record<string, number>;
 }
 
-const CalendarSection: React.FC<CalendarSectionProps> = ({ onDateClick, eventDates = {} }) => {
+const CalendarSection: React.FC<CalendarSectionProps> = ({ 
+  onDateClick = (date) => {}, 
+  eventDates = {} 
+}) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [viewMode, setViewMode] = useState<'month' | 'daily'>('month');
   const { selectedDate, setSelectedDate } = useCalendarContext();

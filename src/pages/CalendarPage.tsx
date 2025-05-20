@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
 import { useCalendarContext } from '@/contexts/CalendarContext';
@@ -15,11 +15,19 @@ import UpcomingEvents from '@/components/calendar/UpcomingEvents';
 import CalendarStyles from '@/components/calendar/CalendarStyles';
 
 const CalendarPage = () => {
-  const { selectedDate, events } = useCalendarContext();
+  const { selectedDate, events, setSelectedDate } = useCalendarContext();
   const [isAddEventDialogOpen, setIsAddEventDialogOpen] = useState(false);
+  const [, forceUpdate] = useState<{}>({});
   
   const isMobile = useIsMobile();
   const [activePage, setActivePage] = useState('calendar');
+  
+  // Force the component to rerender when selectedDate changes
+  useEffect(() => {
+    // Force rerender to ensure child components update properly
+    forceUpdate({});
+    console.log(`CalendarPage - Date changed to: ${selectedDate.toDateString()}`);
+  }, [selectedDate]);
   
   const handleNavigate = (page: string) => {
     setActivePage(page);
@@ -65,7 +73,7 @@ const CalendarPage = () => {
                   <div className="flex flex-col space-y-4">
                     <CalendarSection eventDates={eventDates} />
                     <DailyEvents onAddEvent={() => setIsAddEventDialogOpen(true)} />
-                    <UpcomingEvents />
+                    <UpcomingEvents key={`upcoming-${selectedDate.toISOString()}`} />
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -74,7 +82,7 @@ const CalendarPage = () => {
                     </div>
                     <div className="flex flex-col space-y-6">
                       <DailyEvents onAddEvent={() => setIsAddEventDialogOpen(true)} />
-                      <UpcomingEvents />
+                      <UpcomingEvents key={`upcoming-${selectedDate.toISOString()}`} />
                     </div>
                   </div>
                 )}

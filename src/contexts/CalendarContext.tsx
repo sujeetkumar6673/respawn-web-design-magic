@@ -1,6 +1,6 @@
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { addDays, addWeeks, subDays, isSameDay } from 'date-fns';
+import React, { createContext, useContext, useState, ReactNode, useCallback } from 'react';
+import { addDays, addWeeks, subDays, isSameDay, isAfter, startOfDay } from 'date-fns';
 
 // Define the event type
 export interface CalendarEvent {
@@ -200,7 +200,7 @@ export const CalendarProvider: React.FC<{ children: ReactNode }> = ({ children }
     setEvents(prevEvents => [...prevEvents, event]);
   };
 
-  const getEventsForDate = (date: Date) => {
+  const getEventsForDate = useCallback((date: Date) => {
     return events.filter(event => 
       isSameDay(event.date, date)
     ).sort((a, b) => {
@@ -208,22 +208,42 @@ export const CalendarProvider: React.FC<{ children: ReactNode }> = ({ children }
       const bTime = parseInt(b.time.replace(':', ''));
       return aTime - bTime;
     });
-  };
+  }, [events]);
 
-  const getUpcomingEvents = (limit?: number, startDate: Date = new Date()) => {
+  const getUpcomingEvents = useCallback((limit?: number, startDate: Date = new Date()) => {
+    // Convert startDate to start of day to ensure proper comparison
+    const startOfSelectedDay = startOfDay(startDate);
+    
+    // Filter events that are on or after the selected date
     const filteredEvents = events
-      .filter(event => event.date >= startDate)
-      .sort((a, b) => {
-        if (a.date.getTime() !== b.date.getTime()) {
-          return a.date.getTime() - b.date.getTime();
+      .filter(event => {
+        const eventStartOfDay = startOfDay(event.date);
+        return isAfter(eventStartOfDay, startOfSelectedDay) || isSameDay(event.date, startDate);
+      })
+      .filter(event => {
+        // If the event is on the same day as the selected date,
+        // only include it if we haven't already passed its time
+        if (isSameDay(event.date, startDate)) {
+          // For simplicity, we'll include all events on the selected date
+          return true;
         }
+        return true;
+      })
+      .sort((a, b) => {
+        // First sort by date
+        const dateCompare = a.date.getTime() - b.date.getTime();
+        if (dateCompare !== 0) return dateCompare;
+        
+        // Then sort by time if dates are the same
         const aTime = parseInt(a.time.replace(':', ''));
         const bTime = parseInt(b.time.replace(':', ''));
         return aTime - bTime;
       });
-      
+    
+    console.log("getUpcomingEvents for date:", startDate, "- Found events:", filteredEvents.length);
+    
     return limit ? filteredEvents.slice(0, limit) : filteredEvents;
-  };
+  }, [events]);
 
   return (
     <CalendarContext.Provider value={{ 

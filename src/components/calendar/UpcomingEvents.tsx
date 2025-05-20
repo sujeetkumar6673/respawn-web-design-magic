@@ -9,12 +9,14 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 const UpcomingEvents: React.FC = () => {
   const { selectedDate, setSelectedDate, events, getUpcomingEvents } = useCalendarContext();
   const isMobile = useIsMobile();
-  const [upcomingEvents, setUpcomingEvents] = useState(getUpcomingEvents(undefined, selectedDate));
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
   
   // Update upcoming events whenever selected date changes
   useEffect(() => {
     // Get upcoming events starting from the selected date
-    setUpcomingEvents(getUpcomingEvents(undefined, selectedDate));
+    const upcoming = getUpcomingEvents(undefined, selectedDate);
+    setUpcomingEvents(upcoming);
+    console.log("Selected date changed to:", selectedDate, "upcoming events:", upcoming);
   }, [selectedDate, events, getUpcomingEvents]);
 
   return (

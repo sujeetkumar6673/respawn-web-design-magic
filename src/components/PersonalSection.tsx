@@ -2,6 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { HeartIcon } from './Icons';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const PersonalSection: React.FC = () => {
   const personalItems = [
@@ -46,46 +47,50 @@ const PersonalSection: React.FC = () => {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <Card className="overflow-hidden">
-        <CardHeader className="bg-rezilia-pink bg-opacity-20 py-2 px-4 flex flex-row items-center gap-2">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <Card className="overflow-hidden h-60">
+        <CardHeader className="bg-rezilia-pink bg-opacity-20 py-2 px-3 flex flex-row items-center gap-2">
           <HeartIcon />
-          <h3 className="font-bold">Mom - Jane.D</h3>
+          <h3 className="font-bold text-sm">Mom - Jane.D</h3>
         </CardHeader>
-        <CardContent className="p-0">
-          {personalItems.map(item => (
-            <div key={item.id} className="p-3 border-b flex items-center gap-3 hover:bg-gray-50 cursor-pointer">
-              <span className="text-xl">{item.icon}</span>
-              <span>{item.title}</span>
-              {item.badge && (
-                <span className="ml-auto badge badge-orange">{item.badge}</span>
-              )}
-            </div>
-          ))}
-        </CardContent>
+        <ScrollArea className="h-[calc(100%-40px)]">
+          <CardContent className="p-0">
+            {personalItems.map(item => (
+              <div key={item.id} className="p-2 border-b flex items-center gap-2 hover:bg-gray-50 cursor-pointer">
+                <span className="text-lg">{item.icon}</span>
+                <span className="text-sm">{item.title}</span>
+                {item.badge && (
+                  <span className="ml-auto badge badge-orange text-xs">{item.badge}</span>
+                )}
+              </div>
+            ))}
+          </CardContent>
+        </ScrollArea>
       </Card>
       
-      <Card>
-        <CardHeader className="py-2 px-4 flex flex-row items-center gap-2">
-          <span className="text-xl">📝</span>
-          <h3 className="font-bold">Notes</h3>
+      <Card className="h-60">
+        <CardHeader className="py-2 px-3 flex flex-row items-center gap-2">
+          <span className="text-lg">📝</span>
+          <h3 className="font-bold text-sm">Notes</h3>
         </CardHeader>
-        <CardContent className="p-4">
-          <ul className="list-disc pl-5 space-y-1">
-            {notesItems.map((note, index) => (
-              <li key={index} className="text-sm">{note}</li>
-            ))}
-          </ul>
-
-          <div className="mt-4">
-            <h4 className="font-medium mb-2">Groceries & Shopping</h4>
-            <ul className="list-disc pl-5 space-y-1">
-              {groceryItems.map((item, index) => (
-                <li key={index} className="text-sm">{item}</li>
+        <ScrollArea className="h-[calc(100%-40px)]">
+          <CardContent className="p-3">
+            <ul className="list-disc pl-4 space-y-1">
+              {notesItems.map((note, index) => (
+                <li key={index} className="text-xs">{note}</li>
               ))}
             </ul>
-          </div>
-        </CardContent>
+
+            <div className="mt-3">
+              <h4 className="font-medium text-xs mb-1">Groceries & Shopping</h4>
+              <ul className="list-disc pl-4 space-y-1">
+                {groceryItems.map((item, index) => (
+                  <li key={index} className="text-xs">{item}</li>
+                ))}
+              </ul>
+            </div>
+          </CardContent>
+        </ScrollArea>
       </Card>
     </div>
   );

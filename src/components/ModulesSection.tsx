@@ -48,13 +48,13 @@ const ModulesSection: React.FC = () => {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
       {modules.map((module) => (
-        <Card key={module.id} className={`module-card ${module.className} cursor-pointer`}>
-          <CardContent className="p-4">
-            <h3 className="text-lg font-bold">{module.name}</h3>
-            <p className="text-sm opacity-75">{module.description}</p>
-            {module.secondLine && <p className="text-sm opacity-75">{module.secondLine}</p>}
+        <Card key={module.id} className={`module-card ${module.className} cursor-pointer h-24`}>
+          <CardContent className="p-3">
+            <h3 className="text-base font-bold">{module.name}</h3>
+            <p className="text-xs opacity-75">{module.description}</p>
+            {module.secondLine && <p className="text-xs opacity-75">{module.secondLine}</p>}
           </CardContent>
         </Card>
       ))}

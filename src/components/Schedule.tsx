@@ -27,8 +27,8 @@ const Schedule: React.FC = () => {
   const upcomingItems = getUpcomingEvents(isMobile ? 1 : 3);
 
   // Determine time column width based on device
-  const timeColWidth = isMobile ? "w-[50px]" : "w-24";
-  const fontSize = isMobile ? "text-[10px]" : "text-sm";
+  const timeColWidth = isMobile ? "w-[50px]" : "w-20";
+  const fontSize = isMobile ? "text-[10px]" : "text-xs";
   
   return (
     <div className={`${isMobile ? 'px-0 flex flex-col h-full' : 'mt-4 px-1 sm:px-0'}`}>
@@ -44,16 +44,16 @@ const Schedule: React.FC = () => {
             <Button 
               variant="outline" 
               size="sm" 
-              className="border-rezilia-purple text-rezilia-purple hover:bg-rezilia-purple hover:text-white hidden sm:flex"
+              className="border-rezilia-purple text-rezilia-purple hover:bg-rezilia-purple hover:text-white hidden sm:flex h-7 text-xs"
             >
-              <CalendarPlus className="h-4 w-4 mr-1" />
+              <CalendarPlus className="h-3 w-3 mr-1" />
               <span>View Calendar</span>
             </Button>
           </Link>
         )}
       </div>
       
-      <ScrollArea className={`${isMobile ? 'h-[150px]' : ''}`}>
+      <ScrollArea className={`${isMobile ? 'h-[150px]' : 'h-[200px]'}`}>
         {scheduleItems.length > 0 ? (
           scheduleItems.map((item, index) => (
             <div key={item.id} className={`relative mb-1 ${index > 0 ? 'mt-1' : ''}`}>
@@ -96,7 +96,7 @@ const Schedule: React.FC = () => {
           <div className="mb-1">
             <h3 className="font-bold text-gray-800 text-xs">UPCOMING</h3>
           </div>
-          <ScrollArea className={`${isMobile ? 'h-[100px]' : ''}`}>
+          <ScrollArea className={`${isMobile ? 'h-[100px]' : 'h-[150px]'}`}>
             {upcomingItems.map((item, index) => (
               <div key={item.id} className="mb-1 flex">
                 {/* Time and date column */}

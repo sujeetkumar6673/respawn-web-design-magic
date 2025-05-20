@@ -36,8 +36,8 @@ const Index = () => {
   };
   
   return (
-    <div className="app-background min-h-screen flex flex-col pb-16 sm:pb-0">
-      <div className="flex h-full overflow-hidden">
+    <div className="app-background min-h-screen flex flex-col">
+      <div className="flex h-full flex-1">
         {/* Sidebar - only visible on desktop */}
         {!isMobile && <Sidebar activePage={activePage} />}
         
@@ -48,11 +48,11 @@ const Index = () => {
             <Header userName={userName} />
             
             {/* Main Dashboard */}
-            <div className="bg-white rounded-b-xl p-3 flex-1">
+            <div className="bg-white rounded-b-xl p-3 flex-1 flex flex-col">
               {isMobile ? (
-                // Mobile view - Enable proper scrolling
-                <div className="h-full overflow-y-auto pb-16">
-                  <div className="space-y-3 pb-4">
+                // Mobile view - Complete scrollable content
+                <div className="flex-1 overflow-y-auto" style={{ paddingBottom: '80px' }}>
+                  <div className="space-y-3">
                     {/* Welcome Message */}
                     <WelcomeMessage userName={userName} />
                     

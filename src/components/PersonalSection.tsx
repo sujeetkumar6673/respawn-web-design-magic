@@ -27,8 +27,7 @@ const PersonalSection: React.FC = () => {
 
   const notesItems = [
     'Remember to ask doctor about medication',
-    'Workout schedule with Michael',
-    'Need to schedule eye exam'
+    'Workout schedule with Michael'
   ];
 
   return (

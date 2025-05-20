@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { AlertCircle, Image } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
 const ResourcesSection: React.FC = () => {
@@ -87,9 +87,8 @@ const ResourcesSection: React.FC = () => {
         ))}
       </div>
       
-      {/* Completely rebuilt partners section with plain colored boxes */}
+      {/* Partner section - removed "Our Partners" heading */}
       <div className="mt-6 border-t pt-4">
-        <h3 className="text-base font-semibold mb-3">Our Partners</h3>
         <div className="flex flex-wrap justify-center gap-4">
           {partners.map(partner => (
             <div 

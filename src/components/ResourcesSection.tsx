@@ -2,12 +2,12 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Link } from 'lucide-react';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
 const ResourcesSection: React.FC = () => {
   const { toast } = useToast();
-  const [logoErrors, setLogoErrors] = useState<{[key: string]: boolean}>({});
+  const [imageErrors, setImageErrors] = useState<{[key: string]: boolean}>({});
   
   const resources = [
     {
@@ -25,35 +25,35 @@ const ResourcesSection: React.FC = () => {
     {
       id: 'congress',
       title: 'Unique virtual congress + daily support ecosystem',
-      image: 'https://images.unsplash.com/photo-1594026112324-096acbfrkj38?q=80&w=300&auto=format&fit=crop',
+      image: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=300&auto=format&fit=crop',
       category: 'Health Web Event (HWE)'
     }
   ];
 
-  // Updated partners with simpler, more reliable logos
+  // Simpler, more reliable partner logos using Unsplash tech/computer images
   const partners = [
     {
       id: 'partner1',
-      name: 'Partner 1',
+      name: 'Microsoft',
       logo: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=150&auto=format&fit=crop'
     },
     {
       id: 'partner2',
-      name: 'Partner 2',
+      name: 'Amazon',
       logo: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=150&auto=format&fit=crop'
     },
     {
       id: 'partner3',
-      name: 'Partner 3',
+      name: 'Google',
       logo: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?q=80&w=150&auto=format&fit=crop'
     }
   ];
 
-  const handleImageError = (partnerId: string) => {
-    setLogoErrors(prev => ({...prev, [partnerId]: true}));
+  const handleImageError = (id: string) => {
+    setImageErrors(prev => ({...prev, [id]: true}));
     toast({
       title: "Image Load Error",
-      description: `Could not load image for ${partnerId}`,
+      description: `Could not load image for ${id}`,
       variant: "destructive",
     });
   };
@@ -82,28 +82,22 @@ const ResourcesSection: React.FC = () => {
         ))}
       </div>
       
+      {/* Completely rebuilt partners section */}
       <div className="mt-8 border-t pt-4">
-        <h3 className="text-sm font-medium mb-4">Our Partners</h3>
-        <div className="flex flex-wrap gap-6 justify-center">
+        <h3 className="text-lg font-semibold mb-4">Our Partners</h3>
+        <div className="flex flex-wrap justify-center gap-8">
           {partners.map(partner => (
-            <div 
-              key={partner.id} 
-              className="flex items-center justify-center bg-white p-4 rounded"
-              style={{
-                width: '120px',
-                height: '80px',
-                overflow: 'hidden'
-              }}
-            >
-              {logoErrors[partner.id] ? (
-                <div className="text-gray-400 text-center text-sm font-medium">
-                  {partner.name}
+            <div key={partner.id} className="bg-white p-2 flex items-center justify-center" style={{width: '150px', height: '80px'}}>
+              {imageErrors[partner.id] ? (
+                <div className="flex flex-col items-center justify-center h-full w-full">
+                  <Link className="h-6 w-6 mb-1 text-gray-400" />
+                  <span className="text-xs text-gray-500">{partner.name}</span>
                 </div>
               ) : (
                 <img 
                   src={partner.logo} 
-                  alt={`${partner.name} logo`}
-                  className="max-h-full max-w-full object-contain" 
+                  alt={`${partner.name} logo`} 
+                  className="max-h-full max-w-full object-contain"
                   onError={() => handleImageError(partner.id)}
                 />
               )}
@@ -112,12 +106,12 @@ const ResourcesSection: React.FC = () => {
         </div>
       </div>
 
-      {logoErrors && Object.keys(logoErrors).length > 0 && (
+      {Object.keys(imageErrors).length > 0 && (
         <Alert variant="destructive" className="mt-4">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Image Loading Issue</AlertTitle>
           <AlertDescription>
-            Some partner logos couldn't be loaded. Please check your network connection.
+            Some partner logos couldn't be loaded.
           </AlertDescription>
         </Alert>
       )}

@@ -61,12 +61,12 @@ const ResourcesSection: React.FC = () => {
   return (
     <div>
       {/* Resource cards with proper responsive sizing */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5 mb-1">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-2">
         {resources.map(resource => (
           <div key={resource.id}>
-            <h3 className="text-[10px] font-medium mb-0.5">{resource.category}</h3>
-            <Card className="overflow-hidden">
-              <div className="h-16 bg-gray-100">
+            <h3 className="text-xs font-medium mb-1">{resource.category}</h3>
+            <Card className="overflow-hidden h-full">
+              <div className="h-24 bg-gray-100">
                 <img
                   src={resource.image}
                   alt={resource.title}
@@ -77,8 +77,8 @@ const ResourcesSection: React.FC = () => {
                   }}
                 />
               </div>
-              <CardContent className="p-1">
-                <p className="text-xs font-medium">{resource.title}</p>
+              <CardContent className="p-2">
+                <p className="text-sm font-medium">{resource.title}</p>
               </CardContent>
             </Card>
           </div>
@@ -86,20 +86,20 @@ const ResourcesSection: React.FC = () => {
       </div>
       
       {/* Compact Partner section */}
-      <div className="mt-1 pt-1 flex items-center justify-center">
-        <div className="flex gap-1">
+      <div className="mt-2 flex items-center justify-center">
+        <div className="flex gap-2">
           {partners.map(partner => (
             <div 
               key={partner.id} 
               className="flex items-center justify-center rounded-sm shadow-sm" 
               style={{
-                width: '50px', 
-                height: '18px',
+                width: '70px', 
+                height: '24px',
                 backgroundColor: partner.color,
                 color: 'white'
               }}
             >
-              <span className="text-[9px] font-bold">{partner.name}</span>
+              <span className="text-xs font-bold">{partner.name}</span>
             </div>
           ))}
         </div>
@@ -107,9 +107,9 @@ const ResourcesSection: React.FC = () => {
 
       {/* Alert for image errors */}
       {Object.keys(imageErrors).length > 0 && (
-        <Alert variant="destructive" className="mt-1 py-1">
-          <AlertCircle className="h-3 w-3" />
-          <AlertTitle className="text-xs">Image Loading Issue</AlertTitle>
+        <Alert variant="destructive" className="mt-2 py-2">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle className="text-sm">Image Loading Issue</AlertTitle>
           <AlertDescription className="text-xs">
             Some images couldn't be loaded.
           </AlertDescription>

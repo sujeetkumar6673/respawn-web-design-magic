@@ -30,16 +30,16 @@ const ModulesSection: React.FC = () => {
 
   if (isMobile) {
     return (
-      <div className="grid grid-cols-3 gap-1">
+      <div className="grid grid-cols-3 gap-2">
         {modules.map((module) => (
           <Card 
             key={module.id} 
-            className={`module-card ${module.className} cursor-pointer h-[60px] flex items-center`}
+            className={`module-card ${module.className} cursor-pointer h-[70px] flex items-center`}
           >
-            <CardContent className="p-1 flex flex-col justify-center w-full">
+            <CardContent className="p-2 flex flex-col justify-center w-full">
               <h3 className="text-xs font-bold">{module.name}</h3>
-              <p className="text-[9px] opacity-75 line-clamp-2">{module.description}</p>
-              {module.secondLine && <p className="text-[9px] opacity-75">{module.secondLine}</p>}
+              <p className="text-[10px] opacity-75 line-clamp-2">{module.description}</p>
+              {module.secondLine && <p className="text-[10px] opacity-75">{module.secondLine}</p>}
             </CardContent>
           </Card>
         ))}
@@ -48,16 +48,16 @@ const ModulesSection: React.FC = () => {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-1">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
       {modules.map((module) => (
         <Card 
           key={module.id} 
-          className={`module-card ${module.className} cursor-pointer h-[60px]`}
+          className={`module-card ${module.className} cursor-pointer h-[80px]`}
         >
-          <CardContent className="p-1">
-            <h3 className="text-xs font-bold">{module.name}</h3>
-            <p className="text-[10px] opacity-75">{module.description}</p>
-            {module.secondLine && <p className="text-[10px] opacity-75">{module.secondLine}</p>}
+          <CardContent className="p-3">
+            <h3 className="text-sm font-bold">{module.name}</h3>
+            <p className="text-xs opacity-75">{module.description}</p>
+            {module.secondLine && <p className="text-xs opacity-75">{module.secondLine}</p>}
           </CardContent>
         </Card>
       ))}

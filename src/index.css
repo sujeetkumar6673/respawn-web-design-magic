@@ -109,6 +109,14 @@
   }
 }
 
+/* Background image for the app */
+.app-background {
+  background-image: url('/lovable-uploads/47b15075-bd0e-406a-ad46-426378162a9a.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 /* Sidebar styling */
 .bg-rezilia-purple {
   background-color: #2717A5;

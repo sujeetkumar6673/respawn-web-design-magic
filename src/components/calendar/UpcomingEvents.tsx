@@ -18,7 +18,7 @@ const UpcomingEvents: React.FC = () => {
       <h2 className="text-xl font-bold text-rezilia-purple mb-4">Upcoming Events</h2>
       
       {upcomingEvents.length > 0 ? (
-        <ScrollArea className="flex-1 h-[200px]">
+        <ScrollArea className="flex-1">
           <Table>
             <TableHeader>
               <TableRow>

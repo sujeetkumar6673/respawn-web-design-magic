@@ -33,7 +33,7 @@ const CalendarPage = () => {
   });
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-rezilia-purple to-rezilia-lightblue pb-16 sm:pb-0">
+    <div className="min-h-screen flex flex-col app-background pb-16 sm:pb-0">
       <div className="flex h-full flex-1 overflow-hidden">
         {/* Sidebar - only visible on desktop */}
         {!isMobile && <Sidebar activePage={activePage} />}
@@ -76,7 +76,7 @@ const CalendarPage = () => {
                     <div className="lg:col-span-3 overflow-hidden">
                       <CalendarSection eventDates={eventDates} />
                     </div>
-                    <div className="flex flex-col space-y-6 overflow-y-auto pr-2">
+                    <div className="flex flex-col space-y-6 overflow-y-auto h-full pr-2">
                       <DailyEvents onAddEvent={() => setIsAddEventDialogOpen(true)} />
                       <UpcomingEvents />
                     </div>

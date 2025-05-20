@@ -31,9 +31,9 @@ export const SimpliciaBadge: React.FC = () => (
   <div className="icon-3d-wrapper">
     <div className="flex flex-col items-center">
       <div className="relative">
-        <div className="w-3 h-6 bg-gradient-to-b from-simplicia-green-1 via-simplicia-green-2 to-simplicia-green-3 rounded-md shadow-simplicia"></div>
-        <div className="absolute -right-1 -top-1 w-2 h-2 bg-simplicia-green-1 rounded-full shadow-simplicia"></div>
-        <div className="absolute -left-1 bottom-1 w-2 h-2 bg-simplicia-green-3 rounded-full shadow-simplicia"></div>
+        <div className="w-3 h-6 bg-gradient-to-b from-green-300 via-green-400 to-green-500 rounded-md shadow-md"></div>
+        <div className="absolute -right-1 -top-1 w-2 h-2 bg-green-300 rounded-full shadow-md"></div>
+        <div className="absolute -left-1 bottom-1 w-2 h-2 bg-green-500 rounded-full shadow-md"></div>
       </div>
     </div>
   </div>

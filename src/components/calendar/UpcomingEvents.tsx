@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useCalendarContext } from '@/contexts/CalendarContext';
-import { isToday, format } from 'date-fns';
+import { isToday, format, isAfter } from 'date-fns';
 import { Table, TableBody, TableCell, TableHeader, TableHead, TableRow } from '@/components/ui/table';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -20,12 +20,12 @@ const UpcomingEvents: React.FC = () => {
       return;
     }
     
-    console.log(`UpcomingEvents - Filtering events after ${selectedDate.toDateString()}`);
+    console.log(`UpcomingEvents - Finding events after ${selectedDate.toDateString()}`);
     
     // Create a copy of the selected date to avoid mutating the original
-    const referenceDate = new Date(selectedDate);
+    const currentDate = new Date(selectedDate);
     // Reset time to start of day for accurate date comparison
-    referenceDate.setHours(0, 0, 0, 0);
+    currentDate.setHours(0, 0, 0, 0);
     
     // Filter and sort upcoming events
     const filtered = events
@@ -37,12 +37,12 @@ const UpcomingEvents: React.FC = () => {
         }
         
         // Create a copy of the event date to avoid mutating the original
-        const eventDay = new Date(event.date);
+        const eventDate = new Date(event.date);
         // Reset time to start of day for accurate date comparison
-        eventDay.setHours(0, 0, 0, 0);
+        eventDate.setHours(0, 0, 0, 0);
         
-        // Only include events that occur AFTER the reference date (not on the same day)
-        return eventDay.getTime() > referenceDate.getTime();
+        // Only include events that occur after the current date (not including today)
+        return eventDate > currentDate;
       })
       .sort((a, b) => {
         // Sort by date first
@@ -57,18 +57,15 @@ const UpcomingEvents: React.FC = () => {
     
     console.log(`UpcomingEvents - Found ${filtered.length} events after ${selectedDate.toDateString()}`);
     
-    if (filtered.length > 0) {
-      console.log(`UpcomingEvents - First upcoming event: ${filtered[0].title} on ${filtered[0].date.toDateString()} at ${filtered[0].time}`);
-    }
+    filtered.forEach((event, index) => {
+      if (index < 3) {
+        console.log(`Upcoming event ${index+1}: ${event.title} on ${format(event.date, 'M/d')} at ${event.time}`);
+      }
+    });
     
     // Update state with the new filtered events
     setUpcomingEvents(filtered);
   }, [selectedDate, events]);
-
-  // Force rerender when date changes
-  useEffect(() => {
-    console.log("Date changed, upcoming events component will rerender");
-  }, [selectedDate]);
 
   return (
     <div className="col-span-1 lg:col-span-1 bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex flex-col h-full">
@@ -95,7 +92,7 @@ const UpcomingEvents: React.FC = () => {
                     {isToday(event.date) ? (
                       <span className="text-rezilia-green font-bold">Today</span>
                     ) : (
-                      format(event.date, 'MMM d')
+                      format(event.date, 'M/d')
                     )}
                   </TableCell>
                   <TableCell>

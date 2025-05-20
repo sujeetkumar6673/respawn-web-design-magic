@@ -15,18 +15,18 @@ import UpcomingEvents from '@/components/calendar/UpcomingEvents';
 import CalendarStyles from '@/components/calendar/CalendarStyles';
 
 const CalendarPage = () => {
-  const { selectedDate, events, setSelectedDate } = useCalendarContext();
+  const { selectedDate, events } = useCalendarContext();
   const [isAddEventDialogOpen, setIsAddEventDialogOpen] = useState(false);
-  const [, forceUpdate] = useState<{}>({});
+  const [refreshKey, setRefreshKey] = useState(0);
   
   const isMobile = useIsMobile();
   const [activePage, setActivePage] = useState('calendar');
   
   // Force the component to rerender when selectedDate changes
   useEffect(() => {
-    // Force rerender to ensure child components update properly
-    forceUpdate({});
     console.log(`CalendarPage - Date changed to: ${selectedDate.toDateString()}`);
+    // Force a rerender of child components by updating the refresh key
+    setRefreshKey(prevKey => prevKey + 1);
   }, [selectedDate]);
   
   const handleNavigate = (page: string) => {
@@ -73,7 +73,7 @@ const CalendarPage = () => {
                   <div className="flex flex-col space-y-4">
                     <CalendarSection eventDates={eventDates} />
                     <DailyEvents onAddEvent={() => setIsAddEventDialogOpen(true)} />
-                    <UpcomingEvents key={`upcoming-${selectedDate.toISOString()}`} />
+                    <UpcomingEvents key={`upcoming-${refreshKey}`} />
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -82,7 +82,7 @@ const CalendarPage = () => {
                     </div>
                     <div className="flex flex-col space-y-6">
                       <DailyEvents onAddEvent={() => setIsAddEventDialogOpen(true)} />
-                      <UpcomingEvents key={`upcoming-${selectedDate.toISOString()}`} />
+                      <UpcomingEvents key={`upcoming-${refreshKey}`} />
                     </div>
                   </div>
                 )}

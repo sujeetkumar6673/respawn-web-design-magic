@@ -72,7 +72,7 @@ const ResourcesSection: React.FC = () => {
       
       <div className="flex flex-wrap items-center justify-center gap-8 my-6">
         {partners.map(partner => (
-          <div key={partner.id} className="h-12 bg-rezilia-purple rounded-md px-6 py-2 flex items-center justify-center">
+          <div key={partner.id} className="h-12 bg-white rounded-md px-6 py-2 flex items-center justify-center shadow-sm">
             <img 
               src={partner.logo} 
               alt={`${partner.name} logo`}

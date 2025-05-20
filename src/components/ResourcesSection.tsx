@@ -9,7 +9,6 @@ const ResourcesSection: React.FC = () => {
   const { toast } = useToast();
   const [imageErrors, setImageErrors] = useState<{[key: string]: boolean}>({});
   
-  // Reduced the size of resources for better loading
   const resources = [
     {
       id: 'hospital',
@@ -31,7 +30,6 @@ const ResourcesSection: React.FC = () => {
     }
   ];
 
-  // Using very simple SVG colored backgrounds instead of images
   const partners = [
     {
       id: 'partner1',
@@ -62,13 +60,13 @@ const ResourcesSection: React.FC = () => {
 
   return (
     <div>
-      {/* Extremely compact resource cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-1 mb-1">
+      {/* Responsive resource cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-3 mb-2 md:mb-3">
         {resources.map(resource => (
           <div key={resource.id}>
-            <h3 className="text-[8px] font-medium mb-0.5">{resource.category}</h3>
+            <h3 className="text-xs md:text-sm font-medium mb-1 md:mb-2">{resource.category}</h3>
             <Card className="overflow-hidden">
-              <div className="h-12 bg-gray-100">
+              <div className="h-24 md:h-32 bg-gray-100">
                 <img
                   src={resource.image}
                   alt={resource.title}
@@ -79,40 +77,40 @@ const ResourcesSection: React.FC = () => {
                   }}
                 />
               </div>
-              <CardContent className="p-0.5">
-                <p className="text-[8px] font-medium">{resource.title}</p>
+              <CardContent className="p-2 md:p-3">
+                <p className="text-xs md:text-sm font-medium">{resource.title}</p>
               </CardContent>
             </Card>
           </div>
         ))}
       </div>
       
-      {/* Partner section - ultra compact layout */}
-      <div className="mt-1 border-t pt-1">
-        <div className="flex flex-wrap justify-center gap-1">
+      {/* Partner section - responsive layout */}
+      <div className="mt-2 md:mt-3 border-t pt-2 md:pt-3">
+        <div className="flex flex-wrap justify-center gap-2 md:gap-3">
           {partners.map(partner => (
             <div 
               key={partner.id} 
               className="flex items-center justify-center rounded-sm shadow-sm" 
               style={{
-                width: '50px', 
-                height: '20px', 
+                width: '80px', 
+                height: '30px', 
                 backgroundColor: partner.color,
                 color: 'white'
               }}
             >
-              <span className="text-[7px] font-bold">{partner.name}</span>
+              <span className="text-xs md:text-sm font-bold">{partner.name}</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Only show alert if we have actual image errors - very compact */}
+      {/* Alert for image errors */}
       {Object.keys(imageErrors).length > 0 && (
-        <Alert variant="destructive" className="mt-1 py-1">
-          <AlertCircle className="h-2 w-2" />
-          <AlertTitle className="text-[8px]">Image Loading Issue</AlertTitle>
-          <AlertDescription className="text-[7px]">
+        <Alert variant="destructive" className="mt-2 md:mt-3 py-2 md:py-3">
+          <AlertCircle className="h-4 w-4 md:h-5 md:w-5" />
+          <AlertTitle className="text-xs md:text-sm">Image Loading Issue</AlertTitle>
+          <AlertDescription className="text-xs md:text-sm">
             Some images couldn't be loaded.
           </AlertDescription>
         </Alert>

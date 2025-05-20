@@ -42,7 +42,6 @@ const CalendarStyles: React.FC = () => {
       /* Custom calendar styling */
       .calendar-grid {
         display: grid;
-        grid-template-columns: repeat(7, 1fr);
         gap: 1px;
         background-color: #f0f0f0;
         border: 1px solid #f0f0f0;

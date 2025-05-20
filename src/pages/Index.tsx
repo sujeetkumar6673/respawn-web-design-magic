@@ -12,7 +12,6 @@ import MobileNav from '@/components/MobileNav';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { CalendarProvider } from '@/contexts/CalendarContext';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 const Index = () => {
   const userName = "Nina";
@@ -56,22 +55,22 @@ const Index = () => {
             <div className="bg-white rounded-b-xl p-3 sm:p-4 flex-1 overflow-hidden flex flex-col">
               {/* Use a container with fixed height to prevent scrolling */}
               <div className="h-full overflow-hidden flex flex-col">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 h-full">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 h-full">
                   {/* Left Column */}
-                  <div className="lg:col-span-2 space-y-4 sm:space-y-6 overflow-auto">
+                  <div className="lg:col-span-2 flex flex-col h-full">
                     {/* Welcome Message */}
                     <WelcomeMessage userName={userName} />
                     
                     {/* Calendar and Schedule - layout for mobile */}
                     {isMobile && (
-                      <section className="mt-2 mb-4">
-                        <h2 className="text-xl font-bold mb-3">Calendar & Schedule</h2>
+                      <section className="mt-2 mb-3">
+                        <h2 className="text-base font-bold mb-2">Calendar & Schedule</h2>
                         <CalendarProvider>
                           <div className="grid grid-cols-12 gap-2">
-                            <div className="col-span-7" style={{ height: '220px' }}>
+                            <div className="col-span-7" style={{ height: '200px' }}>
                               <Calendar />
                             </div>
-                            <div className="col-span-5 border-l pl-1 flex flex-col" style={{ height: '220px' }}>
+                            <div className="col-span-5 border-l pl-1 flex flex-col" style={{ height: '200px' }}>
                               <Schedule />
                             </div>
                           </div>
@@ -80,29 +79,29 @@ const Index = () => {
                     )}
                     
                     {/* Modules Section */}
-                    <section>
-                      <h2 className="text-xl font-bold mb-3">Modules</h2>
+                    <section className="mt-3">
+                      <h2 className="text-base font-bold mb-2">Modules</h2>
                       <ModulesSection />
                     </section>
                     
                     {/* Personal Section */}
-                    <section>
+                    <section className="mt-3">
                       <PersonalSection />
                     </section>
                     
                     {/* Resources Section */}
-                    <section>
-                      <h2 className="text-xl font-bold mb-3">Resources</h2>
+                    <section className="mt-3">
+                      <h2 className="text-base font-bold mb-2">Resources</h2>
                       <ResourcesSection />
                     </section>
                   </div>
                   
                   {/* Right Column - Calendar and Schedule only shown on desktop here */}
-                  <div className="space-y-4 sm:space-y-6 overflow-auto">
+                  <div className="space-y-3">
                     {/* Calendar - desktop position */}
                     {!isMobile && (
                       <CalendarProvider>
-                        <div className="-mt-2 hidden sm:block">
+                        <div className="hidden sm:block">
                           <Calendar />
                         </div>
                         <Schedule />

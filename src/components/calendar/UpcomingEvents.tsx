@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useCalendarContext } from '@/contexts/CalendarContext';
 import { isToday, format } from 'date-fns';
 import { Table, TableBody, TableCell, TableHeader, TableHead, TableRow } from '@/components/ui/table';
@@ -7,11 +7,15 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 const UpcomingEvents: React.FC = () => {
-  const { selectedDate, setSelectedDate, getUpcomingEvents } = useCalendarContext();
+  const { selectedDate, setSelectedDate, events, getUpcomingEvents } = useCalendarContext();
   const isMobile = useIsMobile();
+  const [upcomingEvents, setUpcomingEvents] = useState(getUpcomingEvents(undefined, selectedDate));
   
-  // Get upcoming events starting from the selected date
-  const upcomingEvents = getUpcomingEvents(undefined, selectedDate);
+  // Update upcoming events whenever selected date changes
+  useEffect(() => {
+    // Get upcoming events starting from the selected date
+    setUpcomingEvents(getUpcomingEvents(undefined, selectedDate));
+  }, [selectedDate, events, getUpcomingEvents]);
 
   return (
     <div className="col-span-1 lg:col-span-1 bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex flex-col h-full">

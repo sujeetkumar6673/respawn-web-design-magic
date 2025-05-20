@@ -63,12 +63,12 @@ const ResourcesSection: React.FC = () => {
   return (
     <div>
       {/* Reduced size of resource cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-3">
         {resources.map(resource => (
           <div key={resource.id}>
             <h3 className="text-xs font-medium mb-1">{resource.category}</h3>
             <Card className="overflow-hidden">
-              <div className="h-24 bg-gray-100">
+              <div className="h-20 bg-gray-100">
                 <img
                   src={resource.image}
                   alt={resource.title}
@@ -87,16 +87,16 @@ const ResourcesSection: React.FC = () => {
         ))}
       </div>
       
-      {/* Partner section - removed "Our Partners" heading */}
-      <div className="mt-6 border-t pt-4">
-        <div className="flex flex-wrap justify-center gap-4">
+      {/* Partner section - compact layout */}
+      <div className="mt-4 border-t pt-3">
+        <div className="flex flex-wrap justify-center gap-3">
           {partners.map(partner => (
             <div 
               key={partner.id} 
               className="flex items-center justify-center rounded-md shadow-sm" 
               style={{
-                width: '100px', 
-                height: '50px', 
+                width: '80px', 
+                height: '40px', 
                 backgroundColor: partner.color,
                 color: 'white'
               }}

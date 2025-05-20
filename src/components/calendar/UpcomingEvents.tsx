@@ -67,6 +67,16 @@ const UpcomingEvents: React.FC = () => {
     setUpcomingEvents(filtered);
   }, [selectedDate, events]);
 
+  // Force a re-render when the component mounts
+  useEffect(() => {
+    const updateTimer = setTimeout(() => {
+      // This empty state update forces a re-render
+      setUpcomingEvents(prev => [...prev]);
+    }, 100);
+    
+    return () => clearTimeout(updateTimer);
+  }, []);
+
   return (
     <div className="col-span-1 lg:col-span-1 bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex flex-col h-full">
       <h2 className="text-xl font-bold text-rezilia-purple mb-4">Upcoming Events</h2>

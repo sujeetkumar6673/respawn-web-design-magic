@@ -198,7 +198,7 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({ eventDates }) => {
                   ${viewMode === 'week' && index >= calendarDays.length - 7 ? 'border-b-0' : ''}
                   ${viewMode === 'daily' ? 'border-b-0' : ''}
                 `}
-                onClick={() => setViewMode === 'daily' ? null : setSelectedDate(date)}
+                onClick={() => viewMode === 'daily' ? null : setSelectedDate(date)}
               >
                 <div className="flex flex-col h-full">
                   {/* Date number */}

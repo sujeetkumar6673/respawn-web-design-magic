@@ -34,13 +34,6 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
     }
   }, []);
 
-  // Toggle sidebar expanded/collapsed state
-  const toggleSidebar = () => {
-    const newState = !isCollapsed;
-    setIsCollapsed(newState);
-    localStorage.setItem('sidebarCollapsed', String(newState));
-  };
-
   const navItems: NavItem[] = [
     { id: 'home', name: 'Home', icon: <HomeIcon />, badge: '340', path: '/' },
     { id: 'simplicia', name: 'Simplicia', icon: <SimpliciaBadge />, path: '/simplicia' },
@@ -57,26 +50,10 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
 
   return (
     <div className={`sidebar fixed h-screen bg-rezilia-purple flex flex-col overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-[70px]' : 'w-[220px]'}`}>
-      <div className="flex justify-between items-center py-6 px-4">
+      <div className="flex justify-center py-6">
         <div className={`${isCollapsed ? 'h-10 w-10' : 'h-12 w-12'} transition-all duration-300`}>
           <ReziliaLogo />
         </div>
-        <button 
-          onClick={toggleSidebar} 
-          className="text-white/70 hover:text-white transition-all duration-200"
-        >
-          {isCollapsed ? (
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="13 17 18 12 13 7"></polyline>
-              <polyline points="6 17 11 12 6 7"></polyline>
-            </svg>
-          ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="11 17 6 12 11 7"></polyline>
-              <polyline points="18 17 13 12 18 7"></polyline>
-            </svg>
-          )}
-        </button>
       </div>
       
       <ScrollArea className="flex-1 px-2 py-2">

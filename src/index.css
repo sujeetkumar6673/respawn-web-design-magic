@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -104,17 +105,16 @@
 
   html, body {
     height: 100%;
+    overflow: hidden;
   }
 }
 
+/* Background image for the app */
 .app-background {
-  background: linear-gradient(135deg, #3a1a9e 0%, #67d6ff 100%);
-  min-height: 100vh;
-  height: 100vh;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  background-image: url('/lovable-uploads/47b15075-bd0e-406a-ad46-426378162a9a.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 /* Sidebar styling */

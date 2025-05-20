@@ -3,6 +3,9 @@ import React from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { format, isEqual } from 'date-fns';
 import { useCalendarContext } from '@/contexts/CalendarContext';
+import { Link } from 'react-router-dom';
+import { CalendarPlus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 // Helper function to format time to 12-hour format with AM/PM
@@ -37,15 +40,20 @@ const Schedule: React.FC = () => {
           ) ? 'TODAY' : format(selectedDate, 'MMM d').toUpperCase()}
         </h3>
         {!isMobile && (
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-gray-500">
-              {scheduleItems.length} task{scheduleItems.length !== 1 ? 's' : ''}
-            </span>
-          </div>
+          <Link to="/calendar">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="border-rezilia-purple text-rezilia-purple hover:bg-rezilia-purple hover:text-white hidden sm:flex"
+            >
+              <CalendarPlus className="h-4 w-4 mr-1" />
+              <span>View Calendar</span>
+            </Button>
+          </Link>
         )}
       </div>
       
-      <ScrollArea className={`flex-1 ${isMobile ? 'max-h-[150px]' : 'max-h-[180px]'}`}>
+      <ScrollArea className={`${isMobile ? 'h-[150px]' : ''}`}>
         {scheduleItems.length > 0 ? (
           scheduleItems.map((item, index) => (
             <div key={item.id} className={`relative mb-1 ${index > 0 ? 'mt-1' : ''}`}>
@@ -84,42 +92,40 @@ const Schedule: React.FC = () => {
 
       {/* Show upcoming events for both mobile and desktop */}
       {upcomingItems.length > 0 && (
-        <div className={`${isMobile ? 'mt-auto' : 'mt-3'}`}>
-          <div className="mb-1 flex justify-between items-center">
+        <div className={`${isMobile ? 'mt-2' : 'mt-3'}`}>
+          <div className="mb-1">
             <h3 className="font-bold text-gray-800 text-xs">UPCOMING</h3>
           </div>
-          <ScrollArea className="max-h-[140px]">
-            <div className="relative">        
-              {upcomingItems.map((item, index) => (
-                <div key={item.id} className="mb-1 flex">
-                  {/* Time and date column */}
-                  <div className={`${timeColWidth} flex-shrink-0 relative`}>
-                    <div className={`${fontSize} text-gray-500 pt-1 pl-1`}>
-                      <div>{format(item.date, 'M/d')}</div>
-                      <div className="whitespace-nowrap">{formatTimeWithAMPM(item.time)}</div>
-                    </div>
-                  </div>
-                  
-                  {/* Event card */}
-                  <div className="flex-1 min-w-0">
-                    <div 
-                      className={`pl-1.5 py-1 pr-1 rounded-r-md bg-opacity-10 overflow-hidden`}
-                      style={{ 
-                        borderLeft: `1.5px solid ${item.color}`,
-                        backgroundColor: `${item.color}10` 
-                      }}
-                    >
-                      <div className={`font-medium text-gray-800 ${fontSize} truncate`}>{item.title}</div>
-                      {item.description && 
-                        <div className={`${isMobile ? 'text-[8px]' : 'text-xs'} text-gray-600 mt-0.5 line-clamp-2`}>
-                          {item.description}
-                        </div>
-                      }
-                    </div>
+          <ScrollArea className={`${isMobile ? 'h-[100px]' : ''}`}>
+            {upcomingItems.map((item, index) => (
+              <div key={item.id} className="mb-1 flex">
+                {/* Time and date column */}
+                <div className={`${timeColWidth} flex-shrink-0 relative`}>
+                  <div className={`${fontSize} text-gray-500 pt-1 pl-1`}>
+                    <div>{format(item.date, 'M/d')}</div>
+                    <div className="whitespace-nowrap">{formatTimeWithAMPM(item.time)}</div>
                   </div>
                 </div>
-              ))}
-            </div>
+                
+                {/* Event card */}
+                <div className="flex-1 min-w-0">
+                  <div 
+                    className={`pl-1.5 py-1 pr-1 rounded-r-md bg-opacity-10 overflow-hidden`}
+                    style={{ 
+                      borderLeft: `1.5px solid ${item.color}`,
+                      backgroundColor: `${item.color}10` 
+                    }}
+                  >
+                    <div className={`font-medium text-gray-800 ${fontSize} truncate`}>{item.title}</div>
+                    {item.description && 
+                      <div className={`${isMobile ? 'text-[8px]' : 'text-xs'} text-gray-600 mt-0.5 line-clamp-2`}>
+                        {item.description}
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
+            ))}
           </ScrollArea>
         </div>
       )}

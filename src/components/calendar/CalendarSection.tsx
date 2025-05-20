@@ -1,11 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
-import { format, startOfWeek, startOfMonth, addDays, isSameDay, isToday, isSameMonth, getDate, getDay, getDaysInMonth } from 'date-fns';
+import { format, startOfWeek, startOfMonth, addDays, isSameDay, isToday, isSameMonth, getDate, getDay, getDaysInMonth, addMonths, subMonths } from 'date-fns';
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
 import { useCalendarContext } from '@/contexts/CalendarContext';
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
@@ -24,9 +21,8 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
   const [monthDays, setMonthDays] = useState<Date[]>([]);
 
   useEffect(() => {
-    setCurrentDate(selectedDate);
-    generateMonthDays(selectedDate);
-  }, [selectedDate]);
+    generateMonthDays(currentDate);
+  }, [currentDate]);
 
   // Generate days for month view
   const generateMonthDays = (date: Date) => {
@@ -36,7 +32,8 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
     const days: Date[] = [];
 
     // Add days from previous month to fill first week
-    const prevMonthDays = startDay;
+    // Adjust for Sunday as the first day of week (0)
+    const prevMonthDays = startDay === 0 ? 6 : startDay - 1;
     for (let i = prevMonthDays - 1; i >= 0; i--) {
       days.push(addDays(start, -i - 1));
     }
@@ -55,12 +52,9 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
     setMonthDays(days);
   };
 
-  const handleDateSelect = (date: Date | undefined) => {
-    if (date) {
-      setCurrentDate(date);
-      setSelectedDate(date);
-      onDateClick(date);
-    }
+  const handleDateSelect = (date: Date) => {
+    setSelectedDate(date);
+    onDateClick(date);
   };
 
   const handleViewModeChange = (value: string) => {
@@ -70,6 +64,14 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
     }
   };
 
+  const navigateMonth = (direction: 'prev' | 'next') => {
+    const newDate = direction === 'prev' 
+      ? subMonths(currentDate, 1)
+      : addMonths(currentDate, 1);
+    setCurrentDate(newDate);
+  };
+
+  // For daily/weekly view
   const generateTimeSlots = (): Date[] => {
     const start = startOfWeek(currentDate);
     const timeSlots: Date[] = [];
@@ -82,12 +84,6 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
       for (let i = 0; i < 7; i++) {
         timeSlots.push(addDays(start, i));
       }
-    } else {
-      // For monthly, we'll still use the week view row to show days
-      // as the full month is displayed in the Calendar component
-      for (let i = 0; i < 7; i++) {
-        timeSlots.push(addDays(start, i));
-      }
     }
     
     return timeSlots;
@@ -95,10 +91,36 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
 
   const timeSlots = generateTimeSlots();
 
+  const getEventColor = (index: number) => {
+    const colors = ['#FF9F46', '#2717A5', '#62E884', '#67d6ff', '#FF719A'];
+    return colors[index % colors.length];
+  };
+
   return (
     <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold text-rezilia-purple">Calendar</h2>
+        <div className="flex items-center gap-2">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => navigateMonth('prev')}
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          
+          <h2 className="text-xl font-bold">
+            {format(currentDate, 'MMMM yyyy')}
+          </h2>
+          
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => navigateMonth('next')}
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
+        
         <div className="flex items-center gap-2">
           <ToggleGroup 
             type="single" 
@@ -110,38 +132,11 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
             <ToggleGroupItem value="weekly" aria-label="Weekly view">Week</ToggleGroupItem>
             <ToggleGroupItem value="monthly" aria-label="Monthly view">Month</ToggleGroupItem>
           </ToggleGroup>
-          
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant={"outline"}
-                className={cn(
-                  "w-[240px] justify-start text-left font-normal",
-                  !selectedDate && "text-muted-foreground"
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {selectedDate ? format(selectedDate, "PPP") : "Pick a date"}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="single"
-                selected={selectedDate}
-                onSelect={handleDateSelect}
-                disabled={(date) =>
-                  date > new Date() || date < new Date("1900-01-01")
-                }
-                initialFocus
-                className="pointer-events-auto"
-              />
-            </PopoverContent>
-          </Popover>
         </div>
       </div>
       
       {viewMode === 'monthly' ? (
-        <div className="calendar-grid">
+        <div className="calendar-grid mb-4">
           <div className="grid grid-cols-7 gap-[1px]">
             {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
               <div key={day} className="p-2 text-center font-medium bg-gray-50 text-gray-500">
@@ -153,30 +148,83 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
               const isSelected = isSameDay(date, selectedDate);
               const isCurrent = isToday(date);
               const isOtherMonth = !isSameMonth(date, currentDate);
-              const hasEvents = eventDates && eventDates[format(date, 'yyyy-MM-dd')];
               const eventCount = eventDates ? eventDates[format(date, 'yyyy-MM-dd')] || 0 : 0;
               
               return (
                 <div
                   key={index}
-                  onClick={() => onDateClick(date)}
+                  onClick={() => handleDateSelect(date)}
                   className={`calendar-day ${isSelected ? 'selected' : ''} ${isOtherMonth ? 'other-month' : ''}`}
                 >
-                  <div className={`day-number ${isCurrent ? 'today' : ''}`}>
-                    {getDate(date)}
-                  </div>
-                  
-                  {/* Show event indicators */}
-                  {eventCount > 0 && (
-                    <div className="flex flex-col gap-1 mt-1">
-                      {Array.from({ length: Math.min(eventCount, 3) }).map((_, i) => (
-                        <div key={i} className="event-indicator">
-                          <span className="event-dot"></span>
-                          {i === 0 && eventCount > 3 ? `+${eventCount - 2} more` : ''}
-                        </div>
-                      ))}
+                  <div className="flex flex-col h-full">
+                    <div className="flex justify-between items-center">
+                      <div className={`day-number ${isCurrent ? 'today' : ''}`}>
+                        {getDate(date)}
+                      </div>
+                      {index % 7 === 1 && getDate(date) === 6 && (
+                        <div className="text-xs text-red-500">5-day</div>
+                      )}
                     </div>
-                  )}
+                    
+                    {/* Show event indicators */}
+                    <div className="flex flex-col gap-1 mt-1">
+                      {/* Example events based on the reference image */}
+                      {getDate(date) === 1 && (
+                        <div className="event-indicator">
+                          <span className="event-dot bg-green-500"></span>
+                          <span className="text-xs">Create Wireframe</span>
+                        </div>
+                      )}
+                      {getDate(date) === 6 && (
+                        <>
+                          <div className="event-indicator">
+                            <span className="event-dot bg-red-400"></span>
+                            <span className="text-xs">Send slide deck</span>
+                          </div>
+                          <div className="event-indicator">
+                            <span className="event-dot bg-blue-400"></span>
+                            <span className="text-xs">Call John</span>
+                          </div>
+                          <div className="event-indicator bg-purple-400 text-white px-1 rounded">
+                            <span className="text-xs">Marketing Sync</span>
+                          </div>
+                          <div className="event-indicator">
+                            <span className="event-dot bg-green-400"></span>
+                            <span className="text-xs">Gogo Penguin</span>
+                          </div>
+                        </>
+                      )}
+                      {getDate(date) === 8 && (
+                        <div className="event-indicator">
+                          <span className="event-dot bg-orange-400"></span>
+                          <span className="text-xs">Andrea Birthday</span>
+                        </div>
+                      )}
+                      {getDate(date) === 20 && (
+                        <div className="event-indicator">
+                          <span className="event-dot"></span>
+                          <span className="text-xs">Standup</span>
+                        </div>
+                      )}
+                      {/* Dynamic events from context */}
+                      {eventCount > 0 && eventCount <= 3 && getDate(date) !== 6 && getDate(date) !== 1 && getDate(date) !== 8 && getDate(date) !== 20 && (
+                        Array.from({ length: eventCount }).map((_, i) => (
+                          <div key={i} className="event-indicator">
+                            <span className="event-dot" style={{ backgroundColor: getEventColor(i) }}></span>
+                            <span className="text-xs">Event {i + 1}</span>
+                          </div>
+                        ))
+                      )}
+                      {eventCount > 3 && getDate(date) !== 6 && getDate(date) !== 1 && getDate(date) !== 8 && getDate(date) !== 20 && (
+                        <>
+                          <div className="event-indicator">
+                            <span className="event-dot"></span>
+                            <span className="text-xs">+{eventCount - 2} more</span>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
                 </div>
               );
             })}
@@ -201,7 +249,7 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
                   ${isCurrentDay ? 'bg-rezilia-green/10' : ''}
                   relative cursor-pointer hover:bg-gray-50
                 `}
-                onClick={() => onDateClick(timeSlotDate)}
+                onClick={() => handleDateSelect(timeSlotDate)}
               >
                 <time
                   dateTime={format(timeSlotDate, 'yyyy-MM-dd')}

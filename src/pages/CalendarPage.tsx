@@ -10,8 +10,6 @@ import MobileNav from '@/components/MobileNav';
 import { CalendarPlus } from 'lucide-react';
 import EventFormDialog from '@/components/calendar/EventFormDialog';
 import CalendarSection from '@/components/calendar/CalendarSection';
-import DailyEvents from '@/components/calendar/DailyEvents';
-import UpcomingEvents from '@/components/calendar/UpcomingEvents';
 import CalendarStyles from '@/components/calendar/CalendarStyles';
 
 const CalendarPage = () => {
@@ -39,17 +37,6 @@ const CalendarPage = () => {
     const dateStr = format(event.date, 'yyyy-MM-dd');
     eventDates[dateStr] = (eventDates[dateStr] || 0) + 1;
   });
-
-  // Recreate this component if the selected date changes
-  useEffect(() => {
-    // This is a more reliable way to force a complete re-render of the page
-    const timer = setTimeout(() => {
-      console.log("Forcing complete page re-render");
-      setRefreshKey(Date.now());
-    }, 10);
-    
-    return () => clearTimeout(timer);
-  }, [selectedDate, events]);
 
   return (
     <div className="app-background min-h-screen pb-16 sm:pb-0">
@@ -80,23 +67,9 @@ const CalendarPage = () => {
                 </div>
 
                 {/* Calendar Layout */}
-                {isMobile ? (
-                  <div className="flex flex-col space-y-4">
-                    <CalendarSection eventDates={eventDates} />
-                    <DailyEvents onAddEvent={() => setIsAddEventDialogOpen(true)} />
-                    <UpcomingEvents key={`upcoming-${refreshKey}`} />
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                    <div className="lg:col-span-3">
-                      <CalendarSection eventDates={eventDates} />
-                    </div>
-                    <div className="flex flex-col space-y-6">
-                      <DailyEvents onAddEvent={() => setIsAddEventDialogOpen(true)} />
-                      <UpcomingEvents key={`upcoming-${refreshKey}`} />
-                    </div>
-                  </div>
-                )}
+                <div className="flex flex-col space-y-4">
+                  <CalendarSection key={`cal-section-${refreshKey}`} eventDates={eventDates} />
+                </div>
               </div>
             </div>
           </div>

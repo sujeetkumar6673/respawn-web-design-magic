@@ -133,7 +133,7 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
                   ${viewMode === 'daily' ? 'max-h-[250px] w-full' : 'flex-1'} p-1 border-b border-r 
                   ${isDimmed ? 'bg-gray-50 text-gray-400' : 'bg-white'}
                   ${isSelected ? 'bg-rezilia-purple/5' : ''}
-                  ${viewMode === 'monthly' && index % 7 === 6 ? 'border-r-0' : ''}
+                  ${viewMode === 'weekly' && index % 7 === 6 ? 'border-r-0' : ''}
                   ${isCurrentDay ? 'bg-rezilia-green/10' : ''}
                   relative cursor-pointer hover:bg-gray-50
                 `}

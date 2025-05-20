@@ -1,8 +1,11 @@
 
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
+import { useToast } from '@/hooks/use-toast';
 
 const ResourcesSection: React.FC = () => {
+  const { toast } = useToast();
+  
   const resources = [
     {
       id: 'hospital',
@@ -24,27 +27,37 @@ const ResourcesSection: React.FC = () => {
     }
   ];
 
-  // Updated partners with reliable image URLs
+  // Updated partners with reliable fallback image URLs
   const partners = [
     {
       id: 'united',
       name: 'United Healthcare',
       logo: 'https://www.unitedhealthgroup.com/content/dam/UHG/Images/newsroom/logos/uh-logo-anniversary-2023.png',
-      fallbackLogo: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=150&auto=format&fit=crop'
+      fallbackLogo: 'https://images.unsplash.com/photo-1582562124811-c09040d0a901?q=80&w=150&auto=format&fit=crop'
     },
     {
       id: 'bcbs',
       name: 'Blue Cross Blue Shield',
       logo: 'https://www.bluecrossmn.com/sites/default/files/svg/logo_bcbsmn.svg',
-      fallbackLogo: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=150&auto=format&fit=crop'
+      fallbackLogo: 'https://images.unsplash.com/photo-1466721591366-2d5fba72006d?q=80&w=150&auto=format&fit=crop'
     },
     {
       id: 'advent',
       name: 'Advent Health',
       logo: 'https://www.adventhealth.com/themes/default/img/AH_WHITE_LOGO.png',
-      fallbackLogo: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=150&auto=format&fit=crop'
+      fallbackLogo: 'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?q=80&w=150&auto=format&fit=crop'
     }
   ];
+
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>, fallbackUrl: string, partnerName: string) => {
+    const target = e.target as HTMLImageElement;
+    target.src = fallbackUrl;
+    toast({
+      title: "Image Load Error",
+      description: `Switched to fallback image for ${partnerName}`,
+      variant: "default",
+    });
+  };
 
   return (
     <div>
@@ -72,15 +85,12 @@ const ResourcesSection: React.FC = () => {
       
       <div className="flex flex-wrap items-center justify-center gap-8 my-6">
         {partners.map(partner => (
-          <div key={partner.id} className="h-12 bg-white rounded-md px-6 py-2 flex items-center justify-center shadow-sm">
+          <div key={partner.id} className="h-12 bg-white rounded-md px-6 py-2 flex items-center justify-center shadow-md">
             <img 
               src={partner.logo} 
               alt={`${partner.name} logo`}
               className="h-8 max-w-[120px] object-contain" 
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.src = partner.fallbackLogo;
-              }}
+              onError={(e) => handleImageError(e, partner.fallbackLogo, partner.name)}
             />
           </div>
         ))}

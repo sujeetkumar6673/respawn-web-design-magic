@@ -210,14 +210,16 @@ export const CalendarProvider: React.FC<{ children: ReactNode }> = ({ children }
   }, [events]);
 
   const getUpcomingEvents = useCallback((limit?: number, startDate: Date = new Date()) => {
-    // Convert startDate to start of day to ensure proper comparison
-    const startOfSelectedDay = startOfDay(startDate);
+    // Clone the startDate to avoid any potential mutations
+    const startDateCopy = new Date(startDate);
     
-    // Filter events that are STRICTLY AFTER the selected date (not including the selected date)
+    // Convert startDate to start of day for comparison
+    const startOfSelectedDay = startOfDay(startDateCopy);
+    
+    // Filter events that are strictly AFTER the selected date (not including the selected date itself)
     const filteredEvents = events
       .filter(event => {
         const eventStartOfDay = startOfDay(event.date);
-        // Only include events that are strictly after the selected date
         return isAfter(eventStartOfDay, startOfSelectedDay);
       })
       .sort((a, b) => {
@@ -231,7 +233,8 @@ export const CalendarProvider: React.FC<{ children: ReactNode }> = ({ children }
         return aTime - bTime;
       });
     
-    console.log("getUpcomingEvents for date:", startDate, "- Found events:", filteredEvents.length);
+    console.log("getUpcomingEvents called for date:", startDateCopy, 
+               "- Found future events:", filteredEvents.length);
     
     return limit ? filteredEvents.slice(0, limit) : filteredEvents;
   }, [events]);

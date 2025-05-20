@@ -42,7 +42,7 @@ const Index = () => {
         {!isMobile && <Sidebar activePage={activePage} />}
         
         {/* Main Content */}
-        <div className={`flex-1 p-2 flex flex-col overflow-auto ${isMobile ? 'w-full' : 'ml-[220px]'}`}>
+        <div className={`flex-1 p-2 flex flex-col ${isMobile ? 'w-full' : 'ml-[220px]'}`}>
           <div className="max-w-[1200px] mx-auto flex flex-col h-full w-full">
             {/* Header */}
             <Header userName={userName} />
@@ -50,8 +50,8 @@ const Index = () => {
             {/* Main Dashboard */}
             <div className="bg-white rounded-b-xl p-3 flex-1">
               {isMobile ? (
-                // Mobile view - Allow native scrolling
-                <div className="h-full">
+                // Mobile view - Enable proper scrolling
+                <div className="h-full overflow-y-auto pb-16">
                   <div className="space-y-3 pb-4">
                     {/* Welcome Message */}
                     <WelcomeMessage userName={userName} />

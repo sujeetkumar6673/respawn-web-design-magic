@@ -19,7 +19,7 @@ interface CalendarContextType {
   setEvents: React.Dispatch<React.SetStateAction<CalendarEvent[]>>;
   addEvent: (event: CalendarEvent) => void;
   getEventsForDate: (date: Date) => CalendarEvent[];
-  getUpcomingEvents: (limit?: number) => CalendarEvent[];
+  getUpcomingEvents: (limit?: number, startDate?: Date) => CalendarEvent[];
 }
 
 const CalendarContext = createContext<CalendarContextType | undefined>(undefined);
@@ -210,9 +210,9 @@ export const CalendarProvider: React.FC<{ children: ReactNode }> = ({ children }
     });
   };
 
-  const getUpcomingEvents = (limit?: number) => {
+  const getUpcomingEvents = (limit?: number, startDate: Date = new Date()) => {
     const filteredEvents = events
-      .filter(event => event.date >= new Date())
+      .filter(event => event.date >= startDate)
       .sort((a, b) => {
         if (a.date.getTime() !== b.date.getTime()) {
           return a.date.getTime() - b.date.getTime();

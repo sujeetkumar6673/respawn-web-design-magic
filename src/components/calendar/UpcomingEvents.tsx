@@ -7,11 +7,11 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 const UpcomingEvents: React.FC = () => {
-  const { setSelectedDate, getUpcomingEvents } = useCalendarContext();
+  const { selectedDate, setSelectedDate, getUpcomingEvents } = useCalendarContext();
   const isMobile = useIsMobile();
   
-  // Get all upcoming events instead of limiting them
-  const upcomingEvents = getUpcomingEvents();
+  // Get upcoming events starting from the selected date
+  const upcomingEvents = getUpcomingEvents(undefined, selectedDate);
 
   return (
     <div className="col-span-1 lg:col-span-1 bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex flex-col h-full">

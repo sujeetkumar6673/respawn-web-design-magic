@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, ReactNode, useCallback } from 'react';
 import { addDays, addWeeks, subDays, isSameDay, isAfter, startOfDay } from 'date-fns';
 
@@ -210,17 +211,21 @@ export const CalendarProvider: React.FC<{ children: ReactNode }> = ({ children }
   }, [events]);
 
   const getUpcomingEvents = useCallback((limit?: number, startDate: Date = new Date()) => {
-    // Clone the startDate to avoid any potential mutations
-    const startDateCopy = new Date(startDate);
+    // Make a copy of the date to avoid mutation
+    const baseDate = new Date(startDate);
     
-    // Convert startDate to start of day for comparison
-    const startOfSelectedDay = startOfDay(startDateCopy);
+    // We need to find events STRICTLY AFTER the selected date
+    const startOfCurrentDay = startOfDay(baseDate);
     
-    // Filter events that are strictly AFTER the selected date (not including the selected date itself)
-    const filteredEvents = events
+    // Debug information
+    console.log(`Filtering future events from: ${baseDate.toDateString()}`);
+    
+    // Filter events that are strictly AFTER the selected date
+    const futureEvents = events
       .filter(event => {
-        const eventStartOfDay = startOfDay(event.date);
-        return isAfter(eventStartOfDay, startOfSelectedDay);
+        const eventDay = startOfDay(new Date(event.date));
+        const isEventAfter = isAfter(eventDay, startOfCurrentDay);
+        return isEventAfter;
       })
       .sort((a, b) => {
         // First sort by date
@@ -233,10 +238,13 @@ export const CalendarProvider: React.FC<{ children: ReactNode }> = ({ children }
         return aTime - bTime;
       });
     
-    console.log("getUpcomingEvents called for date:", startDateCopy, 
-               "- Found future events:", filteredEvents.length);
+    console.log(`Found ${futureEvents.length} future events after ${baseDate.toDateString()}`);
     
-    return limit ? filteredEvents.slice(0, limit) : filteredEvents;
+    if (futureEvents.length > 0) {
+      console.log(`First upcoming event: ${futureEvents[0].title} on ${futureEvents[0].date.toDateString()}`);
+    }
+    
+    return limit ? futureEvents.slice(0, limit) : futureEvents;
   }, [events]);
 
   return (

@@ -10,7 +10,6 @@ import Schedule from '@/components/Schedule';
 import WelcomeMessage from '@/components/WelcomeMessage';
 import MobileNav from '@/components/MobileNav';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { CalendarProvider } from '@/contexts/CalendarContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const Index = () => {
@@ -65,16 +64,14 @@ const Index = () => {
                     {isMobile && (
                       <section className="mt-2 mb-3">
                         <h2 className="text-base font-bold mb-2">Calendar & Schedule</h2>
-                        <CalendarProvider>
-                          <div className="grid grid-cols-12 gap-2">
-                            <div className="col-span-7" style={{ height: '200px' }}>
-                              <Calendar />
-                            </div>
-                            <div className="col-span-5 border-l pl-1 flex flex-col" style={{ height: '200px' }}>
-                              <Schedule />
-                            </div>
+                        <div className="grid grid-cols-12 gap-2">
+                          <div className="col-span-7" style={{ height: '200px' }}>
+                            <Calendar />
                           </div>
-                        </CalendarProvider>
+                          <div className="col-span-5 border-l pl-1 flex flex-col" style={{ height: '200px' }}>
+                            <Schedule />
+                          </div>
+                        </div>
                       </section>
                     )}
                     
@@ -100,12 +97,12 @@ const Index = () => {
                   <div className="space-y-3">
                     {/* Calendar - desktop position */}
                     {!isMobile && (
-                      <CalendarProvider>
+                      <>
                         <div className="hidden sm:block">
                           <Calendar />
                         </div>
                         <Schedule />
-                      </CalendarProvider>
+                      </>
                     )}
                   </div>
                 </div>

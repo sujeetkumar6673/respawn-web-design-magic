@@ -13,10 +13,17 @@ const UpcomingEvents: React.FC = () => {
   
   // Update upcoming events whenever selected date changes
   useEffect(() => {
-    // Important: We need to pass the selected date to get events AFTER this date
+    console.log(`UpcomingEvents - selectedDate changed to: ${selectedDate.toDateString()}`);
+    
+    // Get events AFTER the selected date
     const upcoming = getUpcomingEvents(undefined, selectedDate);
     setUpcomingEvents(upcoming);
-    console.log("Selected date for upcoming:", selectedDate, "- Upcoming events count:", upcoming.length);
+    
+    console.log(`UpcomingEvents - Found ${upcoming.length} events after ${selectedDate.toDateString()}`);
+    
+    if (upcoming.length > 0) {
+      console.log(`UpcomingEvents - First upcoming event: ${upcoming[0].title} on ${upcoming[0].date.toDateString()}`);
+    }
   }, [selectedDate, events, getUpcomingEvents]);
 
   return (

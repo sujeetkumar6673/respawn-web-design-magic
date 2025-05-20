@@ -40,25 +40,20 @@ const Schedule: React.FC = () => {
           ) ? 'TODAY' : format(selectedDate, 'MMM d').toUpperCase()}
         </h3>
         {!isMobile && (
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-gray-500">
-              {scheduleItems.length} task{scheduleItems.length !== 1 ? 's' : ''}
-            </span>
-            <Link to="/calendar">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="border-rezilia-purple text-rezilia-purple hover:bg-rezilia-purple hover:text-white hidden sm:flex"
-              >
-                <CalendarPlus className="h-4 w-4 mr-1" />
-                <span>View Calendar</span>
-              </Button>
-            </Link>
-          </div>
+          <Link to="/calendar">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="border-rezilia-purple text-rezilia-purple hover:bg-rezilia-purple hover:text-white hidden sm:flex"
+            >
+              <CalendarPlus className="h-4 w-4 mr-1" />
+              <span>View Calendar</span>
+            </Button>
+          </Link>
         )}
       </div>
       
-      <ScrollArea className={`flex-1 ${isMobile ? 'max-h-[150px]' : ''}`}>
+      <ScrollArea className={`${isMobile ? 'h-[150px]' : ''}`}>
         {scheduleItems.length > 0 ? (
           scheduleItems.map((item, index) => (
             <div key={item.id} className={`relative mb-1 ${index > 0 ? 'mt-1' : ''}`}>
@@ -97,11 +92,11 @@ const Schedule: React.FC = () => {
 
       {/* Show upcoming events for both mobile and desktop */}
       {upcomingItems.length > 0 && (
-        <div className={`${isMobile ? 'mt-auto' : 'mt-3'}`}>
-          <div className="mb-1 flex justify-between items-center">
+        <div className={`${isMobile ? 'mt-2' : 'mt-3'}`}>
+          <div className="mb-1">
             <h3 className="font-bold text-gray-800 text-xs">UPCOMING</h3>
           </div>
-          <div className="relative">        
+          <ScrollArea className={`${isMobile ? 'h-[100px]' : ''}`}>
             {upcomingItems.map((item, index) => (
               <div key={item.id} className="mb-1 flex">
                 {/* Time and date column */}
@@ -131,7 +126,7 @@ const Schedule: React.FC = () => {
                 </div>
               </div>
             ))}
-          </div>
+          </ScrollArea>
         </div>
       )}
     </div>

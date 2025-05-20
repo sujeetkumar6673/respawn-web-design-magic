@@ -42,31 +42,31 @@ const Index = () => {
         {!isMobile && <Sidebar activePage={activePage} />}
         
         {/* Main Content */}
-        <div className={`flex-1 p-3 sm:p-4 flex flex-col overflow-hidden ${isMobile ? 'w-full' : 'ml-[220px]'}`}>
+        <div className={`flex-1 p-2 sm:p-3 flex flex-col overflow-hidden ${isMobile ? 'w-full' : 'ml-[220px]'}`}>
           <div className="max-w-[1200px] mx-auto flex flex-col h-full overflow-hidden">
             {/* Header */}
             <Header userName={userName} />
             
             {/* Main Dashboard */}
-            <div className="bg-white rounded-b-xl p-3 sm:p-4 flex-1 overflow-hidden">
-              <div className="h-full grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4">
+            <div className="bg-white rounded-b-xl p-2 sm:p-3 flex-1 overflow-hidden">
+              <div className="h-full grid grid-cols-1 lg:grid-cols-3 gap-2">
                 {/* Left Column */}
                 <div className="lg:col-span-2 h-full">
-                  <ScrollArea className="h-full pr-2">
-                    <div className="space-y-3 sm:space-y-4 pb-3">
+                  <ScrollArea className="h-full pr-1">
+                    <div className="space-y-2 pb-2">
                       {/* Welcome Message */}
                       <WelcomeMessage userName={userName} />
                       
                       {/* Calendar and Schedule - layout for mobile */}
                       {isMobile && (
-                        <section className="mt-2 mb-3">
-                          <h2 className="text-lg font-bold mb-2">Calendar & Schedule</h2>
+                        <section className="mt-1 mb-2">
+                          <h2 className="text-base font-bold mb-1">Calendar & Schedule</h2>
                           <CalendarProvider>
-                            <div className="grid grid-cols-12 gap-2">
-                              <div className="col-span-7" style={{ height: '220px' }}>
+                            <div className="grid grid-cols-12 gap-1">
+                              <div className="col-span-7" style={{ height: '200px' }}>
                                 <Calendar />
                               </div>
-                              <div className="col-span-5 border-l pl-1 flex flex-col" style={{ height: '220px' }}>
+                              <div className="col-span-5 border-l pl-1 flex flex-col" style={{ height: '200px' }}>
                                 <Schedule />
                               </div>
                             </div>
@@ -76,7 +76,7 @@ const Index = () => {
                       
                       {/* Modules Section */}
                       <section>
-                        <h2 className="text-lg font-bold mb-2">Modules</h2>
+                        <h2 className="text-base font-bold mb-1">Modules</h2>
                         <ModulesSection />
                       </section>
                       
@@ -87,7 +87,7 @@ const Index = () => {
                       
                       {/* Resources Section */}
                       <section>
-                        <h2 className="text-lg font-bold mb-2">Resources</h2>
+                        <h2 className="text-base font-bold mb-1">Resources</h2>
                         <ResourcesSection />
                       </section>
                     </div>
@@ -98,7 +98,7 @@ const Index = () => {
                 <div className="h-full hidden lg:block">
                   {/* Calendar - desktop position */}
                   <CalendarProvider>
-                    <div className="-mt-2">
+                    <div className="-mt-1">
                       <Calendar />
                     </div>
                     <Schedule />

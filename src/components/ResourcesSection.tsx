@@ -62,13 +62,13 @@ const ResourcesSection: React.FC = () => {
 
   return (
     <div>
-      {/* Further reduced size of resource cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-1.5 mb-2">
+      {/* Extremely compact resource cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-1 mb-1">
         {resources.map(resource => (
           <div key={resource.id}>
-            <h3 className="text-[10px] font-medium mb-0.5">{resource.category}</h3>
+            <h3 className="text-[8px] font-medium mb-0.5">{resource.category}</h3>
             <Card className="overflow-hidden">
-              <div className="h-16 bg-gray-100">
+              <div className="h-12 bg-gray-100">
                 <img
                   src={resource.image}
                   alt={resource.title}
@@ -79,40 +79,40 @@ const ResourcesSection: React.FC = () => {
                   }}
                 />
               </div>
-              <CardContent className="p-1">
-                <p className="text-[10px] font-medium">{resource.title}</p>
+              <CardContent className="p-0.5">
+                <p className="text-[8px] font-medium">{resource.title}</p>
               </CardContent>
             </Card>
           </div>
         ))}
       </div>
       
-      {/* Partner section - even more compact layout */}
-      <div className="mt-2 border-t pt-2">
-        <div className="flex flex-wrap justify-center gap-2">
+      {/* Partner section - ultra compact layout */}
+      <div className="mt-1 border-t pt-1">
+        <div className="flex flex-wrap justify-center gap-1">
           {partners.map(partner => (
             <div 
               key={partner.id} 
-              className="flex items-center justify-center rounded-md shadow-sm" 
+              className="flex items-center justify-center rounded-sm shadow-sm" 
               style={{
-                width: '60px', 
-                height: '30px', 
+                width: '50px', 
+                height: '20px', 
                 backgroundColor: partner.color,
                 color: 'white'
               }}
             >
-              <span className="text-[9px] font-bold">{partner.name}</span>
+              <span className="text-[7px] font-bold">{partner.name}</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Only show alert if we have actual image errors */}
+      {/* Only show alert if we have actual image errors - very compact */}
       {Object.keys(imageErrors).length > 0 && (
-        <Alert variant="destructive" className="mt-2">
-          <AlertCircle className="h-3 w-3" />
-          <AlertTitle className="text-xs">Image Loading Issue</AlertTitle>
-          <AlertDescription className="text-[10px]">
+        <Alert variant="destructive" className="mt-1 py-1">
+          <AlertCircle className="h-2 w-2" />
+          <AlertTitle className="text-[8px]">Image Loading Issue</AlertTitle>
+          <AlertDescription className="text-[7px]">
             Some images couldn't be loaded.
           </AlertDescription>
         </Alert>

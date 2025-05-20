@@ -8,32 +8,55 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { CalendarEvent } from '@/contexts/CalendarContext';
 
 const UpcomingEvents: React.FC = () => {
-  const { selectedDate, setSelectedDate, events, getUpcomingEvents } = useCalendarContext();
+  const { selectedDate, setSelectedDate, events } = useCalendarContext();
   const isMobile = useIsMobile();
   const [upcomingEvents, setUpcomingEvents] = useState<CalendarEvent[]>([]);
   
-  // Update upcoming events whenever selected date or events change
+  // Update upcoming events whenever selected date changes
   useEffect(() => {
+    // Validate selectedDate is a Date object
     if (!(selectedDate instanceof Date)) {
       console.error("Selected date is not a Date object:", selectedDate);
       return;
     }
     
-    console.log(`UpcomingEvents - Refreshing with selectedDate: ${selectedDate.toDateString()}`);
+    console.log(`UpcomingEvents - Getting events after ${selectedDate.toDateString()}`);
     
-    // Force this into a new execution context to ensure state updates
-    setTimeout(() => {
-      // Get events after the selected date (not including events on the selected date)
-      const upcoming = getUpcomingEvents(undefined, selectedDate);
-      console.log(`UpcomingEvents - Found ${upcoming.length} events after ${selectedDate.toDateString()}`);
-      
-      if (upcoming.length > 0) {
-        console.log(`UpcomingEvents - First upcoming event: ${upcoming[0].title} on ${upcoming[0].date.toDateString()}`);
-      }
-      
-      setUpcomingEvents(upcoming);
-    }, 0);
-  }, [selectedDate, events, getUpcomingEvents]);
+    // Filter and sort upcoming events directly in the component
+    // This ensures we get the latest data on every render
+    const filteredEvents = events
+      .filter(event => {
+        // Only include events that are AFTER the current selected date
+        const eventDate = new Date(event.date);
+        const selectedDateCopy = new Date(selectedDate);
+        
+        // Reset hours to compare just the dates
+        eventDate.setHours(0, 0, 0, 0);
+        selectedDateCopy.setHours(0, 0, 0, 0);
+        
+        return eventDate > selectedDateCopy;
+      })
+      .sort((a, b) => {
+        // Sort by date first
+        const dateComparison = a.date.getTime() - b.date.getTime();
+        if (dateComparison !== 0) return dateComparison;
+        
+        // Then by time if dates are equal
+        const aTime = a.time.replace(':', '');
+        const bTime = b.time.replace(':', '');
+        return parseInt(aTime) - parseInt(bTime);
+      });
+    
+    console.log(`UpcomingEvents - Found ${filteredEvents.length} events after ${selectedDate.toDateString()}`);
+    
+    if (filteredEvents.length > 0) {
+      console.log(`UpcomingEvents - First upcoming event: ${filteredEvents[0].title} on ${filteredEvents[0].date.toDateString()}`);
+    }
+    
+    // Force state update after filtering
+    setUpcomingEvents([...filteredEvents]);
+    
+  }, [selectedDate, events]);
 
   return (
     <div className="col-span-1 lg:col-span-1 bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex flex-col h-full">

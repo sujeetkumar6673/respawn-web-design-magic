@@ -11,6 +11,7 @@ import WelcomeMessage from '@/components/WelcomeMessage';
 import MobileNav from '@/components/MobileNav';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { CalendarProvider } from '@/contexts/CalendarContext';
 
 const Index = () => {
   const userName = "Nina";

@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useState, ReactNode, useCallback } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useCallback, useEffect } from 'react';
 import { addDays, addWeeks, subDays, isSameDay, isAfter, startOfDay } from 'date-fns';
 
 // Define the event type
@@ -196,6 +196,14 @@ export const CalendarProvider: React.FC<{ children: ReactNode }> = ({ children }
     }))
   ]);
 
+  // Make sure selectedDate is a Date object
+  useEffect(() => {
+    if (!(selectedDate instanceof Date)) {
+      console.error('selectedDate is not a Date object:', selectedDate);
+      setSelectedDate(new Date());
+    }
+  }, [selectedDate]);
+
   const addEvent = (event: CalendarEvent) => {
     setEvents(prevEvents => [...prevEvents, event]);
   };
@@ -211,8 +219,8 @@ export const CalendarProvider: React.FC<{ children: ReactNode }> = ({ children }
   }, [events]);
 
   const getUpcomingEvents = useCallback((limit?: number, startDate: Date = new Date()) => {
-    // Make a copy of the date to avoid mutation
-    const baseDate = new Date(startDate);
+    // Make a copy of the date to avoid mutation and ensure it's a Date object
+    const baseDate = startDate instanceof Date ? new Date(startDate) : new Date();
     
     // We need to find events STRICTLY AFTER the selected date
     const startOfCurrentDay = startOfDay(baseDate);
@@ -224,8 +232,8 @@ export const CalendarProvider: React.FC<{ children: ReactNode }> = ({ children }
     const futureEvents = events
       .filter(event => {
         const eventDay = startOfDay(new Date(event.date));
-        const isEventAfter = isAfter(eventDay, startOfCurrentDay);
-        return isEventAfter;
+        // Only include events that are AFTER the current day
+        return isAfter(eventDay, startOfCurrentDay);
       })
       .sort((a, b) => {
         // First sort by date
@@ -247,16 +255,19 @@ export const CalendarProvider: React.FC<{ children: ReactNode }> = ({ children }
     return limit ? futureEvents.slice(0, limit) : futureEvents;
   }, [events]);
 
+  // Create the context value object
+  const contextValue: CalendarContextType = {
+    selectedDate, 
+    setSelectedDate, 
+    events, 
+    setEvents, 
+    addEvent,
+    getEventsForDate,
+    getUpcomingEvents
+  };
+
   return (
-    <CalendarContext.Provider value={{ 
-      selectedDate, 
-      setSelectedDate, 
-      events, 
-      setEvents, 
-      addEvent,
-      getEventsForDate,
-      getUpcomingEvents
-    }}>
+    <CalendarContext.Provider value={contextValue}>
       {children}
     </CalendarContext.Provider>
   );

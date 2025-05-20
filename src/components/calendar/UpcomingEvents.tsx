@@ -5,17 +5,18 @@ import { isToday, format } from 'date-fns';
 import { Table, TableBody, TableCell, TableHeader, TableHead, TableRow } from '@/components/ui/table';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { CalendarEvent } from '@/contexts/CalendarContext';
 
 const UpcomingEvents: React.FC = () => {
   const { selectedDate, setSelectedDate, events, getUpcomingEvents } = useCalendarContext();
   const isMobile = useIsMobile();
-  const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [upcomingEvents, setUpcomingEvents] = useState<CalendarEvent[]>([]);
   
-  // Update upcoming events whenever selected date changes
+  // Update upcoming events whenever selected date or events change
   useEffect(() => {
-    console.log(`UpcomingEvents - selectedDate changed to: ${selectedDate.toDateString()}`);
+    console.log(`UpcomingEvents - Refreshing with selectedDate: ${selectedDate.toDateString()}`);
     
-    // Get events AFTER the selected date
+    // Get events after the selected date (not including events on the selected date)
     const upcoming = getUpcomingEvents(undefined, selectedDate);
     setUpcomingEvents(upcoming);
     

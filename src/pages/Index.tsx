@@ -52,12 +52,12 @@ const Index = () => {
               {isMobile ? (
                 // Mobile view - Fixed mobile scrolling with appropriate spacing
                 <div className="h-[calc(100vh-130px)] overflow-y-auto pb-24">
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {/* Welcome Message */}
                     <WelcomeMessage userName={userName} />
                     
                     {/* Calendar and Schedule - layout for mobile */}
-                    <section className="mt-2 mb-2">
+                    <section className="mt-2 mb-4">
                       <h2 className="text-sm font-bold mb-2">Calendar & Schedule</h2>
                       <CalendarProvider>
                         <div className="grid grid-cols-12 gap-2">
@@ -72,18 +72,18 @@ const Index = () => {
                     </section>
                     
                     {/* Modules Section */}
-                    <section>
+                    <section className="mt-4">
                       <h2 className="text-base font-bold mb-2">Modules</h2>
                       <ModulesSection />
                     </section>
                     
                     {/* Personal Section */}
-                    <section className="mt-3">
+                    <section className="mt-4">
                       <PersonalSection />
                     </section>
                     
                     {/* Resources Section */}
-                    <section className="mt-3 mb-10">
+                    <section className="mt-4 mb-10">
                       <h2 className="text-base font-bold mb-2">Resources</h2>
                       <ResourcesSection />
                     </section>

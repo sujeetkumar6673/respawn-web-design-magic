@@ -10,8 +10,8 @@ const UpcomingEvents: React.FC = () => {
   const { setSelectedDate, getUpcomingEvents } = useCalendarContext();
   const isMobile = useIsMobile();
   
-  // Get upcoming events (limited to 7 for desktop, 3 for mobile)
-  const upcomingEvents = getUpcomingEvents(isMobile ? 3 : 7);
+  // Get upcoming events (increased from 3 to 4 for mobile to show more events)
+  const upcomingEvents = getUpcomingEvents(isMobile ? 4 : 7);
 
   return (
     <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-100 flex flex-col h-full">

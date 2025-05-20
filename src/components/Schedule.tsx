@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { format, isEqual } from 'date-fns';
@@ -19,8 +20,8 @@ const Schedule: React.FC = () => {
   // Get events for the selected date
   const scheduleItems = getEventsForDate(selectedDate);
   
-  // Get upcoming events (limited to 3 for desktop, 1 for mobile)
-  const upcomingItems = getUpcomingEvents(isMobile ? 1 : 3);
+  // Get upcoming events - changed from 1 to 2 for mobile to show more events
+  const upcomingItems = getUpcomingEvents(isMobile ? 2 : 3);
 
   // Determine time column width based on device
   const timeColWidth = isMobile ? "w-[50px]" : "w-20";

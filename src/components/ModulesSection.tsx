@@ -52,7 +52,7 @@ const ModulesSection: React.FC = () => {
       {modules.map((module) => (
         <Card 
           key={module.id} 
-          className={`module-card ${module.className} cursor-pointer h-[80px]`}
+          className={`module-card ${module.className} cursor-pointer h-[85px]`}
         >
           <CardContent className="p-3">
             <h3 className="text-sm font-bold">{module.name}</h3>

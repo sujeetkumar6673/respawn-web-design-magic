@@ -85,16 +85,16 @@ const ResourcesSection: React.FC = () => {
         ))}
       </div>
       
-      {/* Compact Partner section */}
-      <div className="mt-2 flex items-center justify-center">
+      {/* Minimized Partner section */}
+      <div className="mt-1 flex items-center">
         <div className="flex gap-2">
           {partners.map(partner => (
             <div 
               key={partner.id} 
               className="flex items-center justify-center rounded-sm shadow-sm" 
               style={{
-                width: '70px', 
-                height: '24px',
+                width: '60px', 
+                height: '20px',
                 backgroundColor: partner.color,
                 color: 'white'
               }}

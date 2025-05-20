@@ -48,7 +48,7 @@ const PersonalSection: React.FC = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-      <Card className="overflow-hidden h-64 sm:h-64 md:h-68">
+      <Card className="overflow-hidden h-64 sm:h-64 md:h-80">
         <CardHeader className="bg-rezilia-pink bg-opacity-20 py-2 px-3 flex flex-row items-center gap-2">
           <HeartIcon />
           <h3 className="font-bold text-sm">Mom - Jane.D</h3>
@@ -68,7 +68,7 @@ const PersonalSection: React.FC = () => {
         </ScrollArea>
       </Card>
       
-      <Card className="h-64 sm:h-64 md:h-68">
+      <Card className="h-64 sm:h-64 md:h-80">
         <CardHeader className="py-2 px-3 flex flex-row items-center gap-2">
           <span className="text-lg sm:text-xl">📝</span>
           <h3 className="font-bold text-sm">Notes</h3>

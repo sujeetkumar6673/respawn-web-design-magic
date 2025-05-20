@@ -53,7 +53,7 @@ const Index = () => {
                 {/* Left Column */}
                 <div className="lg:col-span-2 h-full">
                   <ScrollArea className="h-full pr-2">
-                    <div className="space-y-4 pb-4">
+                    <div className="space-y-3 pb-4">
                       {/* Welcome Message */}
                       <WelcomeMessage userName={userName} />
                       
@@ -81,12 +81,12 @@ const Index = () => {
                       </section>
                       
                       {/* Personal Section */}
-                      <section className="mt-4">
+                      <section className="mt-3">
                         <PersonalSection />
                       </section>
                       
                       {/* Resources Section */}
-                      <section className="mt-4">
+                      <section className="mt-3">
                         <h2 className="text-base font-bold mb-2">Resources</h2>
                         <ResourcesSection />
                       </section>

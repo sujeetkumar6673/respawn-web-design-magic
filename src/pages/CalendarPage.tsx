@@ -9,8 +9,10 @@ import { Button } from '@/components/ui/button';
 import MobileNav from '@/components/MobileNav';
 import { CalendarPlus } from 'lucide-react';
 import EventFormDialog from '@/components/calendar/EventFormDialog';
-import CalendarSection from '@/components/calendar/CalendarSection';
-import CalendarStyles from '@/components/calendar/CalendarStyles';
+import Calendar from '@/components/Calendar';
+import { Card } from '@/components/ui/card';
+import DailyEvents from '@/components/calendar/DailyEvents';
+import UpcomingEvents from '@/components/calendar/UpcomingEvents';
 
 const CalendarPage = () => {
   const { selectedDate, events } = useCalendarContext();
@@ -30,13 +32,6 @@ const CalendarPage = () => {
   const handleNavigate = (page: string) => {
     setActivePage(page);
   };
-
-  // Event dots for calendar
-  const eventDates: Record<string, number> = {};
-  events.forEach(event => {
-    const dateStr = format(event.date, 'yyyy-MM-dd');
-    eventDates[dateStr] = (eventDates[dateStr] || 0) + 1;
-  });
 
   return (
     <div className="app-background min-h-screen pb-16 sm:pb-0">
@@ -67,8 +62,24 @@ const CalendarPage = () => {
                 </div>
 
                 {/* Calendar Layout */}
-                <div className="flex flex-col space-y-4">
-                  <CalendarSection key={`cal-section-${refreshKey}`} eventDates={eventDates} />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {/* Left Column - Calendar */}
+                  <Card className="md:col-span-2">
+                    <Calendar key={`calendar-${refreshKey}`} />
+                  </Card>
+                  
+                  {/* Right Column - Events */}
+                  <div className="flex flex-col space-y-6">
+                    {/* Today's Events */}
+                    <Card className="p-4">
+                      <DailyEvents date={selectedDate} />
+                    </Card>
+                    
+                    {/* Upcoming Events */}
+                    <Card className="p-4">
+                      <UpcomingEvents />
+                    </Card>
+                  </div>
                 </div>
               </div>
             </div>
@@ -84,9 +95,6 @@ const CalendarPage = () => {
 
       {/* Mobile Navigation - only visible on mobile */}
       {isMobile && <MobileNav activePage={activePage} onNavigate={handleNavigate} />}
-
-      {/* Calendar Styles */}
-      <CalendarStyles />
     </div>
   );
 };

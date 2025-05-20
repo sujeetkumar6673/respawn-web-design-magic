@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { format, startOfWeek, addDays, isSameDay, isToday, isSameMonth } from 'date-fns';
 import { Calendar as CalendarIcon } from "lucide-react";
@@ -9,14 +8,10 @@ import { cn } from "@/lib/utils";
 import { useCalendarContext } from '@/contexts/CalendarContext';
 
 interface CalendarSectionProps {
-  onDateClick?: (date: Date) => void;
-  eventDates?: Record<string, number>;
+  onDateClick: (date: Date) => void;
 }
 
-const CalendarSection: React.FC<CalendarSectionProps> = ({ 
-  onDateClick = (date) => {}, 
-  eventDates = {} 
-}) => {
+const CalendarSection: React.FC<CalendarSectionProps> = ({ onDateClick }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [viewMode, setViewMode] = useState<'month' | 'daily'>('month');
   const { selectedDate, setSelectedDate } = useCalendarContext();
@@ -78,9 +73,8 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
       <div className="flex">
         {timeSlots.map((timeSlotDate, index) => {
           const isSelected = isSameDay(timeSlotDate, selectedDate);
-          const isCurrentDay = isToday(timeSlotDate);
+          const isToday = isSameDay(timeSlotDate, new Date());
           const isDimmed = !isSameMonth(timeSlotDate, currentDate);
-          const hasEvents = eventDates && eventDates[format(timeSlotDate, 'yyyy-MM-dd')];
 
           return (
             
@@ -91,7 +85,7 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
                 ${isDimmed ? 'bg-gray-50 text-gray-400' : 'bg-white'}
                 ${isSelected ? 'bg-rezilia-purple/5' : ''}
                 ${viewMode === 'month' && index % 7 === 6 ? 'border-r-0' : ''}
-                ${isCurrentDay ? 'bg-rezilia-green/10' : ''}
+                ${isToday ? 'bg-rezilia-green/10' : ''}
                 relative
               `}
               onClick={() => onDateClick(timeSlotDate)}
@@ -102,14 +96,9 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
               >
                 {format(timeSlotDate, 'EEE')}
               </time>
-              <div className="flex items-center">
-                <span className="flex items-center justify-center leading-none p-1 font-semibold text-base">
-                  {format(timeSlotDate, 'd')}
-                </span>
-                {hasEvents && (
-                  <span className="ml-1 w-1.5 h-1.5 bg-rezilia-purple rounded-full" />
-                )}
-              </div>
+              <span className="flex items-center justify-center rounded-full leading-none p-1 font-semibold text-base">
+                {format(timeSlotDate, 'd')}
+              </span>
             </div>
           );
         })}

@@ -45,8 +45,7 @@ const Schedule: React.FC = () => {
         )}
       </div>
       
-      {/* Tasks section with scrollable area */}
-      <ScrollArea className={`flex-1 ${isMobile ? 'max-h-[150px]' : 'h-[180px]'}`}>
+      <ScrollArea className={`flex-1 ${isMobile ? 'max-h-[150px]' : 'max-h-[180px]'}`}>
         {scheduleItems.length > 0 ? (
           scheduleItems.map((item, index) => (
             <div key={item.id} className={`relative mb-1 ${index > 0 ? 'mt-1' : ''}`}>

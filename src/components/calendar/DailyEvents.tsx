@@ -6,20 +6,24 @@ import { Button } from '@/components/ui/button';
 import { CalendarIcon } from 'lucide-react';
 
 interface DailyEventsProps {
-  onAddEvent: () => void;
+  date?: Date; // Make date optional, defaulting to selectedDate from context
+  onAddEvent?: () => void;
 }
 
-const DailyEvents: React.FC<DailyEventsProps> = ({ onAddEvent }) => {
+const DailyEvents: React.FC<DailyEventsProps> = ({ date, onAddEvent }) => {
   const { selectedDate, getEventsForDate } = useCalendarContext();
   
-  // Get events for selected date
-  const eventsForSelectedDate = getEventsForDate(selectedDate);
+  // Use the passed date or fall back to selectedDate from context
+  const displayDate = date || selectedDate;
+  
+  // Get events for the display date
+  const eventsForSelectedDate = getEventsForDate(displayDate);
 
   return (
     <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
       <h2 className="text-xl font-bold text-rezilia-purple mb-4">
-        Events on {format(selectedDate, 'MMMM d, yyyy')}
-        {isToday(selectedDate) && <span className="ml-2 text-sm text-rezilia-green">(Today)</span>}
+        Events on {format(displayDate, 'MMMM d, yyyy')}
+        {isToday(displayDate) && <span className="ml-2 text-sm text-rezilia-green">(Today)</span>}
       </h2>
       
       {eventsForSelectedDate.length > 0 ? (
@@ -44,13 +48,15 @@ const DailyEvents: React.FC<DailyEventsProps> = ({ onAddEvent }) => {
         <div className="text-center py-8 text-gray-500">
           <CalendarIcon className="mx-auto h-12 w-12 text-gray-300 mb-2" />
           <p className="text-lg">No events. Enjoy today!</p>
-          <Button 
-            variant="outline" 
-            className="mt-4 border-rezilia-purple text-rezilia-purple hover:bg-rezilia-purple hover:text-white"
-            onClick={onAddEvent}
-          >
-            Add Event
-          </Button>
+          {onAddEvent && (
+            <Button 
+              variant="outline" 
+              className="mt-4 border-rezilia-purple text-rezilia-purple hover:bg-rezilia-purple hover:text-white"
+              onClick={onAddEvent}
+            >
+              Add Event
+            </Button>
+          )}
         </div>
       )}
     </div>

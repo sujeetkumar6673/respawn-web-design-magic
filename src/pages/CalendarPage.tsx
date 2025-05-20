@@ -72,7 +72,10 @@ const CalendarPage = () => {
                   <div className="flex flex-col space-y-6">
                     {/* Today's Events */}
                     <Card className="p-4">
-                      <DailyEvents date={selectedDate} />
+                      <DailyEvents 
+                        date={selectedDate}
+                        onAddEvent={() => setIsAddEventDialogOpen(true)} 
+                      />
                     </Card>
                     
                     {/* Upcoming Events */}

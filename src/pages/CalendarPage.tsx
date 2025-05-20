@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
@@ -46,32 +45,45 @@ const CalendarPage = () => {
             
             {/* Main Content */}
             <div className="bg-white rounded-b-xl p-3 sm:p-6 flex-1 flex flex-col overflow-hidden">
-              <div className="flex flex-col space-y-6 h-full overflow-hidden">
-                {/* Page Title and Add Event Button */}
-                <div className="flex justify-between items-center">
-                  <h1 className="text-2xl sm:text-3xl font-bold text-rezilia-purple">Calendar</h1>
-                  <Button 
-                    onClick={() => setIsAddEventDialogOpen(true)}
-                    className="bg-rezilia-purple hover:bg-rezilia-purple/90 text-white rounded-full shadow-lg"
-                    size={isMobile ? "sm" : "default"}
-                  >
-                    <CalendarPlus className="mr-2 h-5 w-5" />
-                    <span>Add Event</span>
-                  </Button>
-                </div>
-
-                {/* Calendar Layout */}
-                {isMobile ? (
-                  <div className="flex flex-col space-y-4 overflow-hidden flex-1">
-                    <CalendarSection eventDates={eventDates} />
-                    <div className="overflow-y-auto flex-1">
-                      <DailyEvents onAddEvent={() => setIsAddEventDialogOpen(true)} />
-                      <div className="mt-4">
-                        <UpcomingEvents />
-                      </div>
-                    </div>
+              {isMobile ? (
+                // Mobile view - Fix scrolling issues
+                <div className="h-[calc(100vh-130px)] overflow-y-auto pb-24 flex flex-col">
+                  {/* Page Title and Add Event Button */}
+                  <div className="flex justify-between items-center mb-4">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-rezilia-purple">Calendar</h1>
+                    <Button 
+                      onClick={() => setIsAddEventDialogOpen(true)}
+                      className="bg-rezilia-purple hover:bg-rezilia-purple/90 text-white rounded-full shadow-lg"
+                      size={isMobile ? "sm" : "default"}
+                    >
+                      <CalendarPlus className="mr-2 h-5 w-5" />
+                      <span>Add Event</span>
+                    </Button>
                   </div>
-                ) : (
+                  
+                  <div className="space-y-4 mb-10">
+                    <CalendarSection eventDates={eventDates} />
+                    <DailyEvents onAddEvent={() => setIsAddEventDialogOpen(true)} />
+                    <UpcomingEvents />
+                  </div>
+                </div>
+              ) : (
+                // Desktop view - Keep existing structure
+                <div className="flex flex-col space-y-6 h-full overflow-hidden flex-1">
+                  {/* Page Title and Add Event Button */}
+                  <div className="flex justify-between items-center">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-rezilia-purple">Calendar</h1>
+                    <Button 
+                      onClick={() => setIsAddEventDialogOpen(true)}
+                      className="bg-rezilia-purple hover:bg-rezilia-purple/90 text-white rounded-full shadow-lg"
+                      size={isMobile ? "sm" : "default"}
+                    >
+                      <CalendarPlus className="mr-2 h-5 w-5" />
+                      <span>Add Event</span>
+                    </Button>
+                  </div>
+
+                  {/* Calendar Layout */}
                   <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 overflow-hidden flex-1 h-full">
                     <div className="lg:col-span-3 overflow-hidden">
                       <CalendarSection eventDates={eventDates} />
@@ -81,8 +93,8 @@ const CalendarPage = () => {
                       <UpcomingEvents />
                     </div>
                   </div>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

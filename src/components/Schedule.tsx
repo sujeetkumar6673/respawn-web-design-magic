@@ -38,7 +38,8 @@ const Schedule: React.FC = () => {
         </h3>
       </div>
       
-      <ScrollArea className={`${isMobile ? 'h-[150px]' : 'h-[200px]'}`}>
+      {/* Increased height for today's events */}
+      <ScrollArea className={`${isMobile ? 'h-[200px]' : 'h-[250px]'}`}>
         {scheduleItems.length > 0 ? (
           scheduleItems.map((item, index) => (
             <div key={item.id} className={`relative mb-1 ${index > 0 ? 'mt-1' : ''}`}>
@@ -75,13 +76,13 @@ const Schedule: React.FC = () => {
         )}
       </ScrollArea>
 
-      {/* Show upcoming events for both mobile and desktop */}
+      {/* Show upcoming events - reduced height */}
       {upcomingItems.length > 0 && (
         <div className={`${isMobile ? 'mt-2' : 'mt-3'}`}>
           <div className="mb-1">
             <h3 className="font-bold text-gray-800 text-xs">UPCOMING</h3>
           </div>
-          <ScrollArea className={`${isMobile ? 'h-[100px]' : 'h-[150px]'}`}>
+          <ScrollArea className={`${isMobile ? 'h-[60px]' : 'h-[100px]'}`}>
             {upcomingItems.map((item, index) => (
               <div key={item.id} className="mb-1 flex">
                 {/* Time and date column */}

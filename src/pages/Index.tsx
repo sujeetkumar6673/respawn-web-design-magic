@@ -57,7 +57,7 @@ const Index = () => {
                     <WelcomeMessage userName={userName} />
                     
                     {/* Calendar and Schedule - layout for mobile */}
-                    <section className="mt-2 mb-4">
+                    <section className="mt-2 mb-6">
                       <h2 className="text-sm font-bold mb-2">Calendar & Schedule</h2>
                       <CalendarProvider>
                         <div className="grid grid-cols-12 gap-2">
@@ -71,8 +71,8 @@ const Index = () => {
                       </CalendarProvider>
                     </section>
                     
-                    {/* Modules Section */}
-                    <section className="mt-4">
+                    {/* Modules Section - added more spacing to prevent overlap */}
+                    <section className="mt-6 pt-2">
                       <h2 className="text-base font-bold mb-2">Modules</h2>
                       <ModulesSection />
                     </section>

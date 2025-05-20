@@ -33,20 +33,20 @@ const CalendarPage = () => {
   });
 
   return (
-    <div className="app-background min-h-screen pb-16 sm:pb-0">
+    <div className="app-background min-h-screen pb-16 sm:pb-0 overflow-hidden">
       <div className="flex h-full">
         {/* Sidebar - only visible on desktop */}
         {!isMobile && <Sidebar activePage={activePage} />}
         
         {/* Main Content */}
-        <div className={`flex-1 p-3 sm:p-4 overflow-y-auto ${isMobile ? 'w-full' : 'ml-[220px]'}`}>
-          <div className="max-w-[1200px] mx-auto">
+        <div className={`flex-1 ${isMobile ? 'w-full' : 'ml-[220px]'} h-screen flex flex-col`}>
+          <div className="max-w-[1200px] mx-auto w-full p-3 sm:p-4 flex flex-col h-full">
             {/* Header */}
             <Header userName="Nina" />
             
             {/* Main Content */}
-            <div className="bg-white rounded-b-xl p-3 sm:p-6">
-              <div className="flex flex-col space-y-6">
+            <div className="bg-white rounded-b-xl p-3 sm:p-6 flex-1 flex flex-col overflow-hidden">
+              <div className="flex flex-col space-y-6 h-full">
                 {/* Page Title and Add Event Button */}
                 <div className="flex justify-between items-center">
                   <h1 className="text-2xl sm:text-3xl font-bold text-rezilia-purple">Calendar</h1>
@@ -62,17 +62,19 @@ const CalendarPage = () => {
 
                 {/* Calendar Layout */}
                 {isMobile ? (
-                  <div className="flex flex-col space-y-4">
+                  <div className="flex flex-col space-y-4 overflow-hidden flex-1">
                     <CalendarSection eventDates={eventDates} />
-                    <DailyEvents onAddEvent={() => setIsAddEventDialogOpen(true)} />
-                    <UpcomingEvents />
+                    <div className="overflow-y-auto flex-1">
+                      <DailyEvents onAddEvent={() => setIsAddEventDialogOpen(true)} />
+                      <UpcomingEvents />
+                    </div>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 overflow-hidden flex-1 h-full">
                     <div className="lg:col-span-3">
                       <CalendarSection eventDates={eventDates} />
                     </div>
-                    <div className="flex flex-col space-y-6">
+                    <div className="flex flex-col space-y-6 overflow-y-auto pr-2 max-h-full">
                       <DailyEvents onAddEvent={() => setIsAddEventDialogOpen(true)} />
                       <UpcomingEvents />
                     </div>

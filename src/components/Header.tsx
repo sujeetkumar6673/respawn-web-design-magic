@@ -3,7 +3,7 @@ import React from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from './Icons';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Link } from 'react-router-dom';
 
 interface HeaderProps {
   userName: string;
@@ -18,10 +18,7 @@ const Header: React.FC<HeaderProps> = ({ userName }) => {
         </Button>
         <div className="flex flex-col md:flex-row md:items-center gap-2">
           <div>
-            <span className="relative">
-              Welcome to Rezilia ;)
-              <Badge className="absolute -top-2 -right-8 bg-rezilia-orange text-white">NEW</Badge>
-            </span>
+            <span>Welcome to Rezilia ;)</span>
           </div>
         </div>
       </div>
@@ -40,10 +37,12 @@ const Header: React.FC<HeaderProps> = ({ userName }) => {
           </svg>
           <span className="absolute -top-1 -right-1 bg-rezilia-orange text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">3</span>
         </Button>
-        <Avatar>
-          <AvatarImage src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=500&auto=format&fit=crop" alt={userName} />
-          <AvatarFallback>NA</AvatarFallback>
-        </Avatar>
+        <Link to="/profile">
+          <Avatar className="cursor-pointer hover:opacity-90 transition-opacity">
+            <AvatarImage src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=500&auto=format&fit=crop" alt={userName} />
+            <AvatarFallback>NA</AvatarFallback>
+          </Avatar>
+        </Link>
       </div>
     </header>
   );

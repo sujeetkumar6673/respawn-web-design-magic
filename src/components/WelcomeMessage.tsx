@@ -9,22 +9,19 @@ interface WelcomeMessageProps {
 
 const WelcomeMessage: React.FC<WelcomeMessageProps> = ({ userName }) => {
   return (
-    <Card className="bg-white rounded-xl p-4 flex items-center gap-4">
+    <Card className="bg-white rounded-xl p-3 flex items-center gap-3">
       <div className="relative">
-        <Avatar className="h-16 w-16 border-2 border-rezilia-blue">
+        <Avatar className="h-12 w-12 border-2 border-rezilia-blue">
           <AvatarImage src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=500&auto=format&fit=crop" alt={userName} />
           <AvatarFallback>NA</AvatarFallback>
         </Avatar>
-        <div className="absolute -top-2 -left-2 bg-blue-500 text-white text-xs rounded-full px-2 py-0.5">
-          Shape
-        </div>
       </div>
       <div className="text-left">
-        <h2 className="text-2xl font-bold">HELLO, {userName.toUpperCase()}</h2>
-        <p className="text-gray-600">How can we help you today ?</p>
+        <h2 className="text-lg font-bold">HELLO, {userName.toUpperCase()}</h2>
+        <p className="text-gray-600 text-sm">How can we help you today?</p>
         <a 
           href="/chat" 
-          className="mt-2 inline-block text-sm text-rezilia-purple hover:text-rezilia-purple/80"
+          className="text-xs text-rezilia-purple hover:text-rezilia-purple/80"
         >
           Check messages (3 unread)
         </a>

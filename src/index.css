@@ -105,16 +105,19 @@
 
   html, body {
     height: 100%;
-    overflow: hidden;
   }
 }
 
-/* Background image for the app */
 .app-background {
-  background-image: url('/lovable-uploads/47b15075-bd0e-406a-ad46-426378162a9a.png');
+  background-image: url('/lovable-uploads/dc2ff5c0-2bce-47a4-b261-f6441dae6b1a.png');
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
+  min-height: 100vh;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 /* Sidebar styling */

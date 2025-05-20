@@ -10,15 +10,15 @@ const UpcomingEvents: React.FC = () => {
   const { setSelectedDate, getUpcomingEvents } = useCalendarContext();
   const isMobile = useIsMobile();
   
-  // Get upcoming events (limited to 7 for desktop, 3 for mobile)
-  const upcomingEvents = getUpcomingEvents(isMobile ? 3 : 7);
+  // Get all upcoming events instead of limiting them
+  const upcomingEvents = getUpcomingEvents();
 
   return (
-    <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex flex-col h-full">
+    <div className="col-span-1 lg:col-span-1 bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex flex-col h-full">
       <h2 className="text-xl font-bold text-rezilia-purple mb-4">Upcoming Events</h2>
       
       {upcomingEvents.length > 0 ? (
-        <ScrollArea className="flex-1">
+        <ScrollArea className="flex-1 h-[180px]">
           <Table>
             <TableHeader>
               <TableRow>

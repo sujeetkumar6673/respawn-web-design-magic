@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { ArrowRight, LogIn, UserPlus } from 'lucide-react';
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
+import { useIsMobile } from '@/hooks/use-mobile';
 
 type FormData = {
   email: string;
@@ -19,6 +20,7 @@ const LandingPage = () => {
   const [searchParams] = useSearchParams();
   const [isSignIn, setIsSignIn] = useState(true);
   const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>();
+  const isMobile = useIsMobile();
   
   useEffect(() => {
     // Check URL parameters on component mount
@@ -47,7 +49,7 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex overflow-auto relative">
+    <div className="min-h-screen w-full overflow-y-auto">
       {/* Background image with overlay */}
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center" 
@@ -61,7 +63,7 @@ const LandingPage = () => {
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-4 py-16 z-10 flex flex-col md:flex-row items-center justify-between relative">
+      <div className="container relative mx-auto px-4 py-16 z-10 flex flex-col md:flex-row items-center justify-between min-h-screen">
         {/* Left side - headline */}
         <div className="mb-10 md:mb-0 md:w-1/2 text-white">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Rezilia Health & Wellness</h1>
@@ -97,7 +99,7 @@ const LandingPage = () => {
         </div>
 
         {/* Right side - form card */}
-        <div className="w-full md:w-[400px]">
+        <div className="w-full md:w-[400px] pb-16 md:pb-0">
           <Card className="bg-white/95 backdrop-blur-md border-0 shadow-lg">
             <CardHeader>
               <CardTitle>{isSignIn ? "Sign In" : "Join Now"}</CardTitle>

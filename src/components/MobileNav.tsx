@@ -1,47 +1,67 @@
 
 import React from 'react';
-import { HomeIcon, CalendarIcon, ProfileIcon, SettingIcon } from './Icons';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { Home, Calendar, MessageCircle, User } from 'lucide-react';
 
 interface MobileNavProps {
   activePage: string;
-  onNavigate: (page: string) => void;
+  onNavigate?: (page: string) => void;
 }
 
 const MobileNav: React.FC<MobileNavProps> = ({ activePage, onNavigate }) => {
-  const location = useLocation();
-  
-  // Navigation items with their routes
+  // Navigation items with their routes and icons
   const navItems = [
-    { id: 'home', icon: <HomeIcon />, label: 'Home', path: '/' },
-    { id: 'calendar', icon: <CalendarIcon />, label: 'Calendar', path: '/calendar' },
-    { id: 'profile', icon: <ProfileIcon />, label: 'Profile', path: '/profile' },
-    { id: 'settings', icon: <SettingIcon />, label: 'Settings', path: '/settings' },
+    { 
+      name: 'home', 
+      icon: <Home size={22} strokeWidth={activePage === 'home' ? 2.5 : 2} />, 
+      route: '/dashboard',
+      label: 'Home'
+    },
+    { 
+      name: 'calendar', 
+      icon: <Calendar size={22} strokeWidth={activePage === 'calendar' ? 2.5 : 2} />, 
+      route: '/calendar',
+      label: 'Calendar'  
+    },
+    { 
+      name: 'chat', 
+      icon: <MessageCircle size={22} strokeWidth={activePage === 'chat' ? 2.5 : 2} />, 
+      route: '/chat',
+      label: 'Chat'  
+    },
+    { 
+      name: 'profile', 
+      icon: <User size={22} strokeWidth={activePage === 'profile' ? 2.5 : 2} />, 
+      route: '/profile',
+      label: 'Profile'  
+    },
   ];
   
+  // Handle item click if onNavigate is provided
+  const handleItemClick = (pageName: string) => {
+    if (onNavigate) {
+      onNavigate(pageName);
+    }
+  };
+  
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
-      <div className="grid grid-cols-4">
-        {navItems.map((item) => {
-          const isActive = location.pathname === item.path || 
-                          (location.pathname === '/' && item.id === 'home');
-          
-          return (
-            <Link 
-              key={item.id}
-              to={item.path}
-              className={`flex flex-col items-center py-3 ${
-                isActive ? 'text-rezilia-purple' : 'text-gray-500'
-              }`}
-              onClick={() => onNavigate(item.id)}
-            >
-              <div className={`mb-1 ${isActive ? 'text-rezilia-purple' : 'text-gray-500'}`}>
-                {item.icon}
-              </div>
-              <span className="text-xs">{item.label}</span>
-            </Link>
-          );
-        })}
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-2 px-6 z-50">
+      <div className="flex justify-between items-center">
+        {navItems.map((item) => (
+          <Link 
+            key={item.name}
+            to={item.route}
+            className={`flex flex-col items-center py-1 px-4 ${
+              activePage === item.name 
+                ? 'text-rezilia-purple font-medium' 
+                : 'text-gray-500'
+            }`}
+            onClick={() => handleItemClick(item.name)}
+          >
+            {item.icon}
+            <span className="text-xs mt-1">{item.label}</span>
+          </Link>
+        ))}
       </div>
     </div>
   );

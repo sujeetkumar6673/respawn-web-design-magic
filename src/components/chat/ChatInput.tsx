@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Paperclip, Send } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
@@ -10,6 +11,7 @@ interface ChatInputProps {
 
 const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
   const [message, setMessage] = useState('');
+  const isMobile = useIsMobile();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,7 +22,10 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-center gap-2 border-t p-3 bg-white">
+    <form 
+      onSubmit={handleSubmit} 
+      className={`flex items-center gap-2 border-t p-3 bg-white ${isMobile ? 'pb-16' : ''}`}
+    >
       <Button 
         type="button" 
         variant="ghost" 

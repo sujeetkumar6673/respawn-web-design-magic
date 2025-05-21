@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Header from '@/components/Header';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -117,7 +116,7 @@ const ChatPage = () => {
                         Back to contacts
                       </Button>
                     </div>
-                    <div className="flex-1">
+                    <div className="flex-1 overflow-hidden">
                       {selectedContact && (
                         <ChatContainer 
                           currentUser={currentUser} 
@@ -146,7 +145,7 @@ const ChatPage = () => {
                   
                   {/* Chat Container */}
                   {selectedContact && (
-                    <div className="flex-1">
+                    <div className="flex-1 overflow-hidden">
                       <ChatContainer 
                         currentUser={currentUser} 
                         contact={selectedContact} 

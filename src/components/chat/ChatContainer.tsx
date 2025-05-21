@@ -6,6 +6,7 @@ import ChatInput from './ChatInput';
 import ChatHeader from './ChatHeader';
 import { Contact } from './ChatContactList';
 import { toast } from 'sonner';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface Message {
   id: string;
@@ -27,6 +28,7 @@ interface ChatContainerProps {
 const ChatContainer: React.FC<ChatContainerProps> = ({ currentUser, contact }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
 
   // Mock data for initial messages
   useEffect(() => {

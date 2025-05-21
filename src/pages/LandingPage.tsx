@@ -47,10 +47,10 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex relative">
+    <div className="min-h-screen flex overflow-auto relative">
       {/* Background image with overlay */}
       <div 
-        className="absolute inset-0 z-0 bg-cover bg-center" 
+        className="fixed inset-0 z-0 bg-cover bg-center" 
         style={{ 
           backgroundImage: 'url(/lovable-uploads/47b15075-bd0e-406a-ad46-426378162a9a.png)',
           backgroundSize: 'cover',
@@ -61,7 +61,7 @@ const LandingPage = () => {
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-4 py-16 z-10 flex flex-col md:flex-row items-center justify-between">
+      <div className="container mx-auto px-4 py-16 z-10 flex flex-col md:flex-row items-center justify-between relative">
         {/* Left side - headline */}
         <div className="mb-10 md:mb-0 md:w-1/2 text-white">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Rezilia Health & Wellness</h1>

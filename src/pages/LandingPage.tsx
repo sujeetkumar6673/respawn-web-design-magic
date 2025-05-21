@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,8 +16,16 @@ type FormData = {
 
 const LandingPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [isSignIn, setIsSignIn] = useState(true);
   const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>();
+  
+  useEffect(() => {
+    // Check URL parameters on component mount
+    if (searchParams.get('form') === 'join') {
+      setIsSignIn(false);
+    }
+  }, [searchParams]);
   
   const onSubmit = (data: FormData) => {
     // This is just a demo auth flow
@@ -62,7 +70,8 @@ const LandingPage = () => {
             Personalized health monitoring, wellness tracking, and caregiver support all in one platform.
           </p>
           
-          {!isSignIn && !window.location.search.includes('form=join') && (
+          {/* Always show the buttons on mobile and desktop when not on form */}
+          {(isSignIn || (!isSignIn && !document.URL.includes('form=join'))) && (
             <div className="flex flex-wrap gap-3 mt-8">
               <Button 
                 onClick={() => setIsSignIn(true)}
@@ -75,7 +84,7 @@ const LandingPage = () => {
               <Button 
                 onClick={() => {
                   setIsSignIn(false);
-                  window.history.pushState({}, '', '?form=join');
+                  navigate('?form=join');
                 }}
                 variant="outline"
                 className="bg-white/10 text-white border-white hover:bg-white/20"

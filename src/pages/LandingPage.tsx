@@ -11,12 +11,13 @@ import { useForm } from "react-hook-form";
 type FormData = {
   email: string;
   password: string;
+  name?: string;
 };
 
 const LandingPage = () => {
   const navigate = useNavigate();
-  const [isSignIn, setIsSignIn] = useState(false);
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
+  const [isSignIn, setIsSignIn] = useState(true);
+  const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>();
   
   const onSubmit = (data: FormData) => {
     // This is just a demo auth flow
@@ -29,6 +30,12 @@ const LandingPage = () => {
     setTimeout(() => {
       navigate('/dashboard');
     }, 1000);
+  };
+
+  // Toggle between sign in and join forms
+  const toggleForm = () => {
+    setIsSignIn(!isSignIn);
+    reset(); // Reset form fields
   };
 
   return (
@@ -55,7 +62,7 @@ const LandingPage = () => {
             Personalized health monitoring, wellness tracking, and caregiver support all in one platform.
           </p>
           
-          {!isSignIn && (
+          {!isSignIn && !window.location.search.includes('form=join') && (
             <div className="flex flex-wrap gap-3 mt-8">
               <Button 
                 onClick={() => setIsSignIn(true)}
@@ -66,7 +73,10 @@ const LandingPage = () => {
               </Button>
               
               <Button 
-                onClick={() => setIsSignIn(true)}
+                onClick={() => {
+                  setIsSignIn(false);
+                  window.history.pushState({}, '', '?form=join');
+                }}
                 variant="outline"
                 className="bg-white/10 text-white border-white hover:bg-white/20"
               >
@@ -77,76 +87,92 @@ const LandingPage = () => {
           )}
         </div>
 
-        {/* Right side - form card (only shown when isSignIn is true) */}
-        {isSignIn && (
-          <div className="w-full md:w-[400px]">
-            <Card className="bg-white/95 backdrop-blur-md border-0 shadow-lg">
-              <CardHeader>
-                <CardTitle>{isSignIn ? "Sign In" : "Create Account"}</CardTitle>
-                <CardDescription>
-                  {isSignIn 
-                    ? "Enter your credentials to access your dashboard" 
-                    : "Join us to start your health journey"}
-                </CardDescription>
-              </CardHeader>
-              
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <CardContent className="space-y-4">
+        {/* Right side - form card */}
+        <div className="w-full md:w-[400px]">
+          <Card className="bg-white/95 backdrop-blur-md border-0 shadow-lg">
+            <CardHeader>
+              <CardTitle>{isSignIn ? "Sign In" : "Join Now"}</CardTitle>
+              <CardDescription>
+                {isSignIn 
+                  ? "Enter your credentials to access your dashboard" 
+                  : "Create your account to start your health journey"}
+              </CardDescription>
+            </CardHeader>
+            
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <CardContent className="space-y-4">
+                {/* Name field - only for Join Now form */}
+                {!isSignIn && (
                   <div className="space-y-1">
-                    <label htmlFor="email" className="text-sm font-medium">
-                      Email
+                    <label htmlFor="name" className="text-sm font-medium">
+                      Full Name
                     </label>
                     <Input
-                      id="email"
-                      type="email"
-                      placeholder="name@example.com"
-                      {...register("email", { required: "Email is required" })}
+                      id="name"
+                      type="text"
+                      placeholder="John Doe"
+                      {...register("name", { required: !isSignIn ? "Name is required" : false })}
                     />
-                    {errors.email && (
-                      <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+                    {errors.name && (
+                      <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
                     )}
                   </div>
-                  
-                  <div className="space-y-1">
-                    <label htmlFor="password" className="text-sm font-medium">
-                      Password
-                    </label>
-                    <Input
-                      id="password"
-                      type="password"
-                      placeholder="••••••••"
-                      {...register("password", { required: "Password is required" })}
-                    />
-                    {errors.password && (
-                      <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
-                    )}
-                  </div>
-                </CardContent>
+                )}
                 
-                <CardFooter className="flex flex-col">
-                  <Button 
-                    type="submit"
-                    className="w-full bg-rezilia-purple hover:bg-rezilia-purple/90"
+                <div className="space-y-1">
+                  <label htmlFor="email" className="text-sm font-medium">
+                    Email
+                  </label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="name@example.com"
+                    {...register("email", { required: "Email is required" })}
+                  />
+                  {errors.email && (
+                    <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+                  )}
+                </div>
+                
+                <div className="space-y-1">
+                  <label htmlFor="password" className="text-sm font-medium">
+                    Password
+                  </label>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="••••••••"
+                    {...register("password", { required: "Password is required" })}
+                  />
+                  {errors.password && (
+                    <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
+                  )}
+                </div>
+              </CardContent>
+              
+              <CardFooter className="flex flex-col">
+                <Button 
+                  type="submit"
+                  className="w-full bg-rezilia-purple hover:bg-rezilia-purple/90"
+                >
+                  {isSignIn ? "Sign In" : "Create Account"}
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+                
+                <p className="text-center text-sm mt-4">
+                  {isSignIn ? "Don't have an account? " : "Already have an account? "}
+                  <button 
+                    type="button"
+                    className="text-rezilia-purple font-semibold hover:underline"
+                    onClick={toggleForm}
                   >
-                    {isSignIn ? "Sign In" : "Create Account"}
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                  
-                  <p className="text-center text-sm mt-4">
-                    {isSignIn ? "Don't have an account? " : "Already have an account? "}
-                    <button 
-                      type="button"
-                      className="text-rezilia-purple font-semibold hover:underline"
-                      onClick={() => setIsSignIn(!isSignIn)}
-                    >
-                      {isSignIn ? "Join Now" : "Sign In"}
-                    </button>
-                  </p>
-                </CardFooter>
-              </form>
-            </Card>
-          </div>
-        )}
+                    {isSignIn ? "Join Now" : "Sign In"}
+                  </button>
+                </p>
+              </CardFooter>
+            </form>
+          </Card>
+        </div>
       </div>
     </div>
   );

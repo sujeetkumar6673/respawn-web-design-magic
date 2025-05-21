@@ -1,14 +1,34 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from './Icons';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from '@/components/ui/button';
+import { 
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { LogOut, User } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from "sonner";
 
 interface HeaderProps {
   userName: string;
 }
 
 const Header: React.FC<HeaderProps> = ({ userName }) => {
+  const navigate = useNavigate();
+  
+  const handleSignOut = () => {
+    // Show a success toast
+    toast.success("Signed out successfully!");
+    
+    // Redirect to landing page
+    setTimeout(() => {
+      navigate('/');
+    }, 1000);
+  };
+  
   return (
     <header className="bg-white rounded-t-xl p-4 flex justify-between items-center">
       <div className="flex items-center gap-3">
@@ -36,10 +56,50 @@ const Header: React.FC<HeaderProps> = ({ userName }) => {
           </svg>
           <span className="absolute -top-1 -right-1 bg-rezilia-orange text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">3</span>
         </Button>
-        <Avatar>
-          <AvatarImage src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=500&auto=format&fit=crop" alt={userName} />
-          <AvatarFallback>NA</AvatarFallback>
-        </Avatar>
+        
+        {/* Avatar with Popover */}
+        <Popover>
+          <PopoverTrigger asChild>
+            <Avatar className="cursor-pointer hover:ring-2 hover:ring-rezilia-purple/30 transition-all">
+              <AvatarImage src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=500&auto=format&fit=crop" alt={userName} />
+              <AvatarFallback>NA</AvatarFallback>
+            </Avatar>
+          </PopoverTrigger>
+          <PopoverContent className="w-56 p-3">
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 pb-2 border-b">
+                <Avatar>
+                  <AvatarImage src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=500&auto=format&fit=crop" alt={userName} />
+                  <AvatarFallback>NA</AvatarFallback>
+                </Avatar>
+                <div>
+                  <p className="text-sm font-medium">{userName}</p>
+                  <p className="text-xs text-gray-500">Parent</p>
+                </div>
+              </div>
+              
+              <div className="space-y-1">
+                <Button 
+                  variant="ghost" 
+                  className="w-full justify-start text-gray-700 hover:text-rezilia-purple"
+                  onClick={() => navigate('/profile')}
+                >
+                  <User className="mr-2 h-4 w-4" />
+                  <span>My Profile</span>
+                </Button>
+                
+                <Button 
+                  variant="ghost" 
+                  className="w-full justify-start text-gray-700 hover:text-red-600"
+                  onClick={handleSignOut}
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Sign Out</span>
+                </Button>
+              </div>
+            </div>
+          </PopoverContent>
+        </Popover>
       </div>
     </header>
   );

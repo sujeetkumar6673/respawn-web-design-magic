@@ -11,6 +11,8 @@ import ChatPage from "./pages/ChatPage";
 import ProfilePage from "./pages/ProfilePage";
 import LandingPage from "./pages/LandingPage";
 import { CalendarProvider } from "./contexts/CalendarContext";
+import { AuthProvider } from "./contexts/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -19,23 +21,53 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <CalendarProvider>
-        <BrowserRouter>
-          <Routes>
-            {/* Landing Page is now the default route */}
-            <Route path="/" element={<LandingPage />} />
-            
-            {/* Dashboard is now at /dashboard */}
-            <Route path="/dashboard" element={<Index />} />
-            <Route path="/calendar" element={<CalendarPage />} />
-            <Route path="/chat" element={<ChatPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
-            
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </CalendarProvider>
+      <AuthProvider>
+        <CalendarProvider>
+          <BrowserRouter>
+            <Routes>
+              {/* Landing Page is now the default route */}
+              <Route path="/" element={<LandingPage />} />
+              
+              {/* Protected Routes */}
+              <Route 
+                path="/dashboard" 
+                element={
+                  <ProtectedRoute>
+                    <Index />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/calendar" 
+                element={
+                  <ProtectedRoute>
+                    <CalendarPage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/chat" 
+                element={
+                  <ProtectedRoute>
+                    <ChatPage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/profile" 
+                element={
+                  <ProtectedRoute>
+                    <ProfilePage />
+                  </ProtectedRoute>
+                } 
+              />
+              
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </CalendarProvider>
+      </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

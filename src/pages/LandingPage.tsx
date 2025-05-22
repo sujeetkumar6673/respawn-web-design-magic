@@ -4,7 +4,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight, LogIn, UserPlus } from 'lucide-react';
+import { ArrowRight, LogIn, UserPlus, Phone, MapPin } from 'lucide-react';
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -13,6 +13,8 @@ type FormData = {
   email: string;
   password: string;
   name?: string;
+  phone?: string;
+  city?: string;
 };
 
 const LandingPage = () => {
@@ -32,6 +34,13 @@ const LandingPage = () => {
   const onSubmit = (data: FormData) => {
     // This is just a demo auth flow
     console.log('Form submitted:', data);
+    
+    // Store user info in localStorage to simulate authentication
+    localStorage.setItem('user', JSON.stringify({
+      email: data.email,
+      name: data.name || 'User',
+      isAuthenticated: true
+    }));
     
     // Show success toast
     toast.success(isSignIn ? "Signed in successfully!" : "Account created successfully!");
@@ -54,7 +63,7 @@ const LandingPage = () => {
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center" 
         style={{ 
-          backgroundImage: 'url(/lovable-uploads/47b15075-bd0e-406a-ad46-426378162a9a.png)',
+          backgroundImage: 'url(/lovable-uploads/011d175e-be13-4e78-9ce5-31cb1ca897cd.png)',
           backgroundSize: 'cover',
           backgroundPosition: 'center'
         }}
@@ -126,6 +135,50 @@ const LandingPage = () => {
                     />
                     {errors.name && (
                       <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
+                    )}
+                  </div>
+                )}
+
+                {/* Phone field - only for Join Now form */}
+                {!isSignIn && (
+                  <div className="space-y-1">
+                    <label htmlFor="phone" className="text-sm font-medium">
+                      Phone Number
+                    </label>
+                    <div className="relative">
+                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+                      <Input
+                        id="phone"
+                        type="tel"
+                        placeholder="(123) 456-7890"
+                        className="pl-10"
+                        {...register("phone", { required: !isSignIn ? "Phone number is required" : false })}
+                      />
+                    </div>
+                    {errors.phone && (
+                      <p className="text-red-500 text-xs mt-1">{errors.phone.message}</p>
+                    )}
+                  </div>
+                )}
+
+                {/* City field - only for Join Now form */}
+                {!isSignIn && (
+                  <div className="space-y-1">
+                    <label htmlFor="city" className="text-sm font-medium">
+                      City
+                    </label>
+                    <div className="relative">
+                      <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+                      <Input
+                        id="city"
+                        type="text"
+                        placeholder="New York"
+                        className="pl-10"
+                        {...register("city", { required: !isSignIn ? "City is required" : false })}
+                      />
+                    </div>
+                    {errors.city && (
+                      <p className="text-red-500 text-xs mt-1">{errors.city.message}</p>
                     )}
                   </div>
                 )}

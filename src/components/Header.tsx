@@ -11,6 +11,7 @@ import {
 import { LogOut, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from "sonner";
+import { useAuth } from '../contexts/AuthContext';
 
 interface HeaderProps {
   userName: string;
@@ -18,15 +19,17 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ userName }) => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   
   const handleSignOut = () => {
+    // Call the logout function from AuthContext
+    logout();
+    
     // Show a success toast
     toast.success("Signed out successfully!");
     
-    // Redirect to landing page
-    setTimeout(() => {
-      navigate('/');
-    }, 1000);
+    // Redirect to landing page immediately
+    navigate('/');
   };
   
   return (

@@ -8,6 +8,7 @@ import { ArrowRight, LogIn, UserPlus, Phone, MapPin } from 'lucide-react';
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useAuth } from '@/contexts/AuthContext';
 
 type FormData = {
   email: string;
@@ -23,6 +24,14 @@ const LandingPage = () => {
   const [isSignIn, setIsSignIn] = useState(true);
   const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>();
   const isMobile = useIsMobile();
+  const { login, isAuthenticated } = useAuth();
+  
+  // Redirect if user is already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
   
   useEffect(() => {
     // Check URL parameters on component mount
@@ -32,23 +41,21 @@ const LandingPage = () => {
   }, [searchParams]);
   
   const onSubmit = (data: FormData) => {
-    // This is just a demo auth flow
-    console.log('Form submitted:', data);
-    
-    // Store user info in localStorage to simulate authentication
-    localStorage.setItem('user', JSON.stringify({
+    // Create user object with required fields
+    const userData = {
       email: data.email,
       name: data.name || 'User',
       isAuthenticated: true
-    }));
+    };
+    
+    // Use Auth context to login
+    login(userData);
     
     // Show success toast
     toast.success(isSignIn ? "Signed in successfully!" : "Account created successfully!");
     
     // Redirect to dashboard
-    setTimeout(() => {
-      navigate('/dashboard');
-    }, 1000);
+    navigate('/dashboard');
   };
 
   // Toggle between sign in and join forms

@@ -37,16 +37,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Check if user exists in localStorage
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      setUser(parsedUser);
-      setIsAuthenticated(parsedUser.isAuthenticated);
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+        setIsAuthenticated(true); // Ensure this is set to true when user exists
+      } catch (error) {
+        console.error('Error parsing stored user:', error);
+        localStorage.removeItem('user'); // Clear invalid data
+      }
     }
   }, []);
 
   const login = (userData: User) => {
-    setUser(userData);
+    const authenticatedUser = { ...userData, isAuthenticated: true };
+    setUser(authenticatedUser);
     setIsAuthenticated(true);
-    localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.setItem('user', JSON.stringify(authenticatedUser));
   };
 
   const logout = () => {

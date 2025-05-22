@@ -79,18 +79,18 @@ const LandingPage = () => {
       </div>
 
       {/* Content */}
-      <div className="container relative mx-auto px-4 py-16 z-10 flex flex-col md:flex-row items-center justify-between min-h-screen">
+      <div className="container relative mx-auto px-4 py-8 md:py-16 z-10 flex flex-col md:flex-row items-center justify-between min-h-screen">
         {/* Left side - headline */}
-        <div className="mb-10 md:mb-0 md:w-1/2 text-white">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Rezilia Health & Wellness</h1>
-          <p className="text-xl md:text-2xl mb-6">Your AI-powered health and wellness companion</p>
-          <p className="text-lg mb-4 max-w-lg">
+        <div className="mb-6 md:mb-0 md:w-1/2 text-white">
+          <h1 className="text-3xl md:text-5xl font-bold mb-3 md:mb-4">Rezilia Health & Wellness</h1>
+          <p className="text-lg md:text-2xl mb-4 md:mb-6">Your AI-powered health and wellness companion</p>
+          <p className="text-base md:text-lg mb-3 md:mb-4 max-w-lg">
             Personalized health monitoring, wellness tracking, and caregiver support all in one platform.
           </p>
           
           {/* Always show the buttons on mobile and desktop when not on form */}
           {(isSignIn || (!isSignIn && !document.URL.includes('form=join'))) && (
-            <div className="flex flex-wrap gap-3 mt-8">
+            <div className="flex flex-wrap gap-3 mt-4 md:mt-8">
               <Button 
                 onClick={() => setIsSignIn(true)}
                 className="bg-rezilia-blue hover:bg-rezilia-blue/90 text-black font-bold py-2 px-6"
@@ -115,9 +115,9 @@ const LandingPage = () => {
         </div>
 
         {/* Right side - form card */}
-        <div className="w-full md:w-[400px] pb-16 md:pb-0">
-          <Card className="bg-white/95 backdrop-blur-md border-0 shadow-lg">
-            <CardHeader>
+        <div className="w-full md:w-[400px] pb-8 md:pb-0 mt-4 md:mt-0">
+          <Card className="bg-white/95 backdrop-blur-md border-0 shadow-lg overflow-y-auto max-h-[85vh] md:max-h-none">
+            <CardHeader className="pt-4 pb-2 md:pt-6 md:pb-3">
               <CardTitle>{isSignIn ? "Sign In" : "Join Now"}</CardTitle>
               <CardDescription>
                 {isSignIn 
@@ -127,7 +127,7 @@ const LandingPage = () => {
             </CardHeader>
             
             <form onSubmit={handleSubmit(onSubmit)}>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-3 md:space-y-4 py-2 md:py-4">
                 {/* Name field - only for Join Now form */}
                 {!isSignIn && (
                   <div className="space-y-1">
@@ -221,7 +221,7 @@ const LandingPage = () => {
                 </div>
               </CardContent>
               
-              <CardFooter className="flex flex-col">
+              <CardFooter className="flex flex-col pt-0 pb-4 md:pb-6">
                 <Button 
                   type="submit"
                   className="w-full bg-rezilia-purple hover:bg-rezilia-purple/90"
@@ -230,7 +230,7 @@ const LandingPage = () => {
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
                 
-                <p className="text-center text-sm mt-4">
+                <p className="text-center text-sm mt-3 md:mt-4">
                   {isSignIn ? "Don't have an account? " : "Already have an account? "}
                   <button 
                     type="button"

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -65,7 +64,7 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="min-h-screen w-full overflow-y-auto">
+    <div className="min-h-screen w-full overflow-hidden">
       {/* Background image with overlay */}
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center" 
@@ -79,7 +78,7 @@ const LandingPage = () => {
       </div>
 
       {/* Content */}
-      <div className="container relative mx-auto px-4 py-8 md:py-16 z-10 flex flex-col md:flex-row items-center justify-between min-h-screen">
+      <div className="container relative mx-auto px-4 py-8 md:py-16 z-10 flex flex-col md:flex-row items-center justify-between min-h-screen overflow-y-auto">
         {/* Left side - headline */}
         <div className="mb-6 md:mb-0 md:w-1/2 text-white">
           <h1 className="text-3xl md:text-5xl font-bold mb-3 md:mb-4">Rezilia Health & Wellness</h1>
@@ -116,8 +115,8 @@ const LandingPage = () => {
 
         {/* Right side - form card */}
         <div className="w-full md:w-[400px] pb-8 md:pb-0 mt-4 md:mt-0">
-          <Card className="bg-white/95 backdrop-blur-md border-0 shadow-lg overflow-y-auto max-h-[85vh] md:max-h-none">
-            <CardHeader className="pt-4 pb-2 md:pt-6 md:pb-3">
+          <Card className="bg-white/95 backdrop-blur-md border-0 shadow-lg overflow-y-auto max-h-[80vh] md:max-h-[85vh]">
+            <CardHeader className="pt-4 pb-2 md:pt-6 md:pb-3 sticky top-0 bg-white/95 z-10">
               <CardTitle>{isSignIn ? "Sign In" : "Join Now"}</CardTitle>
               <CardDescription>
                 {isSignIn 
@@ -221,7 +220,7 @@ const LandingPage = () => {
                 </div>
               </CardContent>
               
-              <CardFooter className="flex flex-col pt-0 pb-4 md:pb-6">
+              <CardFooter className="flex flex-col pt-0 pb-4 md:pb-6 sticky bottom-0 bg-white/95 z-10">
                 <Button 
                   type="submit"
                   className="w-full bg-rezilia-purple hover:bg-rezilia-purple/90"

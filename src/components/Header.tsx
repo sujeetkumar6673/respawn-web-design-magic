@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { ChevronLeftIcon, ChevronRightIcon } from './Icons';
+import { ChevronLeftIcon, ChevronRightIcon, SimpliciaBadge } from './Icons';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from '@/components/ui/button';
 import { 
@@ -15,9 +15,11 @@ import { useAuth } from '../contexts/AuthContext';
 
 interface HeaderProps {
   userName: string;
+  pageTitle?: string;
+  pageDescription?: string;
 }
 
-const Header: React.FC<HeaderProps> = ({ userName }) => {
+const Header: React.FC<HeaderProps> = ({ userName, pageTitle, pageDescription }) => {
   const navigate = useNavigate();
   const { logout } = useAuth();
   
@@ -39,9 +41,23 @@ const Header: React.FC<HeaderProps> = ({ userName }) => {
           <ChevronLeftIcon />
         </Button>
         <div className="flex flex-col md:flex-row md:items-center gap-2">
-          <div>
-            <span>Welcome to Rezilia ;)</span>
-          </div>
+          {pageTitle ? (
+            <div className="flex flex-col">
+              <div className="flex items-center gap-3">
+                <div className="w-6 h-6">
+                  <SimpliciaBadge />
+                </div>
+                <h1 className="text-2xl font-bold text-gray-900">{pageTitle}</h1>
+              </div>
+              {pageDescription && (
+                <p className="text-sm text-gray-600 ml-9">{pageDescription}</p>
+              )}
+            </div>
+          ) : (
+            <div>
+              <span>Welcome to Rezilia ;)</span>
+            </div>
+          )}
         </div>
       </div>
       

@@ -22,18 +22,7 @@ const SimpliciaPage: React.FC = () => {
       <div className="flex-1 ml-[220px] p-4 h-screen overflow-hidden">
         {/* Header */}
         <div className="mb-4">
-          <Header userName="Nina" />
-        </div>
-
-        {/* Page Title */}
-        <div className="mb-4">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-6 h-6">
-              <SimpliciaBadge />
-            </div>
-            <h1 className="text-2xl font-bold text-gray-900">Simplicia</h1>
-          </div>
-          <p className="text-sm text-gray-600">Care coordination and family presence management</p>
+          <Header userName="Nina" pageTitle="Simplicia" pageDescription="Care coordination and family presence management" />
         </div>
 
         <div className="grid grid-cols-12 gap-4 h-[calc(100vh-240px)]">

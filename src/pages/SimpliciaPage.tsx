@@ -22,7 +22,7 @@ const SimpliciaPage: React.FC = () => {
     <div className="min-h-screen bg-gray-50 flex overflow-hidden">
       {!isMobile && <Sidebar activePage="simplicia" />}
       
-      <div className={`flex-1 ${!isMobile ? 'ml-[220px]' : ''} p-4 h-screen overflow-hidden ${isMobile ? 'pb-20' : ''}`}>
+      <div className={`flex-1 ${!isMobile ? 'ml-[220px]' : ''} p-4 h-screen overflow-hidden ${isMobile ? 'pb-24' : ''}`}>
         {/* Header */}
         <div className="mb-4">
           <Header userName="Nina" pageTitle="Simplicia" pageDescription="Care coordination and family presence management" />
@@ -30,7 +30,7 @@ const SimpliciaPage: React.FC = () => {
 
         {/* Mobile Layout */}
         {isMobile ? (
-          <div className="space-y-4 h-[calc(100vh-160px)] overflow-y-auto">
+          <div className="space-y-4 h-[calc(100vh-160px)] overflow-y-auto pb-4">
             {/* View Type Selector - Mobile */}
             <Card>
               <CardHeader className="pb-3">
@@ -155,7 +155,7 @@ const SimpliciaPage: React.FC = () => {
             </Card>
 
             {/* Notes Section - Mobile */}
-            <Card>
+            <Card className="mb-4">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm">Notes</CardTitle>
               </CardHeader>

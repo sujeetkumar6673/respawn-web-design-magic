@@ -1,7 +1,8 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Home, Calendar, MessageCircle, User } from 'lucide-react';
+import { Home, Calendar, User } from 'lucide-react';
+import { SimpliciaBadge } from './Icons';
 
 interface MobileNavProps {
   activePage: string;
@@ -24,10 +25,10 @@ const MobileNav: React.FC<MobileNavProps> = ({ activePage, onNavigate }) => {
       label: 'Calendar'  
     },
     { 
-      name: 'chat', 
-      icon: <MessageCircle size={22} strokeWidth={activePage === 'chat' ? 2.5 : 2} />, 
-      route: '/chat',
-      label: 'Chat'  
+      name: 'simplicia', 
+      icon: <div className="w-5 h-5"><SimpliciaBadge /></div>, 
+      route: '/simplicia',
+      label: 'Simplicia'  
     },
     { 
       name: 'profile', 

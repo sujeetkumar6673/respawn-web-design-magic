@@ -8,101 +8,135 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { SimpliciaBadge } from '@/components/Icons';
 import { CalendarPlus, Users, Clock, CheckSquare, Pill } from 'lucide-react';
 import WeeklyCalendarView from '@/components/simplicia/WeeklyCalendarView';
-import CaregiverList from '@/components/simplicia/CaregiverList';
 import QuickActions from '@/components/simplicia/QuickActions';
 
 const SimpliciaPage: React.FC = () => {
   const [activeView, setActiveView] = useState('all');
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-gray-50 flex overflow-hidden">
       <Sidebar activePage="simplicia" />
       
-      <div className="flex-1 ml-[220px] p-6">
+      <div className="flex-1 ml-[220px] p-4 h-screen overflow-hidden">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-4">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-8 h-8">
+            <div className="w-6 h-6">
               <SimpliciaBadge />
             </div>
-            <h1 className="text-3xl font-bold text-gray-900">Simplicia</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Simplicia</h1>
           </div>
-          <p className="text-gray-600">Care coordination and family presence management</p>
+          <p className="text-sm text-gray-600">Care coordination and family presence management</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-12 gap-4 h-[calc(100vh-140px)]">
           {/* Left Sidebar - Categories */}
-          <div className="lg:col-span-1">
-            <Card className="mb-6">
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Users className="w-5 h-5" />
+          <div className="col-span-2">
+            <Card className="h-full">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Users className="w-4 h-4" />
                   Categories
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2">
+              <CardContent className="space-y-2 p-3">
                 <Button
                   variant={activeView === 'all' ? 'default' : 'outline'}
-                  className="w-full justify-start"
+                  className="w-full justify-start text-xs h-8"
                   onClick={() => setActiveView('all')}
                 >
-                  <div className="w-3 h-3 bg-gray-500 rounded mr-2"></div>
+                  <div className="w-2 h-2 bg-gray-500 rounded mr-2"></div>
                   All Events
                 </Button>
                 <Button
                   variant={activeView === 'caregivers' ? 'default' : 'outline'}
-                  className="w-full justify-start"
+                  className="w-full justify-start text-xs h-8"
                   onClick={() => setActiveView('caregivers')}
                 >
-                  <div className="w-3 h-3 bg-blue-500 rounded mr-2"></div>
+                  <div className="w-2 h-2 bg-blue-500 rounded mr-2"></div>
                   Caregivers
                 </Button>
                 <Button
                   variant={activeView === 'presences' ? 'default' : 'outline'}
-                  className="w-full justify-start"
+                  className="w-full justify-start text-xs h-8"
                   onClick={() => setActiveView('presences')}
                 >
-                  <div className="w-3 h-3 bg-green-500 rounded mr-2"></div>
+                  <div className="w-2 h-2 bg-green-500 rounded mr-2"></div>
                   Presences
                 </Button>
                 <Button
                   variant={activeView === 'todos' ? 'default' : 'outline'}
-                  className="w-full justify-start"
+                  className="w-full justify-start text-xs h-8"
                   onClick={() => setActiveView('todos')}
                 >
-                  <div className="w-3 h-3 bg-orange-500 rounded mr-2"></div>
+                  <div className="w-2 h-2 bg-orange-500 rounded mr-2"></div>
                   To-Dos
                 </Button>
                 <Button
                   variant={activeView === 'meds' ? 'default' : 'outline'}
-                  className="w-full justify-start"
+                  className="w-full justify-start text-xs h-8"
                   onClick={() => setActiveView('meds')}
                 >
-                  <div className="w-3 h-3 bg-purple-500 rounded mr-2"></div>
+                  <div className="w-2 h-2 bg-purple-500 rounded mr-2"></div>
                   Meds Only
                 </Button>
               </CardContent>
             </Card>
-
-            <CaregiverList />
           </div>
 
           {/* Main Content - Weekly Calendar */}
-          <div className="lg:col-span-3">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Weekly Schedule</h2>
-              <Button className="bg-rezilia-purple hover:bg-rezilia-purple/90">
-                <CalendarPlus className="w-4 h-4 mr-2" />
-                Add Event
-              </Button>
-            </div>
-
+          <div className="col-span-7">
             <WeeklyCalendarView activeFilter={activeView} />
+          </div>
+
+          {/* Right Sidebar - Notes and Quick Actions */}
+          <div className="col-span-3 space-y-4">
+            {/* Notes Section */}
+            <Card className="flex-1">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm">Notes</CardTitle>
+              </CardHeader>
+              <CardContent className="p-3">
+                <div className="space-y-2 text-xs text-gray-600">
+                  <div className="p-2 bg-yellow-50 border border-yellow-200 rounded text-yellow-800">
+                    Remember to pick up prescription for Mom
+                  </div>
+                  <div className="p-2 bg-blue-50 border border-blue-200 rounded text-blue-800">
+                    Dr. appointment scheduled for next week
+                  </div>
+                  <div className="p-2 bg-green-50 border border-green-200 rounded text-green-800">
+                    Physical therapy showing great progress
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Quick Actions */}
-            <div className="mt-6">
-              <QuickActions />
-            </div>
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm">Quick Actions</CardTitle>
+              </CardHeader>
+              <CardContent className="p-3">
+                <div className="grid grid-cols-2 gap-2">
+                  <Button variant="outline" className="h-16 flex flex-col items-center justify-center space-y-1 text-white border-0 bg-blue-500 hover:bg-blue-600">
+                    <Users className="w-4 h-4" />
+                    <span className="text-xs">Schedule Caregiver</span>
+                  </Button>
+                  <Button variant="outline" className="h-16 flex flex-col items-center justify-center space-y-1 text-white border-0 bg-green-500 hover:bg-green-600">
+                    <Clock className="w-4 h-4" />
+                    <span className="text-xs">Plan Visit</span>
+                  </Button>
+                  <Button variant="outline" className="h-16 flex flex-col items-center justify-center space-y-1 text-white border-0 bg-orange-500 hover:bg-orange-600">
+                    <CheckSquare className="w-4 h-4" />
+                    <span className="text-xs">Add Task</span>
+                  </Button>
+                  <Button variant="outline" className="h-16 flex flex-col items-center justify-center space-y-1 text-white border-0 bg-purple-500 hover:bg-purple-600">
+                    <Pill className="w-4 h-4" />
+                    <span className="text-xs">Med Reminder</span>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>

@@ -62,13 +62,23 @@ export const authService = {
       id: Date.now().toString(),
       email: userData.email,
       name: userData.name,
-      phone: userData.phone,
-      city: userData.city,
+      phone: userData.phone || '',
+      city: userData.city || '',
       isAuthenticated: true
     };
     
     // In real implementation, save to database
-    mockUsers.push({ ...newUser, isAuthenticated: false });
+    // Create a mock user entry with all required fields
+    const mockUserEntry = {
+      id: newUser.id!,
+      email: newUser.email,
+      name: newUser.name,
+      phone: newUser.phone || '',
+      city: newUser.city || '',
+      isAuthenticated: false
+    };
+    
+    mockUsers.push(mockUserEntry);
     
     return newUser;
   },

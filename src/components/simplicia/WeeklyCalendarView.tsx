@@ -12,27 +12,34 @@ interface CalendarEvent {
   title: string;
   type: 'caregiver' | 'presence' | 'todo' | 'med';
   time: string;
-  duration: number; // in hours
+  period: 'morning' | 'afternoon' | 'evening' | 'night';
   day: number; // 0-6 (Sunday-Saturday)
-  startHour: number; // 0-23
 }
 
 const WeeklyCalendarView: React.FC<WeeklyCalendarViewProps> = ({ activeFilter }) => {
   const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const hours = Array.from({ length: 24 }, (_, i) => i);
+  const timePeriods = [
+    { key: 'morning', label: 'Morning', time: '6AM-12PM' },
+    { key: 'afternoon', label: 'Afternoon', time: '12PM-6PM' },
+    { key: 'evening', label: 'Evening', time: '6PM-9PM' },
+    { key: 'night', label: 'After Dinner', time: '9PM+' }
+  ];
 
-  // Sample events matching the mind map design
+  // Sample events matching the mind map design with time periods
   const events: CalendarEvent[] = [
-    { id: '1', title: 'Nurse Sarah', type: 'caregiver', time: '9:00 AM', duration: 4, day: 1, startHour: 9 },
-    { id: '2', title: 'Family Visit', type: 'presence', time: '2:00 PM', duration: 3, day: 1, startHour: 14 },
-    { id: '3', title: 'Buy Groceries', type: 'todo', time: '10:00 AM', duration: 2, day: 2, startHour: 10 },
-    { id: '4', title: 'Morning Meds', type: 'med', time: '8:00 AM', duration: 1, day: 2, startHour: 8 },
-    { id: '5', title: 'Dr. Johnson', type: 'caregiver', time: '11:00 AM', duration: 2, day: 3, startHour: 11 },
-    { id: '6', title: 'John Present', type: 'presence', time: '6:00 PM', duration: 4, day: 3, startHour: 18 },
-    { id: '7', title: 'Physical Therapy', type: 'caregiver', time: '3:00 PM', duration: 2, day: 4, startHour: 15 },
-    { id: '8', title: 'Evening Meds', type: 'med', time: '7:00 PM', duration: 1, day: 4, startHour: 19 },
-    { id: '9', title: 'Cleaning', type: 'todo', time: '9:00 AM', duration: 3, day: 5, startHour: 9 },
-    { id: '10', title: 'Family Dinner', type: 'presence', time: '5:00 PM', duration: 3, day: 5, startHour: 17 },
+    { id: '1', title: 'Nurse Sarah', type: 'caregiver', time: '9:00 AM', period: 'morning', day: 1 },
+    { id: '2', title: 'Family Visit', type: 'presence', time: '2:00 PM', period: 'afternoon', day: 1 },
+    { id: '3', title: 'Buy Groceries', type: 'todo', time: '10:00 AM', period: 'morning', day: 2 },
+    { id: '4', title: 'Morning Meds', type: 'med', time: '8:00 AM', period: 'morning', day: 2 },
+    { id: '5', title: 'Dr. Johnson', type: 'caregiver', time: '11:00 AM', period: 'morning', day: 3 },
+    { id: '6', title: 'John Present', type: 'presence', time: '6:00 PM', period: 'evening', day: 3 },
+    { id: '7', title: 'Physical Therapy', type: 'caregiver', time: '3:00 PM', period: 'afternoon', day: 4 },
+    { id: '8', title: 'Evening Meds', type: 'med', time: '7:00 PM', period: 'evening', day: 4 },
+    { id: '9', title: 'Cleaning', type: 'todo', time: '9:00 AM', period: 'morning', day: 5 },
+    { id: '10', title: 'Family Dinner', type: 'presence', time: '8:00 PM', period: 'evening', day: 5 },
+    { id: '11', title: 'Night Meds', type: 'med', time: '10:00 PM', period: 'night', day: 1 },
+    { id: '12', title: 'Bedtime Reading', type: 'todo', time: '9:30 PM', period: 'night', day: 2 },
+    { id: '13', title: 'Late Visit', type: 'presence', time: '10:30 PM', period: 'night', day: 6 },
   ];
 
   const getEventColor = (type: string) => {
@@ -57,11 +64,11 @@ const WeeklyCalendarView: React.FC<WeeklyCalendarViewProps> = ({ activeFilter })
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="pb-3">
         <CardTitle className="text-lg">This Week</CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-8 gap-1">
+      <CardContent className="p-3">
+        <div className="grid grid-cols-8 gap-1 h-[400px]">
           {/* Header row */}
           <div className="text-xs font-medium text-gray-500 p-2">Time</div>
           {days.map((day, index) => (
@@ -70,33 +77,32 @@ const WeeklyCalendarView: React.FC<WeeklyCalendarViewProps> = ({ activeFilter })
             </div>
           ))}
 
-          {/* Time slots */}
-          {hours.slice(6, 22).map((hour) => (
-            <React.Fragment key={hour}>
-              <div className="text-xs text-gray-400 p-2 border-t">
-                {hour === 0 ? '12 AM' : hour <= 12 ? `${hour} AM` : `${hour - 12} PM`}
+          {/* Time period rows */}
+          {timePeriods.map((period) => (
+            <React.Fragment key={period.key}>
+              <div className="text-xs text-gray-600 p-2 border-t border-gray-100 flex flex-col justify-start">
+                <div className="font-medium">{period.label}</div>
+                <div className="text-[10px] text-gray-400 mt-1">{period.time}</div>
               </div>
               {days.map((_, dayIndex) => {
-                const dayEvents = filteredEvents.filter(
-                  event => event.day === dayIndex && event.startHour <= hour && event.startHour + event.duration > hour
+                const periodEvents = filteredEvents.filter(
+                  event => event.day === dayIndex && event.period === period.key
                 );
                 
                 return (
-                  <div key={dayIndex} className="border-t border-gray-100 min-h-[40px] p-1 relative">
-                    {dayEvents.map((event) => {
-                      if (event.startHour === hour) {
-                        return (
-                          <div
-                            key={event.id}
-                            className={`${getEventColor(event.type)} text-white text-xs p-1 rounded mb-1 truncate`}
-                            style={{ height: `${event.duration * 40 - 4}px` }}
-                          >
-                            {event.title}
-                          </div>
-                        );
-                      }
-                      return null;
-                    })}
+                  <div key={dayIndex} className="border-t border-gray-100 p-1 min-h-[90px] overflow-hidden">
+                    <div className="space-y-1">
+                      {periodEvents.map((event) => (
+                        <div
+                          key={event.id}
+                          className={`${getEventColor(event.type)} text-white text-[10px] p-1.5 rounded truncate leading-tight`}
+                          title={`${event.title} - ${event.time}`}
+                        >
+                          <div className="font-medium truncate">{event.title}</div>
+                          <div className="opacity-90 truncate">{event.time}</div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 );
               })}

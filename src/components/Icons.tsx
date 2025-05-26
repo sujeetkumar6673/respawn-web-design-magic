@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Leaf } from 'lucide-react';
 
@@ -72,7 +71,7 @@ export const CalendarIcon: React.FC = () => (
   <div className="icon-3d-wrapper">
     <div className="icon-3d-inner calendar-icon">
       <svg className="w-6 h-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M19 4h-1V3c0-.55-.45-1-1-1s-1 .45-1 1v1H8V3c0-.55-.45-1-1-1s-1 .45-1 1v1H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z" fill="#ff94a4" />
+        <path d="M19 4h-1V3c0-.55-.45-1-1-1s-1 .45-1 1v1H8V3c0-.55-.45-1-1-1z" fill="#ff94a4" />
         <path d="M5 9h14v11H5z" fill="#ffb3c0" />
       </svg>
     </div>
@@ -154,4 +153,15 @@ export const ChevronLeftIcon: React.FC = () => (
   <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12l4.58-4.59z" />
   </svg>
+);
+
+export const LogoutIcon: React.FC = () => (
+  <div className="icon-3d-wrapper">
+    <div className="icon-3d-inner logout-icon">
+      <svg className="w-6 h-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.59L17 17l5-5z" fill="#ff9999" />
+        <path d="M4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" fill="#ffb3b3" />
+      </svg>
+    </div>
+  </div>
 );

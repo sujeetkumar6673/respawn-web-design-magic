@@ -10,6 +10,7 @@ import CalendarPage from "./pages/CalendarPage";
 import ChatPage from "./pages/ChatPage";
 import ProfilePage from "./pages/ProfilePage";
 import LandingPage from "./pages/LandingPage";
+import SimpliciaPage from "./pages/SimpliciaPage";
 import { CalendarProvider } from "./contexts/CalendarContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -34,6 +35,14 @@ const App = () => (
                 element={
                   <ProtectedRoute>
                     <Index />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/simplicia" 
+                element={
+                  <ProtectedRoute>
+                    <SimpliciaPage />
                   </ProtectedRoute>
                 } 
               />

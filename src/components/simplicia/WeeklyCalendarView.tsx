@@ -25,6 +25,7 @@ interface Caregiver {
   status: 'available' | 'busy' | 'offline';
   nextVisit?: string;
   phone: string;
+  initials: string;
 }
 
 const WeeklyCalendarView: React.FC<WeeklyCalendarViewProps> = ({ activeFilter }) => {
@@ -43,7 +44,8 @@ const WeeklyCalendarView: React.FC<WeeklyCalendarViewProps> = ({ activeFilter })
       role: 'Registered Nurse',
       status: 'available',
       nextVisit: 'Today 9:00 AM',
-      phone: '+1 (555) 123-4567'
+      phone: '+1 (555) 123-4567',
+      initials: 'SJ'
     },
     {
       id: '2',
@@ -51,7 +53,8 @@ const WeeklyCalendarView: React.FC<WeeklyCalendarViewProps> = ({ activeFilter })
       role: 'Primary Care',
       status: 'busy',
       nextVisit: 'Wed 11:00 AM',
-      phone: '+1 (555) 234-5678'
+      phone: '+1 (555) 234-5678',
+      initials: 'DM'
     },
     {
       id: '3',
@@ -59,33 +62,61 @@ const WeeklyCalendarView: React.FC<WeeklyCalendarViewProps> = ({ activeFilter })
       role: 'Physical Therapist',
       status: 'available',
       nextVisit: 'Thu 3:00 PM',
-      phone: '+1 (555) 345-6789'
+      phone: '+1 (555) 345-6789',
+      initials: 'ER'
     },
     {
       id: '4',
       name: 'James Wilson',
       role: 'Home Health Aide',
-      status: 'offline',
+      status: 'available',
       nextVisit: 'Fri 10:00 AM',
-      phone: '+1 (555) 456-7890'
+      phone: '+1 (555) 456-7890',
+      initials: 'JW'
     }
   ];
 
-  // Sample events matching the mind map design with time periods
+  // Enhanced events with more medications at the same times
   const events: CalendarEvent[] = [
+    // Monday
     { id: '1', title: 'Nurse Sarah', type: 'caregiver', time: '9:00 AM', period: 'morning', day: 1 },
-    { id: '2', title: 'Family Visit', type: 'presence', time: '2:00 PM', period: 'afternoon', day: 1 },
-    { id: '3', title: 'Buy Groceries', type: 'todo', time: '10:00 AM', period: 'morning', day: 2 },
-    { id: '4', title: 'Morning Meds', type: 'med', time: '8:00 AM', period: 'morning', day: 2 },
-    { id: '5', title: 'Dr. Johnson', type: 'caregiver', time: '11:00 AM', period: 'morning', day: 3 },
-    { id: '6', title: 'John Present', type: 'presence', time: '6:00 PM', period: 'evening', day: 3 },
-    { id: '7', title: 'Physical Therapy', type: 'caregiver', time: '3:00 PM', period: 'afternoon', day: 4 },
-    { id: '8', title: 'Evening Meds', type: 'med', time: '7:00 PM', period: 'evening', day: 4 },
-    { id: '9', title: 'Cleaning', type: 'todo', time: '9:00 AM', period: 'morning', day: 5 },
-    { id: '10', title: 'Family Dinner', type: 'presence', time: '8:00 PM', period: 'evening', day: 5 },
-    { id: '11', title: 'Night Meds', type: 'med', time: '10:00 PM', period: 'night', day: 1 },
-    { id: '12', title: 'Bedtime Reading', type: 'todo', time: '9:30 PM', period: 'night', day: 2 },
-    { id: '13', title: 'Late Visit', type: 'presence', time: '10:30 PM', period: 'night', day: 6 },
+    { id: '2', title: 'Buy Groceries', type: 'todo', time: '10:00 AM', period: 'morning', day: 1 },
+    { id: '3', title: 'Morning Meds', type: 'med', time: '8:00 AM', period: 'morning', day: 1 },
+    { id: '4', title: 'Family Visit', type: 'presence', time: '2:00 PM', period: 'afternoon', day: 1 },
+    { id: '5', title: 'Evening Meds', type: 'med', time: '7:00 PM', period: 'evening', day: 1 },
+    { id: '6', title: 'Night Meds', type: 'med', time: '10:00 PM', period: 'night', day: 1 },
+    
+    // Tuesday
+    { id: '7', title: 'Dr. Johnson', type: 'caregiver', time: '11:00 AM', period: 'morning', day: 2 },
+    { id: '8', title: 'Morning Meds', type: 'med', time: '8:00 AM', period: 'morning', day: 2 },
+    { id: '9', title: 'Bedtime Reading', type: 'todo', time: '9:30 PM', period: 'night', day: 2 },
+    { id: '10', title: 'Evening Meds', type: 'med', time: '7:00 PM', period: 'evening', day: 2 },
+    
+    // Wednesday
+    { id: '11', title: 'John Present', type: 'presence', time: '6:00 PM', period: 'evening', day: 3 },
+    { id: '12', title: 'Morning Meds', type: 'med', time: '8:00 AM', period: 'morning', day: 3 },
+    { id: '13', title: 'Lunch Meds', type: 'med', time: '12:00 PM', period: 'afternoon', day: 3 },
+    { id: '14', title: 'Evening Meds', type: 'med', time: '7:00 PM', period: 'evening', day: 3 },
+    
+    // Thursday
+    { id: '15', title: 'Physical Therapy', type: 'caregiver', time: '3:00 PM', period: 'afternoon', day: 4 },
+    { id: '16', title: 'Morning Meds', type: 'med', time: '8:00 AM', period: 'morning', day: 4 },
+    { id: '17', title: 'Pain Meds', type: 'med', time: '2:00 PM', period: 'afternoon', day: 4 },
+    { id: '18', title: 'Evening Meds', type: 'med', time: '7:00 PM', period: 'evening', day: 4 },
+    
+    // Friday
+    { id: '19', title: 'Cleaning', type: 'todo', time: '9:00 AM', period: 'morning', day: 5 },
+    { id: '20', title: 'Family Dinner', type: 'presence', time: '8:00 PM', period: 'evening', day: 5 },
+    { id: '21', title: 'Morning Meds', type: 'med', time: '8:00 AM', period: 'morning', day: 5 },
+    { id: '22', title: 'Vitamin D', type: 'med', time: '8:00 AM', period: 'morning', day: 5 },
+    { id: '23', title: 'Blood Pressure', type: 'med', time: '8:00 AM', period: 'morning', day: 5 },
+    { id: '24', title: 'Evening Meds', type: 'med', time: '7:00 PM', period: 'evening', day: 5 },
+    
+    // Saturday
+    { id: '25', title: 'Late Visit', type: 'presence', time: '10:30 PM', period: 'night', day: 6 },
+    { id: '26', title: 'Morning Meds', type: 'med', time: '8:00 AM', period: 'morning', day: 6 },
+    { id: '27', title: 'Calcium', type: 'med', time: '8:00 AM', period: 'morning', day: 6 },
+    { id: '28', title: 'Iron Pills', type: 'med', time: '8:00 AM', period: 'morning', day: 6 },
   ];
 
   const getEventColor = (type: string) => {
@@ -118,7 +149,7 @@ const WeeklyCalendarView: React.FC<WeeklyCalendarViewProps> = ({ activeFilter })
       });
 
   return (
-    <Card className="h-[calc(100vh-200px)]">
+    <Card className="h-full">
       <CardHeader className="pb-3">
         <div className="flex justify-between items-center">
           <CardTitle className="text-lg">This Week</CardTitle>
@@ -132,8 +163,8 @@ const WeeklyCalendarView: React.FC<WeeklyCalendarViewProps> = ({ activeFilter })
                   <HoverCardTrigger>
                     <div className="relative cursor-pointer">
                       <Avatar className="w-8 h-8 border-2 border-white hover:z-10 transition-transform hover:scale-110">
-                        <AvatarFallback className="text-xs bg-blue-100">
-                          {caregiver.name.split(' ').map(n => n[0]).join('')}
+                        <AvatarFallback className="text-xs bg-blue-100 text-blue-800 font-medium">
+                          {caregiver.initials}
                         </AvatarFallback>
                       </Avatar>
                       <div className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 ${getStatusDot(caregiver.status)} rounded-full border-2 border-white`}></div>
@@ -168,12 +199,12 @@ const WeeklyCalendarView: React.FC<WeeklyCalendarViewProps> = ({ activeFilter })
           </div>
         </div>
       </CardHeader>
-      <CardContent className="p-3 h-full">
-        <div className="grid grid-cols-8 gap-1 h-[calc(100%-60px)]">
+      <CardContent className="p-3 h-[calc(100%-80px)]">
+        <div className="grid grid-cols-8 gap-1 h-full">
           {/* Header row */}
-          <div className="text-xs font-medium text-gray-500 p-2">Time</div>
+          <div className="text-xs font-medium text-gray-500 p-2 flex items-center">Time</div>
           {days.map((day, index) => (
-            <div key={index} className="text-xs font-medium text-gray-500 p-2 text-center">
+            <div key={index} className="text-xs font-medium text-gray-500 p-2 text-center flex items-center justify-center">
               {day}
             </div>
           ))}
@@ -191,7 +222,7 @@ const WeeklyCalendarView: React.FC<WeeklyCalendarViewProps> = ({ activeFilter })
                 );
                 
                 return (
-                  <div key={dayIndex} className="border-t border-gray-100 p-1 min-h-[70px] overflow-hidden">
+                  <div key={dayIndex} className="border-t border-gray-100 p-1 min-h-[100px] overflow-hidden">
                     <div className="space-y-1">
                       {periodEvents.map((event) => (
                         <div

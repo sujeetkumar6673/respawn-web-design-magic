@@ -9,7 +9,7 @@ import { SimpliciaBadge } from '@/components/Icons';
 import { CalendarPlus, Users, Clock, CheckSquare, Pill } from 'lucide-react';
 import WeeklyCalendarView from '@/components/simplicia/WeeklyCalendarView';
 import QuickActions from '@/components/simplicia/QuickActions';
-import WelcomeMessage from '@/components/WelcomeMessage';
+import Header from '@/components/Header';
 
 const SimpliciaPage: React.FC = () => {
   const [activeView, setActiveView] = useState('all');
@@ -22,6 +22,11 @@ const SimpliciaPage: React.FC = () => {
       <div className="flex-1 ml-[220px] p-4 h-screen overflow-hidden">
         {/* Header */}
         <div className="mb-4">
+          <Header userName="Nina" />
+        </div>
+
+        {/* Page Title */}
+        <div className="mb-4">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-6 h-6">
               <SimpliciaBadge />
@@ -31,12 +36,7 @@ const SimpliciaPage: React.FC = () => {
           <p className="text-sm text-gray-600">Care coordination and family presence management</p>
         </div>
 
-        {/* Profile Panel */}
-        <div className="mb-4">
-          <WelcomeMessage userName="Nina" />
-        </div>
-
-        <div className="grid grid-cols-12 gap-4 h-[calc(100vh-200px)]">
+        <div className="grid grid-cols-12 gap-4 h-[calc(100vh-240px)]">
           {/* Left Sidebar - Categories and View Types */}
           <div className="col-span-2 space-y-4">
             {/* View Type Selector */}

@@ -1,11 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-
-interface User {
-  email: string;
-  name: string;
-  isAuthenticated: boolean;
-}
+import { authService, User } from '@/services/authService';
 
 interface AuthContextType {
   user: User | null;
@@ -34,18 +29,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
-    // Check if user exists in localStorage
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
+    // Initialize auth state from localStorage or service
+    const initializeAuth = async () => {
       try {
-        const parsedUser = JSON.parse(storedUser);
-        setUser(parsedUser);
-        setIsAuthenticated(true); // Ensure this is set to true when user exists
+        const currentUser = await authService.getCurrentUser();
+        if (currentUser) {
+          setUser(currentUser);
+          setIsAuthenticated(true);
+        }
       } catch (error) {
-        console.error('Error parsing stored user:', error);
-        localStorage.removeItem('user'); // Clear invalid data
+        console.error('Error initializing auth:', error);
+        // Clear any invalid stored data
+        localStorage.removeItem('user');
       }
-    }
+    };
+
+    initializeAuth();
   }, []);
 
   const login = (userData: User) => {
@@ -55,10 +54,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     localStorage.setItem('user', JSON.stringify(authenticatedUser));
   };
 
-  const logout = () => {
-    setUser(null);
-    setIsAuthenticated(false);
-    localStorage.removeItem('user');
+  const logout = async () => {
+    try {
+      await authService.logout();
+    } catch (error) {
+      console.error('Error during logout:', error);
+    } finally {
+      setUser(null);
+      setIsAuthenticated(false);
+      localStorage.removeItem('user');
+    }
   };
 
   return (

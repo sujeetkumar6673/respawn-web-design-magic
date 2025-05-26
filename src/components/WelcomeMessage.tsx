@@ -2,6 +2,7 @@
 import React from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from '@/components/ui/card';
+import { Link } from 'react-router-dom';
 
 interface WelcomeMessageProps {
   userName: string;
@@ -19,12 +20,12 @@ const WelcomeMessage: React.FC<WelcomeMessageProps> = ({ userName }) => {
       <div className="text-left">
         <h2 className="text-sm font-bold leading-tight">HELLO, {userName.toUpperCase()}</h2>
         <p className="text-xs text-gray-600 leading-tight">How can we help you today?</p>
-        <a 
-          href="/chat" 
+        <Link 
+          to="/chat" 
           className="text-xs text-rezilia-purple hover:text-rezilia-purple/80 leading-tight"
         >
           Check messages (3 unread)
-        </a>
+        </Link>
       </div>
     </Card>
   );

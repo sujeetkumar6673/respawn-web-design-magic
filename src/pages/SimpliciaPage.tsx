@@ -12,6 +12,7 @@ import QuickActions from '@/components/simplicia/QuickActions';
 
 const SimpliciaPage: React.FC = () => {
   const [activeView, setActiveView] = useState('all');
+  const [viewType, setViewType] = useState<'daily' | 'weekly' | 'monthly'>('weekly');
 
   return (
     <div className="min-h-screen bg-gray-50 flex overflow-hidden">
@@ -30,9 +31,43 @@ const SimpliciaPage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-12 gap-4 h-[calc(100vh-140px)]">
-          {/* Left Sidebar - Categories */}
-          <div className="col-span-2">
-            <Card className="h-full">
+          {/* Left Sidebar - Categories and View Types */}
+          <div className="col-span-2 space-y-4">
+            {/* View Type Selector */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Clock className="w-4 h-4" />
+                  View
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2 p-3">
+                <Button
+                  variant={viewType === 'daily' ? 'default' : 'outline'}
+                  className="w-full justify-start text-xs h-8"
+                  onClick={() => setViewType('daily')}
+                >
+                  Daily
+                </Button>
+                <Button
+                  variant={viewType === 'weekly' ? 'default' : 'outline'}
+                  className="w-full justify-start text-xs h-8"
+                  onClick={() => setViewType('weekly')}
+                >
+                  Weekly
+                </Button>
+                <Button
+                  variant={viewType === 'monthly' ? 'default' : 'outline'}
+                  className="w-full justify-start text-xs h-8"
+                  onClick={() => setViewType('monthly')}
+                >
+                  Monthly
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Categories */}
+            <Card className="flex-1">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm flex items-center gap-2">
                   <Users className="w-4 h-4" />
@@ -84,9 +119,9 @@ const SimpliciaPage: React.FC = () => {
             </Card>
           </div>
 
-          {/* Main Content - Weekly Calendar */}
+          {/* Main Content - Calendar */}
           <div className="col-span-7">
-            <WeeklyCalendarView activeFilter={activeView} />
+            <WeeklyCalendarView activeFilter={activeView} viewType={viewType} />
           </div>
 
           {/* Right Sidebar - Notes and Quick Actions */}

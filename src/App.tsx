@@ -14,6 +14,7 @@ import SimpliciaPage from "./pages/SimpliciaPage";
 import { CalendarProvider } from "./contexts/CalendarContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
+import FloatingChatButton from "./components/FloatingChatButton";
 
 const queryClient = new QueryClient();
 
@@ -74,6 +75,9 @@ const App = () => (
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
+            
+            {/* Floating Chat Button - appears on all protected routes */}
+            <FloatingChatButton />
           </BrowserRouter>
         </CalendarProvider>
       </AuthProvider>

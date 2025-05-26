@@ -9,6 +9,7 @@ import { SimpliciaBadge } from '@/components/Icons';
 import { CalendarPlus, Users, Clock, CheckSquare, Pill } from 'lucide-react';
 import WeeklyCalendarView from '@/components/simplicia/WeeklyCalendarView';
 import QuickActions from '@/components/simplicia/QuickActions';
+import WelcomeMessage from '@/components/WelcomeMessage';
 
 const SimpliciaPage: React.FC = () => {
   const [activeView, setActiveView] = useState('all');
@@ -30,7 +31,12 @@ const SimpliciaPage: React.FC = () => {
           <p className="text-sm text-gray-600">Care coordination and family presence management</p>
         </div>
 
-        <div className="grid grid-cols-12 gap-4 h-[calc(100vh-140px)]">
+        {/* Profile Panel */}
+        <div className="mb-4">
+          <WelcomeMessage userName="Nina" />
+        </div>
+
+        <div className="grid grid-cols-12 gap-4 h-[calc(100vh-200px)]">
           {/* Left Sidebar - Categories and View Types */}
           <div className="col-span-2 space-y-4">
             {/* View Type Selector */}

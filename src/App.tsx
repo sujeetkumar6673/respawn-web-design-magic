@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -11,6 +10,9 @@ import ChatPage from "./pages/ChatPage";
 import ProfilePage from "./pages/ProfilePage";
 import LandingPage from "./pages/LandingPage";
 import SimpliciaPage from "./pages/SimpliciaPage";
+import ReziliaAIPage from "./pages/ReziliaAIPage";
+import AdmiliaPage from "./pages/AdmiliaPage";
+import ForumPage from "./pages/ForumPage";
 import { CalendarProvider } from "./contexts/CalendarContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -44,6 +46,30 @@ const App = () => (
                 element={
                   <ProtectedRoute>
                     <SimpliciaPage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/rezilia-ai" 
+                element={
+                  <ProtectedRoute>
+                    <ReziliaAIPage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admilia" 
+                element={
+                  <ProtectedRoute>
+                    <AdmiliaPage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/forum" 
+                element={
+                  <ProtectedRoute>
+                    <ForumPage />
                   </ProtectedRoute>
                 } 
               />

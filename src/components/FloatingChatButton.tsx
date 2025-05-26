@@ -2,15 +2,22 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { MessageCircle } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const FloatingChatButton: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const isMobile = useIsMobile();
 
   const handleChatClick = () => {
-    navigate('/chat');
+    if (location.pathname === '/chat') {
+      // If we're on chat page, go back to dashboard
+      navigate('/dashboard');
+    } else {
+      // If we're not on chat page, go to chat
+      navigate('/chat');
+    }
   };
 
   return (

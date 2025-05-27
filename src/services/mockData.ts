@@ -43,6 +43,51 @@ export const mockCalendarEvents = [
   }
 ];
 
+// Enhanced calendar events for the calendar context
+export const mockCalendarEventsDetailed = [
+  // Today's events
+  {
+    id: '1',
+    title: 'Doctor Appointment',
+    date: new Date(),
+    time: '10:00',
+    description: 'Annual check-up',
+    color: '#2717A5'
+  },
+  {
+    id: '2',
+    title: 'Lunch with Family',
+    date: new Date(),
+    time: '13:00',
+    description: 'At favorite restaurant',
+    color: '#FF9F46'
+  },
+  {
+    id: '3',
+    title: 'Medication Reminder',
+    date: new Date(),
+    time: '09:00',
+    description: 'Take morning pills',
+    color: '#FF719A'
+  },
+  {
+    id: '4',
+    title: 'Physical Therapy',
+    date: new Date(),
+    time: '15:30',
+    description: 'With Dr. Johnson',
+    color: '#62E884'
+  },
+  {
+    id: '5',
+    title: 'Evening Walk',
+    date: new Date(),
+    time: '18:00',
+    description: 'Around the park',
+    color: '#67d6ff'
+  }
+];
+
 export const mockHealthData = {
   vitals: {
     heartRate: 72,

@@ -36,23 +36,25 @@ const Index = () => {
   };
   
   return (
-    <div className="app-background min-h-screen flex flex-col overflow-hidden">
-      <div className="flex flex-1 overflow-hidden">
+    <div className="app-background min-h-screen max-h-screen flex flex-col overflow-hidden">
+      <div className="flex flex-1 min-h-0 overflow-hidden">
         {/* Sidebar - only visible on desktop */}
         {!isMobile && <Sidebar activePage={activePage} />}
         
         {/* Main Content */}
-        <div className={`flex-1 p-2 flex flex-col overflow-hidden ${isMobile ? 'w-full' : 'ml-[220px]'}`}>
-          <div className="max-w-[1200px] mx-auto flex flex-col h-full w-full overflow-hidden">
-            {/* Header */}
-            <Header userName={userName} />
+        <div className={`flex-1 min-h-0 p-2 flex flex-col overflow-hidden ${isMobile ? 'w-full' : 'ml-[220px]'}`}>
+          <div className="max-w-[1200px] mx-auto flex flex-col h-full w-full min-h-0 overflow-hidden">
+            {/* Header - Fixed at top */}
+            <div className="flex-shrink-0">
+              <Header userName={userName} />
+            </div>
             
-            {/* Main Dashboard */}
-            <div className="bg-white rounded-b-xl p-3 flex-1 flex flex-col overflow-hidden">
+            {/* Main Dashboard - Scrollable content */}
+            <div className="bg-white rounded-b-xl flex-1 min-h-0 overflow-hidden">
               {isMobile ? (
-                // Mobile view - Fixed mobile scrolling with appropriate spacing
-                <div className="h-full overflow-y-auto pb-24">
-                  <div className="space-y-4">
+                // Mobile view - Proper scrolling
+                <ScrollArea className="h-full">
+                  <div className="p-3 space-y-4 pb-24">
                     {/* Welcome Message */}
                     <WelcomeMessage userName={userName} />
                     
@@ -71,7 +73,7 @@ const Index = () => {
                       </CalendarProvider>
                     </section>
                     
-                    {/* Modules Section - added more spacing to prevent overlap */}
+                    {/* Modules Section */}
                     <section className="mt-6 pt-2">
                       <h2 className="text-base font-bold mb-2">Modules</h2>
                       <ModulesSection />
@@ -88,14 +90,14 @@ const Index = () => {
                       <ResourcesSection />
                     </section>
                   </div>
-                </div>
+                </ScrollArea>
               ) : (
-                // Desktop view - Improved scrolling for better scaling support
-                <div className="h-full grid grid-cols-1 lg:grid-cols-3 gap-3 overflow-hidden">
+                // Desktop view - Two column layout with proper scrolling
+                <div className="h-full flex">
                   {/* Left Column - Main content with vertical scroll */}
-                  <div className="lg:col-span-2 h-full overflow-hidden">
+                  <div className="flex-1 min-h-0 overflow-hidden">
                     <ScrollArea className="h-full">
-                      <div className="space-y-3 pr-2 pb-6">
+                      <div className="p-3 space-y-4 pr-6">
                         {/* Welcome Message */}
                         <WelcomeMessage userName={userName} />
                         
@@ -106,12 +108,12 @@ const Index = () => {
                         </section>
                         
                         {/* Personal Section */}
-                        <section className="mt-3">
+                        <section className="mt-4">
                           <PersonalSection />
                         </section>
                         
                         {/* Resources Section */}
-                        <section className="mt-3">
+                        <section className="mt-4 pb-6">
                           <h2 className="text-base font-bold mb-2">Resources</h2>
                           <ResourcesSection />
                         </section>
@@ -119,16 +121,18 @@ const Index = () => {
                     </ScrollArea>
                   </div>
                   
-                  {/* Right Column - Calendar and Schedule with improved overflow handling */}
-                  <div className="h-full hidden lg:block overflow-hidden">
+                  {/* Right Column - Calendar and Schedule with fixed width */}
+                  <div className="w-80 flex-shrink-0 min-h-0 overflow-hidden border-l">
                     <div className="h-full flex flex-col">
                       <CalendarProvider>
-                        <div className="-mt-1 flex-shrink-0">
+                        <div className="flex-shrink-0 p-3 pb-0">
                           <Calendar />
                         </div>
-                        <div className="flex-1 overflow-hidden">
+                        <div className="flex-1 min-h-0 overflow-hidden">
                           <ScrollArea className="h-full">
-                            <Schedule />
+                            <div className="p-3 pt-0">
+                              <Schedule />
+                            </div>
                           </ScrollArea>
                         </div>
                       </CalendarProvider>

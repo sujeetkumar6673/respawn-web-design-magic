@@ -36,22 +36,22 @@ const Index = () => {
   };
   
   return (
-    <div className="app-background min-h-screen flex flex-col">
-      <div className="flex flex-1">
+    <div className="app-background min-h-screen flex flex-col overflow-hidden">
+      <div className="flex flex-1 overflow-hidden">
         {/* Sidebar - only visible on desktop */}
         {!isMobile && <Sidebar activePage={activePage} />}
         
         {/* Main Content */}
-        <div className={`flex-1 p-2 flex flex-col ${isMobile ? 'w-full' : 'ml-[220px]'}`}>
-          <div className="max-w-[1200px] mx-auto flex flex-col h-full w-full">
+        <div className={`flex-1 p-2 flex flex-col overflow-hidden ${isMobile ? 'w-full' : 'ml-[220px]'}`}>
+          <div className="max-w-[1200px] mx-auto flex flex-col h-full w-full overflow-hidden">
             {/* Header */}
             <Header userName={userName} />
             
             {/* Main Dashboard */}
-            <div className="bg-white rounded-b-xl p-3 flex-1 flex flex-col">
+            <div className="bg-white rounded-b-xl p-3 flex-1 flex flex-col overflow-hidden">
               {isMobile ? (
                 // Mobile view - Fixed mobile scrolling with appropriate spacing
-                <div className="h-[calc(100vh-130px)] overflow-y-auto pb-24">
+                <div className="h-full overflow-y-auto pb-24">
                   <div className="space-y-4">
                     {/* Welcome Message */}
                     <WelcomeMessage userName={userName} />
@@ -90,12 +90,12 @@ const Index = () => {
                   </div>
                 </div>
               ) : (
-                // Desktop view - Use ScrollArea component
-                <div className="h-full grid grid-cols-1 lg:grid-cols-3 gap-3">
-                  {/* Left Column */}
-                  <div className="lg:col-span-2 h-full">
-                    <ScrollArea className="h-full pr-2">
-                      <div className="space-y-3 pb-4">
+                // Desktop view - Improved scrolling for better scaling support
+                <div className="h-full grid grid-cols-1 lg:grid-cols-3 gap-3 overflow-hidden">
+                  {/* Left Column - Main content with vertical scroll */}
+                  <div className="lg:col-span-2 h-full overflow-hidden">
+                    <ScrollArea className="h-full">
+                      <div className="space-y-3 pr-2 pb-6">
                         {/* Welcome Message */}
                         <WelcomeMessage userName={userName} />
                         
@@ -119,15 +119,20 @@ const Index = () => {
                     </ScrollArea>
                   </div>
                   
-                  {/* Right Column - Calendar and Schedule only shown on desktop here */}
-                  <div className="h-full hidden lg:block">
-                    {/* Calendar - desktop position */}
-                    <CalendarProvider>
-                      <div className="-mt-1">
-                        <Calendar />
-                      </div>
-                      <Schedule />
-                    </CalendarProvider>
+                  {/* Right Column - Calendar and Schedule with improved overflow handling */}
+                  <div className="h-full hidden lg:block overflow-hidden">
+                    <div className="h-full flex flex-col">
+                      <CalendarProvider>
+                        <div className="-mt-1 flex-shrink-0">
+                          <Calendar />
+                        </div>
+                        <div className="flex-1 overflow-hidden">
+                          <ScrollArea className="h-full">
+                            <Schedule />
+                          </ScrollArea>
+                        </div>
+                      </CalendarProvider>
+                    </div>
                   </div>
                 </div>
               )}

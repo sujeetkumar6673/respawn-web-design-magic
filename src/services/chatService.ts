@@ -1,5 +1,6 @@
 
 import { mockChatMessages } from './mockData';
+import { ChatMessage as SignalRChatMessage } from '../types/chat';
 
 export interface ChatMessage {
   id: string;
@@ -13,13 +14,13 @@ export interface ChatMessage {
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const chatService = {
-  // Mock get chat messages
+  // Mock get chat messages - kept for backward compatibility
   async getChatMessages(): Promise<ChatMessage[]> {
     await delay(400);
     return [...mockChatMessages];
   },
 
-  // Mock send message
+  // Mock send message - kept for backward compatibility
   async sendMessage(message: string): Promise<ChatMessage> {
     await delay(800);
     
@@ -47,5 +48,16 @@ export const chatService = {
     }, 1000);
     
     return userMessage;
+  },
+
+  // Convert SignalR ChatMessage to legacy format
+  convertFromSignalR(signalRMessage: SignalRChatMessage): ChatMessage {
+    return {
+      id: `${signalRMessage.senderId}-${signalRMessage.sentAt}`,
+      sender: signalRMessage.senderId,
+      message: signalRMessage.content,
+      timestamp: signalRMessage.sentAt,
+      isUser: signalRMessage.senderType === 'User'
+    };
   }
 };

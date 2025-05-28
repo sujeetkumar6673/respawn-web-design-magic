@@ -1,6 +1,19 @@
 
 import { mockUsers } from './mockData';
 
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+export interface RegisterData {
+  name: string;
+  email: string;
+  password: string;
+  phone?: string;
+  city?: string;
+}
+
 export interface User {
   id: string;
   email: string;
@@ -16,19 +29,33 @@ export interface User {
     phone: string;
     city: string;
     role: string;
+    avatar?: string;
+    lastMessage?: string;
+    timestamp?: Date;
+    unreadCount?: number;
+    status?: 'online' | 'offline' | 'away';
   }>;
 }
+
+// Generate a unique GUID
+const generateGUID = () => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+};
 
 // Simulate API delay
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const authService = {
   // Mock login - simplified for demo
-  async login(email: string, password: string): Promise<User | null> {
+  async login(credentials: LoginCredentials): Promise<User | null> {
     await delay(1000);
     
     // Find user by email in mock data
-    const foundUser = mockUsers.find(user => user.email === email);
+    const foundUser = mockUsers.find(user => user.email === credentials.email);
     
     if (foundUser) {
       const authenticatedUser: User = {
@@ -43,8 +70,8 @@ export const authService = {
     
     // For demo purposes, create a default user if not found
     const defaultUser: User = {
-      id: '00000000-0000-0000-0000-000000000001', // Use proper GUID format
-      email,
+      id: generateGUID(),
+      email: credentials.email,
       name: 'John Doe',
       phone: '(555) 123-4567',
       city: 'New York',
@@ -58,18 +85,19 @@ export const authService = {
   },
 
   // Mock registration
-  async register(userData: Omit<User, 'id' | 'isAuthenticated'>): Promise<User> {
+  async register(userData: RegisterData): Promise<User> {
     await delay(1500);
     
     const newUser: User = {
-      ...userData,
-      id: '00000000-0000-0000-0000-000000000001', // Use proper GUID format
+      id: generateGUID(),
+      name: userData.name,
+      email: userData.email,
+      phone: userData.phone || '',
+      city: userData.city || '',
+      role: 'patient',
       isAuthenticated: true,
       contacts: []
     };
-    
-    // Add to mock users array
-    mockUsers.push(newUser);
     
     // Store in localStorage
     localStorage.setItem('user', JSON.stringify(newUser));
@@ -84,10 +112,6 @@ export const authService = {
     if (storedUser) {
       try {
         const user = JSON.parse(storedUser);
-        // Ensure the user ID is in the correct format
-        if (user.id && !user.id.includes('-')) {
-          user.id = '00000000-0000-0000-0000-000000000001';
-        }
         return user;
       } catch (error) {
         console.error('Error parsing stored user:', error);

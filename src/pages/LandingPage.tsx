@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -67,14 +66,16 @@ const LandingPage = () => {
         userData = await authService.register(registerData);
       }
       
-      // Use Auth context to login
-      login(userData);
-      
-      // Show success toast
-      toast.success(isSignIn ? "Signed in successfully!" : "Account created successfully!");
-      
-      // Redirect to dashboard
-      navigate('/dashboard');
+      if (userData) {
+        // Use Auth context to login
+        login(userData);
+        
+        // Show success toast
+        toast.success(isSignIn ? "Signed in successfully!" : "Account created successfully!");
+        
+        // Redirect to dashboard
+        navigate('/dashboard');
+      }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "An error occurred");
     } finally {

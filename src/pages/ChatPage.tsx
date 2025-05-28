@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -15,7 +14,7 @@ const ChatPage = () => {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const [activePage, setActivePage] = useState('chat');
-  const [selectedContactId, setSelectedContactId] = useState<string | undefined>('1');
+  const [selectedContactId, setSelectedContactId] = useState<string | undefined>('00000000-0000-0000-0000-000000000002');
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
   const [loading, setLoading] = useState(true);
@@ -26,9 +25,9 @@ const ChatPage = () => {
       try {
         setLoading(true);
         
-        // For now, we'll use 'current-user' as the default user ID
+        // Use the first user from mockUsers as default
         // In a real app, this would come from authentication context
-        const userId = 'current-user';
+        const userId = '00000000-0000-0000-0000-000000000001';
         
         const [userContacts, user] = await Promise.all([
           contactService.getContactsForUser(userId),

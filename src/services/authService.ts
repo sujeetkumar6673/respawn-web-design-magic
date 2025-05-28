@@ -2,104 +2,120 @@
 import { mockUsers } from './mockData';
 
 export interface User {
-  id?: string;
+  id: string;
   email: string;
   name: string;
-  phone?: string;
-  city?: string;
-  role?: string;
+  phone: string;
+  city: string;
+  role: string;
   isAuthenticated: boolean;
-}
-
-export interface LoginCredentials {
-  email: string;
-  password: string;
-}
-
-export interface RegisterData {
-  name: string;
-  email: string;
-  password: string;
-  phone?: string;
-  city?: string;
-  role?: string;
+  contacts: Array<{
+    id: string;
+    name: string;
+    email: string;
+    phone: string;
+    city: string;
+    role: string;
+  }>;
 }
 
 // Simulate API delay
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const authService = {
-  // Mock login service
-  async login(credentials: LoginCredentials): Promise<User> {
-    await delay(500); // Simulate network delay
+  // Mock login - simplified for demo
+  async login(email: string, password: string): Promise<User | null> {
+    await delay(1000);
     
-    // Find user in mock data
-    const user = mockUsers.find(u => u.email === credentials.email);
+    // Find user by email in mock data
+    const foundUser = mockUsers.find(user => user.email === email);
     
-    if (!user) {
-      throw new Error('User not found');
+    if (foundUser) {
+      const authenticatedUser: User = {
+        ...foundUser,
+        isAuthenticated: true
+      };
+      
+      // Store in localStorage
+      localStorage.setItem('user', JSON.stringify(authenticatedUser));
+      return authenticatedUser;
     }
     
-    // In real implementation, validate password
-    // For now, just return user with authenticated status
-    return {
-      ...user,
-      isAuthenticated: true
+    // For demo purposes, create a default user if not found
+    const defaultUser: User = {
+      id: '00000000-0000-0000-0000-000000000001', // Use proper GUID format
+      email,
+      name: 'John Doe',
+      phone: '(555) 123-4567',
+      city: 'New York',
+      role: 'patient',
+      isAuthenticated: true,
+      contacts: []
     };
+    
+    localStorage.setItem('user', JSON.stringify(defaultUser));
+    return defaultUser;
   },
 
-  // Mock register service
-  async register(userData: RegisterData): Promise<User> {
-    await delay(700); // Simulate network delay
+  // Mock registration
+  async register(userData: Omit<User, 'id' | 'isAuthenticated'>): Promise<User> {
+    await delay(1500);
     
-    // Check if user already exists
-    const existingUser = mockUsers.find(u => u.email === userData.email);
-    
-    if (existingUser) {
-      throw new Error('User already exists');
-    }
-    
-    // Create new user
     const newUser: User = {
-      id: Date.now().toString(),
-      email: userData.email,
-      name: userData.name,
-      phone: userData.phone || '',
-      city: userData.city || '',
-      role: userData.role || 'patient',
-      isAuthenticated: true
+      ...userData,
+      id: '00000000-0000-0000-0000-000000000001', // Use proper GUID format
+      isAuthenticated: true,
+      contacts: []
     };
     
-    // In real implementation, save to database
-    // Create a mock user entry with all required fields
-    const mockUserEntry = {
-      id: newUser.id!,
-      email: newUser.email,
-      name: newUser.name,
-      phone: newUser.phone || '',
-      city: newUser.city || '',
-      role: newUser.role || 'patient',
-      isAuthenticated: false,
-      contacts: [] // Initialize with empty contacts array
-    };
+    // Add to mock users array
+    mockUsers.push(newUser);
     
-    mockUsers.push(mockUserEntry);
-    
+    // Store in localStorage
+    localStorage.setItem('user', JSON.stringify(newUser));
     return newUser;
   },
 
-  // Mock logout service
-  async logout(): Promise<void> {
+  // Get current user from localStorage
+  async getCurrentUser(): Promise<User | null> {
     await delay(200);
-    // In real implementation, invalidate token on server
-    return;
+    
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        // Ensure the user ID is in the correct format
+        if (user.id && !user.id.includes('-')) {
+          user.id = '00000000-0000-0000-0000-000000000001';
+        }
+        return user;
+      } catch (error) {
+        console.error('Error parsing stored user:', error);
+        localStorage.removeItem('user');
+        return null;
+      }
+    }
+    
+    return null;
   },
 
-  // Mock get current user service
-  async getCurrentUser(): Promise<User | null> {
-    await delay(300);
-    // In real implementation, validate token and return user
-    const storedUser = localStorage.getItem('user');
-    return storedUser ? JSON.parse(storedUser) : null;
+  // Mock logout
+  async logout(): Promise<void> {
+    await delay(500);
+    localStorage.removeItem('user');
+  },
+
+  // Check if user is authenticated
+  isAuthenticated(): boolean {
+    const user = localStorage.getItem('user');
+    if (user) {
+      try {
+        const parsedUser = JSON.parse(user);
+        return parsedUser.isAuthenticated === true;
+      } catch {
+        return false;
+      }
+    }
+    return false;
   }
 };

@@ -1,3 +1,4 @@
+
 // Mock data for various services
 export const mockUsers = [
   {
@@ -15,7 +16,12 @@ export const mockUsers = [
         email: 'jane@example.com',
         phone: '(555) 987-6543',
         city: 'Los Angeles',
-        role: 'FamilyMember'
+        role: 'FamilyMember',
+        avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop',
+        lastMessage: "How is everything going today?",
+        timestamp: new Date(Date.now() - 3600000 * 2),
+        unreadCount: 0,
+        status: 'online' as const
       },
       {
         id: '00000000-0000-0000-0000-000000000003',
@@ -23,7 +29,12 @@ export const mockUsers = [
         email: 'demo@example.com',
         phone: '997845690',
         city: 'Mumbai',
-        role: 'FamilyCareGiver'
+        role: 'FamilyCareGiver',
+        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop',
+        lastMessage: "I'll check on the medication schedule",
+        timestamp: new Date(Date.now() - 86400000),
+        unreadCount: 1,
+        status: 'away' as const
       }
     ]
   },
@@ -42,7 +53,12 @@ export const mockUsers = [
         email: 'john@example.com',
         phone: '(555) 123-4567',
         city: 'New York',
-        role: 'patient'
+        role: 'patient',
+        avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=200&auto=format&fit=crop',
+        lastMessage: "Thanks for checking in",
+        timestamp: new Date(Date.now() - 3600000),
+        unreadCount: 0,
+        status: 'online' as const
       },
       {
         id: '00000000-0000-0000-0000-000000000003',
@@ -50,7 +66,12 @@ export const mockUsers = [
         email: 'demo@example.com',
         phone: '997845690',
         city: 'Mumbai',
-        role: 'FamilyCareGiver'
+        role: 'FamilyCareGiver',
+        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop',
+        lastMessage: "Let's coordinate care schedule",
+        timestamp: new Date(Date.now() - 86400000 * 2),
+        unreadCount: 2,
+        status: 'offline' as const
       }
     ]
   },
@@ -69,7 +90,12 @@ export const mockUsers = [
         email: 'john@example.com',
         phone: '(555) 123-4567',
         city: 'New York',
-        role: 'patient'
+        role: 'patient',
+        avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=200&auto=format&fit=crop',
+        lastMessage: "Feeling much better today",
+        timestamp: new Date(Date.now() - 3600000 * 4),
+        unreadCount: 0,
+        status: 'online' as const
       },
       {
         id: '00000000-0000-0000-0000-000000000002',
@@ -77,7 +103,12 @@ export const mockUsers = [
         email: 'jane@example.com',
         phone: '(555) 987-6543',
         city: 'Los Angeles',
-        role: 'FamilyMember'
+        role: 'FamilyMember',
+        avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop',
+        lastMessage: "Family meeting this weekend?",
+        timestamp: new Date(Date.now() - 86400000),
+        unreadCount: 1,
+        status: 'away' as const
       }
     ]
   }

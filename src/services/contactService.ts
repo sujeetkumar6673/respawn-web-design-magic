@@ -1,6 +1,6 @@
 
 import { Contact } from '@/components/chat/ChatContactList';
-import { mockChatContacts, mockCurrentUsers, mockUsers } from './mockData';
+import { mockUsers, mockCurrentUsers } from './mockData';
 
 // Simulate API delay
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -23,22 +23,16 @@ export const contactService = {
       return [];
     }
 
-    // Get chat-specific contact data for UI (avatars, messages, etc.)
-    const chatContacts = mockChatContacts[userId] || [];
-    
-    // Merge user contacts with chat UI data
-    const contacts: Contact[] = user.contacts.map(contact => {
-      const chatContact = chatContacts.find(cc => cc.id === contact.id);
-      return {
-        id: contact.id,
-        name: contact.name,
-        avatar: chatContact?.avatar || `https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=200&auto=format&fit=crop`,
-        lastMessage: chatContact?.lastMessage || 'No messages yet',
-        timestamp: chatContact?.timestamp || new Date(),
-        unreadCount: chatContact?.unreadCount || 0,
-        status: chatContact?.status || 'offline'
-      };
-    });
+    // Convert user contacts to Contact format
+    const contacts: Contact[] = user.contacts.map(contact => ({
+      id: contact.id,
+      name: contact.name,
+      avatar: contact.avatar || `https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=200&auto=format&fit=crop`,
+      lastMessage: contact.lastMessage || 'No messages yet',
+      timestamp: contact.timestamp || new Date(),
+      unreadCount: contact.unreadCount || 0,
+      status: contact.status || 'offline'
+    }));
 
     return contacts;
   },

@@ -7,6 +7,7 @@ export interface User {
   name: string;
   phone?: string;
   city?: string;
+  role?: string;
   isAuthenticated: boolean;
 }
 
@@ -21,6 +22,7 @@ export interface RegisterData {
   password: string;
   phone?: string;
   city?: string;
+  role?: string;
 }
 
 // Simulate API delay
@@ -64,6 +66,7 @@ export const authService = {
       name: userData.name,
       phone: userData.phone || '',
       city: userData.city || '',
+      role: userData.role || 'patient',
       isAuthenticated: true
     };
     
@@ -75,7 +78,9 @@ export const authService = {
       name: newUser.name,
       phone: newUser.phone || '',
       city: newUser.city || '',
-      isAuthenticated: false
+      role: newUser.role || 'patient',
+      isAuthenticated: false,
+      contacts: [] // Initialize with empty contacts array
     };
     
     mockUsers.push(mockUserEntry);

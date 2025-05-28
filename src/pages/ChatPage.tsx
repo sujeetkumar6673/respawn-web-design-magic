@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -9,12 +10,14 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { contactService, CurrentUser } from '@/services/contactService';
+import { useAuth } from '@/contexts/AuthContext';
 
 const ChatPage = () => {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
+  const { user: authUser } = useAuth();
   const [activePage, setActivePage] = useState('chat');
-  const [selectedContactId, setSelectedContactId] = useState<string | undefined>('00000000-0000-0000-0000-000000000002');
+  const [selectedContactId, setSelectedContactId] = useState<string | undefined>(undefined);
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
   const [loading, setLoading] = useState(true);
@@ -25,9 +28,9 @@ const ChatPage = () => {
       try {
         setLoading(true);
         
-        // Use the first user from mockUsers as default
-        // In a real app, this would come from authentication context
-        const userId = '00000000-0000-0000-0000-000000000001';
+        // Use authenticated user ID, fallback to default for demo
+        const userId = authUser?.id || '00000000-0000-0000-0000-000000000001';
+        console.log('Loading chat data for user:', userId);
         
         const [userContacts, user] = await Promise.all([
           contactService.getContactsForUser(userId),
@@ -36,6 +39,12 @@ const ChatPage = () => {
         
         setContacts(userContacts);
         setCurrentUser(user);
+        
+        // Auto-select first contact if available
+        if (userContacts.length > 0 && !selectedContactId) {
+          setSelectedContactId(userContacts[0].id);
+          console.log('Auto-selected first contact:', userContacts[0].name);
+        }
       } catch (error) {
         console.error('Error loading chat data:', error);
       } finally {
@@ -44,7 +53,7 @@ const ChatPage = () => {
     };
 
     loadData();
-  }, []);
+  }, [authUser, selectedContactId]);
   
   const selectedContact = contacts.find(c => c.id === selectedContactId);
 
@@ -54,7 +63,7 @@ const ChatPage = () => {
     // Handle navigation based on the selected page
     switch(page) {
       case 'home':
-        navigate('/');
+        navigate('/dashboard');
         break;
       case 'calendar':
         navigate('/calendar');
@@ -67,6 +76,12 @@ const ChatPage = () => {
   // Function to go back to contact list on mobile
   const handleBackToContacts = () => {
     setSelectedContactId(undefined);
+  };
+
+  // Handle contact selection and log for debugging
+  const handleSelectContact = (contactId: string) => {
+    console.log('Selected contact:', contactId);
+    setSelectedContactId(contactId);
   };
 
   if (loading || !currentUser) {
@@ -132,7 +147,7 @@ const ChatPage = () => {
                   <ChatContactList 
                     contacts={contacts} 
                     selectedContactId={selectedContactId}
-                    onSelectContact={setSelectedContactId}
+                    onSelectContact={handleSelectContact}
                   />
                 )
               ) : (
@@ -142,16 +157,20 @@ const ChatPage = () => {
                   <ChatContactList 
                     contacts={contacts} 
                     selectedContactId={selectedContactId}
-                    onSelectContact={setSelectedContactId}
+                    onSelectContact={handleSelectContact}
                   />
                   
                   {/* Chat Container */}
-                  {selectedContact && (
+                  {selectedContact ? (
                     <div className="flex-1 overflow-hidden">
                       <ChatContainer 
                         currentUser={currentUser} 
                         contact={selectedContact} 
                       />
+                    </div>
+                  ) : (
+                    <div className="flex-1 flex items-center justify-center text-gray-500">
+                      <p>Select a contact to start chatting</p>
                     </div>
                   )}
                 </div>

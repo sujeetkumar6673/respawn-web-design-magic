@@ -59,5 +59,37 @@ export const chatService = {
       timestamp: signalRMessage.sentAt,
       isUser: signalRMessage.senderType === 'User'
     };
+  },
+
+  // Get chat history between two users (mock implementation)
+  async getChatHistoryBetweenUsers(senderId: string, receiverId: string): Promise<ChatMessage[]> {
+    await delay(300);
+    
+    // Mock chat history based on user IDs
+    const mockHistory: ChatMessage[] = [
+      {
+        id: `${senderId}-${receiverId}-1`,
+        sender: senderId,
+        message: "Hello! How are you doing today?",
+        timestamp: new Date(Date.now() - 3600000 * 24).toISOString(),
+        isUser: true
+      },
+      {
+        id: `${receiverId}-${senderId}-1`,
+        sender: receiverId,
+        message: "Hi there! I'm doing well, thanks for asking. How about you?",
+        timestamp: new Date(Date.now() - 3600000 * 23).toISOString(),
+        isUser: false
+      },
+      {
+        id: `${senderId}-${receiverId}-2`,
+        sender: senderId,
+        message: "I'm great! Just wanted to check in and see if you need anything.",
+        timestamp: new Date(Date.now() - 3600000 * 22).toISOString(),
+        isUser: true
+      }
+    ];
+
+    return mockHistory;
   }
 };

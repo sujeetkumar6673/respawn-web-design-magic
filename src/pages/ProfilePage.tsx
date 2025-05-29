@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -9,14 +9,70 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Edit, Settings, User, Calendar, Mail, Phone, MapPin, Building, Briefcase } from 'lucide-react';
+import { Edit, Settings, User, Calendar, Mail, Phone, MapPin, Building, Briefcase, Plus, Users } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import UserManagementModal from '@/components/profile/UserManagementModal';
+import TeamMembersList from '@/components/profile/TeamMembersList';
+import { userManagementService, TeamMember } from '@/services/userManagementService';
+import { toast } from "sonner";
 
 const ProfilePage = () => {
   const isMobile = useIsMobile();
   const [activePage, setActivePage] = useState('profile');
+  const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { user } = useAuth();
   
   const handleNavigate = (page: string) => {
     setActivePage(page);
+  };
+
+  // Load team members on component mount
+  useEffect(() => {
+    if (user?.id) {
+      loadTeamMembers();
+    }
+  }, [user?.id]);
+
+  const loadTeamMembers = async () => {
+    if (!user?.id) return;
+    
+    try {
+      setIsLoading(true);
+      const members = await userManagementService.getTeamMembers(user.id);
+      setTeamMembers(members);
+    } catch (error) {
+      console.error('Error loading team members:', error);
+      toast.error("Failed to load team members");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAddUser = async (userData: any) => {
+    if (!user?.id) return;
+    
+    try {
+      const newMember = await userManagementService.addTeamMember(user.id, userData);
+      setTeamMembers(prev => [...prev, newMember]);
+    } catch (error) {
+      console.error('Error adding team member:', error);
+      throw error; // Re-throw to be handled by the modal
+    }
+  };
+
+  const handleRemoveMember = async (memberId: string) => {
+    if (!user?.id) return;
+    
+    try {
+      await userManagementService.removeTeamMember(user.id, memberId);
+      setTeamMembers(prev => prev.filter(member => member.id !== memberId));
+      toast.success("Team member removed successfully");
+    } catch (error) {
+      console.error('Error removing team member:', error);
+      toast.error("Failed to remove team member");
+    }
   };
 
   return (
@@ -29,7 +85,7 @@ const ProfilePage = () => {
         <div className={`flex-1 ${isMobile ? 'w-full' : 'ml-[220px]'} h-screen flex flex-col overflow-hidden`}>
           <div className="max-w-[1200px] mx-auto w-full p-3 sm:p-4 flex flex-col h-full">
             {/* Header */}
-            <Header userName="Nina" />
+            <Header userName={user?.name || "User"} />
             
             {/* Main Content */}
             <div className="bg-white rounded-b-xl p-3 sm:p-6 flex-1 flex flex-col overflow-hidden">
@@ -38,13 +94,13 @@ const ProfilePage = () => {
                   {/* Profile Header */}
                   <div className="flex flex-col sm:flex-row sm:items-center gap-6">
                     <Avatar className="h-24 w-24 border-4 border-white shadow-lg">
-                      <AvatarImage src="https://api.dicebear.com/7.x/adventurer/svg?seed=Nina" alt="Nina" />
-                      <AvatarFallback>NA</AvatarFallback>
+                      <AvatarImage src="https://api.dicebear.com/7.x/adventurer/svg?seed=Nina" alt={user?.name} />
+                      <AvatarFallback>{user?.name?.charAt(0) || "U"}</AvatarFallback>
                     </Avatar>
                     
                     <div className="flex-1">
-                      <h1 className="text-3xl font-bold text-rezilia-purple">Nina Anderson</h1>
-                      <p className="text-gray-500 mt-1">Parent of Alex (Grade 3) and Emily (Grade 5)</p>
+                      <h1 className="text-3xl font-bold text-rezilia-purple">{user?.name || "User Name"}</h1>
+                      <p className="text-gray-500 mt-1">Account Owner - Subscription Active</p>
                       
                       <div className="flex gap-2 mt-4">
                         <Button variant="outline" size="sm" className="flex items-center gap-1">
@@ -61,9 +117,41 @@ const ProfilePage = () => {
                   </div>
                   
                   <Separator />
+
+                  {/* Team Management Section */}
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h2 className="text-2xl font-bold text-gray-900">Care Team Management</h2>
+                        <p className="text-gray-600 mt-1">Manage your family members, patients, and professional caregivers</p>
+                      </div>
+                      <Button 
+                        onClick={() => setIsAddUserModalOpen(true)}
+                        className="bg-rezilia-purple hover:bg-rezilia-purple/90 flex items-center gap-2"
+                      >
+                        <Plus className="h-4 w-4" />
+                        Add Member
+                      </Button>
+                    </div>
+
+                    {isLoading ? (
+                      <Card>
+                        <CardContent className="text-center py-8">
+                          <p className="text-gray-500">Loading team members...</p>
+                        </CardContent>
+                      </Card>
+                    ) : (
+                      <TeamMembersList 
+                        members={teamMembers} 
+                        onRemoveMember={handleRemoveMember}
+                      />
+                    )}
+                  </div>
+
+                  <Separator />
                   
                   {/* Profile Information */}
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Personal Information */}
                     <Card className="bg-white shadow-sm">
                       <CardHeader className="pb-2">
@@ -75,171 +163,57 @@ const ProfilePage = () => {
                       <CardContent className="space-y-3">
                         <div className="flex items-center gap-2">
                           <Mail className="h-4 w-4 text-gray-500" />
-                          <span>nina.anderson@example.com</span>
+                          <span>{user?.email || "email@example.com"}</span>
                         </div>
                         
                         <div className="flex items-center gap-2">
                           <Phone className="h-4 w-4 text-gray-500" />
-                          <span>(555) 123-4567</span>
+                          <span>{user?.phone || "(555) 123-4567"}</span>
                         </div>
                         
                         <div className="flex items-start gap-2">
                           <MapPin className="h-4 w-4 text-gray-500 mt-1" />
-                          <span>123 Main Street, Apt 4B<br />San Francisco, CA 94105</span>
+                          <span>{user?.city || "City"}</span>
                         </div>
                         
                         <div className="flex items-center gap-2">
                           <Calendar className="h-4 w-4 text-gray-500" />
-                          <span>May 15, 1985</span>
+                          <span>Account created: {new Date().toLocaleDateString()}</span>
                         </div>
                       </CardContent>
                     </Card>
                     
-                    {/* Work Information */}
+                    {/* Subscription Information */}
                     <Card className="bg-white shadow-sm">
                       <CardHeader className="pb-2">
                         <CardTitle className="text-lg flex items-center">
                           <Briefcase className="h-5 w-5 mr-2 text-rezilia-purple" />
-                          Work Information
+                          Subscription Details
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-3">
                         <div className="flex items-center gap-2">
-                          <Building className="h-4 w-4 text-gray-500" />
-                          <span>TechInnovate Inc.</span>
+                          <span className="w-4 h-4 flex justify-center">•</span>
+                          <span>Premium Plan - Active</span>
                         </div>
                         
                         <div className="flex items-center gap-2">
                           <span className="w-4 h-4 flex justify-center">•</span>
-                          <span>Senior Product Manager</span>
+                          <span>Team Members: {teamMembers.length}/10</span>
                         </div>
                         
                         <div className="flex items-center gap-2">
                           <span className="w-4 h-4 flex justify-center">•</span>
-                          <span>5 years at company</span>
+                          <span>Next billing: {new Date(Date.now() + 30*24*60*60*1000).toLocaleDateString()}</span>
                         </div>
                         
                         <div className="flex items-center gap-2">
-                          <Mail className="h-4 w-4 text-gray-500" />
-                          <span>nina.a@techinnovate.com</span>
+                          <span className="w-4 h-4 flex justify-center">•</span>
+                          <span className="text-rezilia-green">All features unlocked</span>
                         </div>
                       </CardContent>
-                    </Card>
-                    
-                    {/* Family Information */}
-                    <Card className="bg-white shadow-sm">
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-lg flex items-center">
-                          <User className="h-5 w-5 mr-2 text-rezilia-purple" />
-                          Family Information
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-4">
-                          <div className="p-3 border rounded-lg flex items-center gap-3">
-                            <Avatar className="h-10 w-10">
-                              <AvatarImage src="https://api.dicebear.com/7.x/adventurer/svg?seed=Alex" alt="Alex" />
-                              <AvatarFallback>AA</AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <p className="font-medium">Alex Anderson</p>
-                              <p className="text-sm text-gray-500">Grade 3, Ms. Johnson's Class</p>
-                            </div>
-                          </div>
-                          
-                          <div className="p-3 border rounded-lg flex items-center gap-3">
-                            <Avatar className="h-10 w-10">
-                              <AvatarImage src="https://api.dicebear.com/7.x/adventurer/svg?seed=Emily" alt="Emily" />
-                              <AvatarFallback>EA</AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <p className="font-medium">Emily Anderson</p>
-                              <p className="text-sm text-gray-500">Grade 5, Mr. Thomas's Class</p>
-                            </div>
-                          </div>
-                          
-                          <div className="p-3 border rounded-lg flex items-center gap-3">
-                            <Avatar className="h-10 w-10">
-                              <AvatarImage src="https://api.dicebear.com/7.x/adventurer/svg?seed=Robert" alt="Robert" />
-                              <AvatarFallback>RA</AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <p className="font-medium">Robert Anderson</p>
-                              <p className="text-sm text-gray-500">Spouse</p>
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                  
-                  {/* Additional Information */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <Card className="bg-white shadow-sm">
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-lg">Preferences</CardTitle>
-                        <CardDescription>Your notification and platform preferences</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <ul className="space-y-2">
-                          <li className="flex items-center justify-between">
-                            <span className="text-gray-700">Email Notifications</span>
-                            <span className="font-medium text-rezilia-green">Enabled</span>
-                          </li>
-                          <li className="flex items-center justify-between">
-                            <span className="text-gray-700">SMS Notifications</span>
-                            <span className="font-medium text-rezilia-green">Enabled</span>
-                          </li>
-                          <li className="flex items-center justify-between">
-                            <span className="text-gray-700">Newsletter</span>
-                            <span className="font-medium text-gray-400">Disabled</span>
-                          </li>
-                          <li className="flex items-center justify-between">
-                            <span className="text-gray-700">Language</span>
-                            <span className="font-medium">English (US)</span>
-                          </li>
-                          <li className="flex items-center justify-between">
-                            <span className="text-gray-700">Time Zone</span>
-                            <span className="font-medium">Pacific Time (US)</span>
-                          </li>
-                        </ul>
-                      </CardContent>
                       <CardFooter>
-                        <Button variant="outline" className="w-full">Manage Preferences</Button>
-                      </CardFooter>
-                    </Card>
-                    
-                    <Card className="bg-white shadow-sm">
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-lg">Security & Privacy</CardTitle>
-                        <CardDescription>Manage your account security settings</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <ul className="space-y-2">
-                          <li className="flex items-center justify-between">
-                            <span className="text-gray-700">Two-Factor Authentication</span>
-                            <span className="font-medium text-rezilia-green">Enabled</span>
-                          </li>
-                          <li className="flex items-center justify-between">
-                            <span className="text-gray-700">Password</span>
-                            <span className="font-medium">Last Changed: 45 days ago</span>
-                          </li>
-                          <li className="flex items-center justify-between">
-                            <span className="text-gray-700">Login History</span>
-                            <span className="font-medium text-blue-500">View</span>
-                          </li>
-                          <li className="flex items-center justify-between">
-                            <span className="text-gray-700">Privacy Settings</span>
-                            <span className="font-medium text-blue-500">View</span>
-                          </li>
-                          <li className="flex items-center justify-between">
-                            <span className="text-gray-700">Data Sharing</span>
-                            <span className="font-medium text-gray-400">Disabled</span>
-                          </li>
-                        </ul>
-                      </CardContent>
-                      <CardFooter>
-                        <Button variant="outline" className="w-full">Security Settings</Button>
+                        <Button variant="outline" className="w-full">Manage Subscription</Button>
                       </CardFooter>
                     </Card>
                   </div>
@@ -252,6 +226,13 @@ const ProfilePage = () => {
       
       {/* Mobile Navigation - only visible on mobile */}
       {isMobile && <MobileNav activePage={activePage} onNavigate={handleNavigate} />}
+      
+      {/* User Management Modal */}
+      <UserManagementModal
+        isOpen={isAddUserModalOpen}
+        onClose={() => setIsAddUserModalOpen(false)}
+        onAddUser={handleAddUser}
+      />
     </div>
   );
 };

@@ -3,18 +3,30 @@ import React from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 
-interface WelcomeMessageProps {
-  userName: string;
-}
-
-const WelcomeMessage: React.FC<WelcomeMessageProps> = ({ userName }) => {
+const WelcomeMessage: React.FC = () => {
+  const { user } = useAuth();
+  
+  // Use actual user data or fallback
+  const userName = user?.name || 'User';
+  
+  // Generate initials from user name
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(word => word.charAt(0))
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
+  
   return (
     <Card className="bg-white rounded-md p-1 flex items-center gap-2 mb-1">
       <div className="relative">
         <Avatar className="h-8 w-8 border border-rezilia-blue">
           <AvatarImage src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=500&auto=format&fit=crop" alt={userName} />
-          <AvatarFallback>NA</AvatarFallback>
+          <AvatarFallback>{getInitials(userName)}</AvatarFallback>
         </Avatar>
       </div>
       <div className="text-left">

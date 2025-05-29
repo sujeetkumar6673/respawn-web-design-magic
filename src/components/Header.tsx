@@ -15,14 +15,28 @@ import { useAuth } from '../contexts/AuthContext';
 import NotificationDropdown from './NotificationDropdown';
 
 interface HeaderProps {
-  userName: string;
   pageTitle?: string;
   pageDescription?: string;
 }
 
-const Header: React.FC<HeaderProps> = ({ userName, pageTitle, pageDescription }) => {
+const Header: React.FC<HeaderProps> = ({ pageTitle, pageDescription }) => {
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
+  
+  // Use actual user data or fallback to default
+  const userName = user?.name || 'User';
+  const userEmail = user?.email || '';
+  const userRole = user?.role || 'User';
+  
+  // Generate initials from user name
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(word => word.charAt(0))
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
   
   const handleSignOut = () => {
     // Call the logout function from AuthContext
@@ -81,7 +95,7 @@ const Header: React.FC<HeaderProps> = ({ userName, pageTitle, pageDescription })
           <PopoverTrigger asChild>
             <Avatar className="cursor-pointer hover:ring-2 hover:ring-rezilia-purple/30 transition-all">
               <AvatarImage src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=500&auto=format&fit=crop" alt={userName} />
-              <AvatarFallback>NA</AvatarFallback>
+              <AvatarFallback>{getInitials(userName)}</AvatarFallback>
             </Avatar>
           </PopoverTrigger>
           <PopoverContent className="w-56 p-3">
@@ -89,11 +103,14 @@ const Header: React.FC<HeaderProps> = ({ userName, pageTitle, pageDescription })
               <div className="flex items-center gap-3 pb-2 border-b">
                 <Avatar>
                   <AvatarImage src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=500&auto=format&fit=crop" alt={userName} />
-                  <AvatarFallback>NA</AvatarFallback>
+                  <AvatarFallback>{getInitials(userName)}</AvatarFallback>
                 </Avatar>
                 <div>
                   <p className="text-sm font-medium">{userName}</p>
-                  <p className="text-xs text-gray-500">Parent</p>
+                  <p className="text-xs text-gray-500">{userRole}</p>
+                  {userEmail && (
+                    <p className="text-xs text-gray-400">{userEmail}</p>
+                  )}
                 </div>
               </div>
               

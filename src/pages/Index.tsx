@@ -15,7 +15,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 const Index = () => {
-  const userName = "Nina";
   const isMobile = useIsMobile();
   const [activePage, setActivePage] = useState('home');
   const navigate = useNavigate();
@@ -46,7 +45,7 @@ const Index = () => {
           <div className="max-w-[1200px] mx-auto flex flex-col h-full w-full min-h-0 overflow-hidden">
             {/* Header - Fixed at top */}
             <div className="flex-shrink-0">
-              <Header userName={userName} />
+              <Header />
             </div>
             
             {/* Main Dashboard - Scrollable content */}
@@ -56,7 +55,7 @@ const Index = () => {
                 <ScrollArea className="h-full">
                   <div className="p-3 space-y-4 pb-24">
                     {/* Welcome Message */}
-                    <WelcomeMessage userName={userName} />
+                    <WelcomeMessage />
                     
                     {/* Calendar and Schedule - layout for mobile */}
                     <section className="mt-2 mb-6">
@@ -99,7 +98,7 @@ const Index = () => {
                     <ScrollArea className="h-full">
                       <div className="p-3 space-y-4 pr-6">
                         {/* Welcome Message */}
-                        <WelcomeMessage userName={userName} />
+                        <WelcomeMessage />
                         
                         {/* Modules Section */}
                         <section>

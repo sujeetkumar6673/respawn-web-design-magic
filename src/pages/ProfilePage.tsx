@@ -85,7 +85,7 @@ const ProfilePage = () => {
         <div className={`flex-1 ${isMobile ? 'w-full' : 'ml-[220px]'} h-screen flex flex-col overflow-hidden`}>
           <div className="max-w-[1200px] mx-auto w-full p-3 sm:p-4 flex flex-col h-full">
             {/* Header */}
-            <Header userName={user?.name || "User"} />
+            <Header />
             
             {/* Main Content */}
             <div className="bg-white rounded-b-xl p-3 sm:p-6 flex-1 flex flex-col overflow-hidden">

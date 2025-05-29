@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -24,7 +25,7 @@ const SimpliciaPage: React.FC = () => {
       <div className={`flex-1 ${!isMobile ? 'ml-[220px]' : ''} p-4 h-screen overflow-hidden`}>
         {/* Header */}
         <div className="mb-4">
-          <Header userName="Nina" pageTitle="Simplicia" pageDescription="Care coordination and family presence management" />
+          <Header pageTitle="Simplicia" pageDescription="Care coordination and family presence management" />
         </div>
 
         {/* Mobile Layout */}

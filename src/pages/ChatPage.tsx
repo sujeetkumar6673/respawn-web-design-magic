@@ -91,7 +91,7 @@ const ChatPage = () => {
           {!isMobile && <Sidebar activePage={activePage} />}
           <div className={`flex-1 p-3 sm:p-4 flex flex-col overflow-hidden ${isMobile ? 'w-full' : 'ml-[220px]'}`}>
             <div className="max-w-[1200px] mx-auto flex flex-col h-full overflow-hidden">
-              <Header userName="Loading..." />
+              <Header />
               <div className="bg-white rounded-b-xl flex-1 overflow-hidden flex items-center justify-center">
                 <p>Loading chat...</p>
               </div>
@@ -113,7 +113,7 @@ const ChatPage = () => {
         <div className={`flex-1 p-3 sm:p-4 flex flex-col overflow-hidden ${isMobile ? 'w-full' : 'ml-[220px]'}`}>
           <div className="max-w-[1200px] mx-auto flex flex-col h-full overflow-hidden">
             {/* Header */}
-            <Header userName={currentUser.name} />
+            <Header />
             
             {/* Chat Interface */}
             <div className="bg-white rounded-b-xl flex-1 overflow-hidden flex flex-col">

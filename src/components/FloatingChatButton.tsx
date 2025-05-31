@@ -4,11 +4,18 @@ import { Button } from '@/components/ui/button';
 import { MessageCircle } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useAuth } from '@/contexts/AuthContext';
 
 const FloatingChatButton: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isMobile = useIsMobile();
+  const { user } = useAuth();
+
+  // Only show the button if user is logged in and their name is "John"
+  if (!user || user.name !== 'John') {
+    return null;
+  }
 
   const handleChatClick = () => {
     if (location.pathname === '/chat') {

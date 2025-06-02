@@ -5,23 +5,26 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { ArrowRight, ArrowLeft, Check, Users, User, Stethoscope } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Check } from 'lucide-react';
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useAuth } from '@/contexts/AuthContext';
 import { authService, RegisterData } from '@/services/authService';
 
 interface SignupData {
-  // Phase 1
+  // Phase 1 - Email & Password
   email: string;
   password: string;
+  confirmPassword: string;
+  
+  // Phase 2 - Profile Details
   name: string;
   phone: string;
   agreeTerms: boolean;
   agreeDataUsage: boolean;
   userType: string;
   
-  // Phase 2 - Assessment
+  // Phase 3 - Assessment
   caregivingSituation: string;
   dailyChallenge: string;
   organizationMethod: string;
@@ -31,7 +34,7 @@ interface SignupData {
   workLifeBalance: string;
   successVision: string;
   
-  // Phase 3
+  // Phase 4 - Plan Selection
   selectedPlan: string;
 }
 
@@ -43,11 +46,13 @@ interface SignupFlowProps {
 const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<SignupData>();
+  const { register, handleSubmit, watch, setValue, formState: { errors }, trigger } = useForm<SignupData>();
   const { login } = useAuth();
   
   const watchedUserType = watch('userType');
   const watchedAssessment = watch();
+  const watchedPassword = watch('password');
+  const watchedConfirmPassword = watch('confirmPassword');
 
   const userTypes = [
     {
@@ -139,7 +144,18 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
   ];
 
   const onSubmit = async (data: SignupData) => {
-    if (currentStep < 3) {
+    if (currentStep === 1) {
+      // Validate email and password
+      const isValid = await trigger(['email', 'password', 'confirmPassword']);
+      if (isValid && data.password === data.confirmPassword) {
+        setCurrentStep(2);
+      } else if (data.password !== data.confirmPassword) {
+        toast.error("Passwords don't match");
+      }
+      return;
+    }
+    
+    if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
       return;
     }
@@ -151,7 +167,7 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
         email: data.email,
         password: data.password,
         phone: data.phone,
-        city: 'Not specified' // We can add city later if needed
+        city: 'Not specified'
       };
       
       const userData = await authService.register(registerData);
@@ -172,21 +188,10 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
     <div className="space-y-6">
       <div className="text-center mb-6">
         <h2 className="text-2xl font-bold mb-2">Create Your Account</h2>
-        <p className="text-gray-600">Let's start your caregiving journey together</p>
+        <p className="text-gray-600">Enter your email and create a secure password</p>
       </div>
 
       <div className="space-y-4">
-        <div>
-          <Label htmlFor="name" className="text-sm font-medium">Full Name *</Label>
-          <Input
-            id="name"
-            {...register("name", { required: "Name is required" })}
-            placeholder="John Doe"
-            className="mt-1"
-          />
-          {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
-        </div>
-
         <div>
           <Label htmlFor="email" className="text-sm font-medium">Email Address *</Label>
           <Input
@@ -204,11 +209,48 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
           <Input
             id="password"
             type="password"
-            {...register("password", { required: "Password is required" })}
+            {...register("password", { required: "Password is required", minLength: { value: 6, message: "Password must be at least 6 characters" } })}
             placeholder="••••••••"
             className="mt-1"
           />
           {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
+        </div>
+
+        <div>
+          <Label htmlFor="confirmPassword" className="text-sm font-medium">Confirm Password *</Label>
+          <Input
+            id="confirmPassword"
+            type="password"
+            {...register("confirmPassword", { required: "Please confirm your password" })}
+            placeholder="••••••••"
+            className="mt-1"
+          />
+          {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>}
+          {watchedPassword && watchedConfirmPassword && watchedPassword !== watchedConfirmPassword && (
+            <p className="text-red-500 text-sm mt-1">Passwords don't match</p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderPhase2 = () => (
+    <div className="space-y-6">
+      <div className="text-center mb-6">
+        <h2 className="text-2xl font-bold mb-2">Tell Us About Yourself</h2>
+        <p className="text-gray-600">Complete your profile information</p>
+      </div>
+
+      <div className="space-y-4">
+        <div>
+          <Label htmlFor="name" className="text-sm font-medium">Full Name *</Label>
+          <Input
+            id="name"
+            {...register("name", { required: "Name is required" })}
+            placeholder="John Doe"
+            className="mt-1"
+          />
+          {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
         </div>
 
         <div>
@@ -274,7 +316,7 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
     </div>
   );
 
-  const renderPhase2 = () => (
+  const renderPhase3 = () => (
     <div className="space-y-6">
       <div className="text-center mb-6">
         <h2 className="text-2xl font-bold mb-2">Tell Us About Your Caregiving</h2>
@@ -475,7 +517,7 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
     </div>
   );
 
-  const renderPhase3 = () => {
+  const renderPhase4 = () => {
     const recommendedPlan = getRecommendedPlan();
     
     return (
@@ -544,6 +586,8 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
         return renderPhase2();
       case 3:
         return renderPhase3();
+      case 4:
+        return renderPhase4();
       default:
         return renderPhase1();
     }
@@ -554,8 +598,8 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
       {/* Progress indicator */}
       <div className="mb-6 flex-shrink-0">
         <div className="flex items-center justify-between">
-          {[1, 2, 3].map((step) => (
-            <div key={step} className={`flex items-center ${step !== 3 ? 'flex-1' : ''}`}>
+          {[1, 2, 3, 4].map((step) => (
+            <div key={step} className={`flex items-center ${step !== 4 ? 'flex-1' : ''}`}>
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                 currentStep >= step 
                   ? 'bg-rezilia-purple text-white' 
@@ -563,7 +607,7 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
               }`}>
                 {step}
               </div>
-              {step !== 3 && (
+              {step !== 4 && (
                 <div className={`flex-1 h-1 mx-2 ${
                   currentStep > step ? 'bg-rezilia-purple' : 'bg-gray-200'
                 }`} />
@@ -572,9 +616,10 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
           ))}
         </div>
         <div className="flex justify-between mt-2 text-sm text-gray-600">
-          <span>Account Setup</span>
+          <span>Email & Password</span>
+          <span>Profile</span>
           <span>Assessment</span>
-          <span>Plan Selection</span>
+          <span>Plan</span>
         </div>
       </div>
 
@@ -601,7 +646,7 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
               disabled={isLoading}
               className="bg-rezilia-purple hover:bg-rezilia-purple/90 flex items-center"
             >
-              {isLoading ? 'Creating Account...' : currentStep === 3 ? 'Create Account' : 'Continue'}
+              {isLoading ? 'Creating Account...' : currentStep === 4 ? 'Create Account' : 'Continue'}
               {!isLoading && <ArrowRight className="ml-2 h-4 w-4" />}
             </Button>
           </div>

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -8,20 +9,19 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useAuth } from '@/contexts/AuthContext';
-import { authService, RegisterData, LoginCredentials } from '@/services/authService';
+import { authService, LoginCredentials } from '@/services/authService';
+import SignupFlow from '@/components/signup/SignupFlow';
 
 type FormData = {
   email: string;
   password: string;
-  name?: string;
-  phone?: string;
-  city?: string;
 };
 
 const LandingPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [isSignIn, setIsSignIn] = useState(true);
+  const [showSignupFlow, setShowSignupFlow] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>();
   const isMobile = useIsMobile();
@@ -45,33 +45,19 @@ const LandingPage = () => {
     setIsLoading(true);
     
     try {
-      let userData;
-      
-      if (isSignIn) {
-        // Login
-        const credentials: LoginCredentials = {
-          email: data.email,
-          password: data.password
-        };
-        userData = await authService.login(credentials);
-      } else {
-        // Register
-        const registerData: RegisterData = {
-          name: data.name || 'User',
-          email: data.email,
-          password: data.password,
-          phone: data.phone,
-          city: data.city
-        };
-        userData = await authService.register(registerData);
-      }
+      // Login
+      const credentials: LoginCredentials = {
+        email: data.email,
+        password: data.password
+      };
+      const userData = await authService.login(credentials);
       
       if (userData) {
         // Use Auth context to login
         login(userData);
         
         // Show success toast
-        toast.success(isSignIn ? "Signed in successfully!" : "Account created successfully!");
+        toast.success("Signed in successfully!");
         
         // Redirect to dashboard
         navigate('/dashboard');
@@ -83,11 +69,87 @@ const LandingPage = () => {
     }
   };
 
+  const handleSignupClick = () => {
+    setShowSignupFlow(true);
+  };
+
+  const handleSignupComplete = () => {
+    setShowSignupFlow(false);
+    navigate('/dashboard');
+  };
+
+  const handleBackToSignIn = () => {
+    setShowSignupFlow(false);
+    setIsSignIn(true);
+  };
+
   // Toggle between sign in and join forms
   const toggleForm = () => {
     setIsSignIn(!isSignIn);
     reset(); // Reset form fields
   };
+
+  if (showSignupFlow) {
+    if (isMobile) {
+      return (
+        <div className="min-h-screen w-full overflow-hidden">
+          {/* Background image with overlay */}
+          <div 
+            className="fixed inset-0 z-0 bg-cover bg-center" 
+            style={{ 
+              backgroundImage: 'url(/lovable-uploads/011d175e-be13-4e78-9ce5-31cb1ca897cd.png)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center'
+            }}
+          >
+            <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px]"></div>
+          </div>
+
+          {/* Content */}
+          <div className="container relative mx-auto px-4 py-8 z-10 min-h-screen overflow-y-auto">
+            <div className="bg-white/95 backdrop-blur-md rounded-lg p-6 min-h-[calc(100vh-4rem)]">
+              <SignupFlow onComplete={handleSignupComplete} onBack={handleBackToSignIn} />
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="min-h-screen w-full flex overflow-hidden">
+        {/* Left half - Image */}
+        <div className="w-1/2 relative">
+          <div 
+            className="absolute inset-0 bg-cover bg-center" 
+            style={{ 
+              backgroundImage: 'url(/lovable-uploads/011d175e-be13-4e78-9ce5-31cb1ca897cd.png)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center'
+            }}
+          >
+            <div className="absolute inset-0 bg-black/30"></div>
+          </div>
+          
+          {/* Overlay content */}
+          <div className="relative z-10 flex flex-col justify-center h-full p-12 text-white">
+            <h1 className="text-5xl font-bold mb-6">Rezilia Health & Wellness</h1>
+            <p className="text-2xl mb-8">Your AI-powered health and wellness companion</p>
+            <p className="text-lg max-w-lg leading-relaxed">
+              Personalized health monitoring, wellness tracking, and caregiver support all in one platform. 
+              Transform your health journey with intelligent insights and comprehensive care.
+            </p>
+          </div>
+        </div>
+
+        {/* Right half - Signup Flow */}
+        <div className="w-1/2 bg-gray-50 overflow-y-auto">
+          <div className="p-8">
+            <SignupFlow onComplete={handleSignupComplete} onBack={handleBackToSignIn} />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (isMobile) {
     // Mobile layout - full screen with background
@@ -121,72 +183,12 @@ const LandingPage = () => {
                 <CardDescription>
                   {isSignIn 
                     ? "Enter your credentials to access your dashboard" 
-                    : "Create your account to start your health journey"}
+                    : "Ready to get started? Create your account below"}
                 </CardDescription>
               </CardHeader>
               
               <form onSubmit={handleSubmit(onSubmit)}>
                 <CardContent className="space-y-3 py-2">
-                  {/* Form fields */}
-                  {!isSignIn && (
-                    <div className="space-y-1">
-                      <label htmlFor="name" className="text-sm font-medium">
-                        Full Name
-                      </label>
-                      <Input
-                        id="name"
-                        type="text"
-                        placeholder="John Doe"
-                        {...register("name", { required: !isSignIn ? "Name is required" : false })}
-                      />
-                      {errors.name && (
-                        <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
-                      )}
-                    </div>
-                  )}
-
-                  {!isSignIn && (
-                    <div className="space-y-1">
-                      <label htmlFor="phone" className="text-sm font-medium">
-                        Phone Number
-                      </label>
-                      <div className="relative">
-                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-                        <Input
-                          id="phone"
-                          type="tel"
-                          placeholder="(123) 456-7890"
-                          className="pl-10"
-                          {...register("phone", { required: !isSignIn ? "Phone number is required" : false })}
-                        />
-                      </div>
-                      {errors.phone && (
-                        <p className="text-red-500 text-xs mt-1">{errors.phone.message}</p>
-                      )}
-                    </div>
-                  )}
-
-                  {!isSignIn && (
-                    <div className="space-y-1">
-                      <label htmlFor="city" className="text-sm font-medium">
-                        City
-                      </label>
-                      <div className="relative">
-                        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-                        <Input
-                          id="city"
-                          type="text"
-                          placeholder="New York"
-                          className="pl-10"
-                          {...register("city", { required: !isSignIn ? "City is required" : false })}
-                        />
-                      </div>
-                      {errors.city && (
-                        <p className="text-red-500 text-xs mt-1">{errors.city.message}</p>
-                      )}
-                    </div>
-                  )}
-                  
                   <div className="space-y-1">
                     <label htmlFor="email" className="text-sm font-medium">
                       Email
@@ -219,14 +221,25 @@ const LandingPage = () => {
                 </CardContent>
                 
                 <CardFooter className="flex flex-col pt-0 pb-4 sticky bottom-0 bg-white/95 z-10">
-                  <Button 
-                    type="submit"
-                    disabled={isLoading}
-                    className="w-full bg-rezilia-purple hover:bg-rezilia-purple/90"
-                  >
-                    {isLoading ? "Loading..." : (isSignIn ? "Sign In" : "Create Account")}
-                    {!isLoading && <ArrowRight className="ml-2 h-4 w-4" />}
-                  </Button>
+                  {isSignIn ? (
+                    <Button 
+                      type="submit"
+                      disabled={isLoading}
+                      className="w-full bg-rezilia-purple hover:bg-rezilia-purple/90"
+                    >
+                      {isLoading ? "Loading..." : "Sign In"}
+                      {!isLoading && <ArrowRight className="ml-2 h-4 w-4" />}
+                    </Button>
+                  ) : (
+                    <Button 
+                      type="button"
+                      onClick={handleSignupClick}
+                      className="w-full bg-rezilia-purple hover:bg-rezilia-purple/90"
+                    >
+                      Get Started with Assessment
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  )}
                   
                   <p className="text-center text-sm mt-3">
                     {isSignIn ? "Don't have an account? " : "Already have an account? "}
@@ -285,73 +298,12 @@ const LandingPage = () => {
               <CardDescription className="text-base">
                 {isSignIn 
                   ? "Enter your credentials to access your dashboard" 
-                  : "Create your account to start your health journey"}
+                  : "Ready to transform your caregiving journey?"}
               </CardDescription>
             </CardHeader>
             
             <form onSubmit={handleSubmit(onSubmit)}>
               <CardContent className="space-y-4">
-                {/* Form fields */}
-                {!isSignIn && (
-                  <div className="space-y-2">
-                    <label htmlFor="name" className="text-sm font-medium">
-                      Full Name
-                    </label>
-                    <Input
-                      id="name"
-                      type="text"
-                      placeholder="John Doe"
-                      className="h-11"
-                      {...register("name", { required: !isSignIn ? "Name is required" : false })}
-                    />
-                    {errors.name && (
-                      <p className="text-red-500 text-sm">{errors.name.message}</p>
-                    )}
-                  </div>
-                )}
-
-                {!isSignIn && (
-                  <div className="space-y-2">
-                    <label htmlFor="phone" className="text-sm font-medium">
-                      Phone Number
-                    </label>
-                    <div className="relative">
-                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-                      <Input
-                        id="phone"
-                        type="tel"
-                        placeholder="(123) 456-7890"
-                        className="pl-10 h-11"
-                        {...register("phone", { required: !isSignIn ? "Phone number is required" : false })}
-                      />
-                    </div>
-                    {errors.phone && (
-                      <p className="text-red-500 text-sm">{errors.phone.message}</p>
-                    )}
-                  </div>
-                )}
-
-                {!isSignIn && (
-                  <div className="space-y-2">
-                    <label htmlFor="city" className="text-sm font-medium">
-                      City
-                    </label>
-                    <div className="relative">
-                      <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-                      <Input
-                        id="city"
-                        type="text"
-                        placeholder="New York"
-                        className="pl-10 h-11"
-                        {...register("city", { required: !isSignIn ? "City is required" : false })}
-                      />
-                    </div>
-                    {errors.city && (
-                      <p className="text-red-500 text-sm">{errors.city.message}</p>
-                    )}
-                  </div>
-                )}
-                
                 <div className="space-y-2">
                   <label htmlFor="email" className="text-sm font-medium">
                     Email
@@ -386,14 +338,25 @@ const LandingPage = () => {
               </CardContent>
               
               <CardFooter className="flex flex-col pt-4 pb-6">
-                <Button 
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full bg-rezilia-purple hover:bg-rezilia-purple/90 h-11"
-                >
-                  {isLoading ? "Loading..." : (isSignIn ? "Sign In" : "Create Account")}
-                  {!isLoading && <ArrowRight className="ml-2 h-4 w-4" />}
-                </Button>
+                {isSignIn ? (
+                  <Button 
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full bg-rezilia-purple hover:bg-rezilia-purple/90 h-11"
+                  >
+                    {isLoading ? "Loading..." : "Sign In"}
+                    {!isLoading && <ArrowRight className="ml-2 h-4 w-4" />}
+                  </Button>
+                ) : (
+                  <Button 
+                    type="button"
+                    onClick={handleSignupClick}
+                    className="w-full bg-rezilia-purple hover:bg-rezilia-purple/90 h-11"
+                  >
+                    Start Your Assessment
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                )}
                 
                 <p className="text-center text-sm mt-4">
                   {isSignIn ? "Don't have an account? " : "Already have an account? "}

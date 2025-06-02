@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -178,53 +177,58 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
 
       <div className="space-y-4">
         <div>
-          <Label htmlFor="name">Full Name *</Label>
+          <Label htmlFor="name" className="text-sm font-medium">Full Name *</Label>
           <Input
             id="name"
             {...register("name", { required: "Name is required" })}
             placeholder="John Doe"
+            className="mt-1"
           />
           {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
         </div>
 
         <div>
-          <Label htmlFor="email">Email Address *</Label>
+          <Label htmlFor="email" className="text-sm font-medium">Email Address *</Label>
           <Input
             id="email"
             type="email"
             {...register("email", { required: "Email is required" })}
             placeholder="john@example.com"
+            className="mt-1"
           />
           {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
         </div>
 
         <div>
-          <Label htmlFor="password">Password *</Label>
+          <Label htmlFor="password" className="text-sm font-medium">Password *</Label>
           <Input
             id="password"
             type="password"
             {...register("password", { required: "Password is required" })}
             placeholder="••••••••"
+            className="mt-1"
           />
           {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
         </div>
 
         <div>
-          <Label htmlFor="phone">Phone Number *</Label>
+          <Label htmlFor="phone" className="text-sm font-medium">Phone Number *</Label>
           <Input
             id="phone"
             type="tel"
             {...register("phone", { required: "Phone number is required" })}
             placeholder="(555) 123-4567"
+            className="mt-1"
           />
           {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>}
         </div>
 
-        <div className="space-y-3">
-          <div className="flex items-start space-x-2">
+        <div className="space-y-4 pt-2">
+          <div className="flex items-start space-x-3">
             <Checkbox
               id="agreeTerms"
               {...register("agreeTerms", { required: "You must agree to the terms" })}
+              className="mt-1"
             />
             <Label htmlFor="agreeTerms" className="text-sm leading-relaxed">
               I agree to the <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a> and <a href="#" className="text-blue-600 hover:underline">Terms of Service</a>
@@ -232,10 +236,11 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
           </div>
           {errors.agreeTerms && <p className="text-red-500 text-sm">{errors.agreeTerms.message}</p>}
 
-          <div className="flex items-start space-x-2">
+          <div className="flex items-start space-x-3">
             <Checkbox
               id="agreeDataUsage"
               {...register("agreeDataUsage", { required: "You must agree to data usage" })}
+              className="mt-1"
             />
             <Label htmlFor="agreeDataUsage" className="text-sm leading-relaxed">
               I consent to data usage: "We use your responses to personalize your experience and improve our platform. You can modify these preferences anytime."
@@ -244,7 +249,7 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
           {errors.agreeDataUsage && <p className="text-red-500 text-sm">{errors.agreeDataUsage.message}</p>}
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-4 pt-2">
           <Label className="text-base font-medium">Which best describes your role? *</Label>
           <RadioGroup
             value={watchedUserType}
@@ -252,10 +257,10 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
             className="space-y-3"
           >
             {userTypes.map((type) => (
-              <div key={type.id} className="flex items-start space-x-3 p-3 border rounded-lg hover:bg-gray-50">
-                <RadioGroupItem value={type.id} id={type.id} className="mt-1" />
+              <div key={type.id} className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                <RadioGroupItem value={type.id} id={type.id} />
                 <div className="flex-1">
-                  <Label htmlFor={type.id} className="font-medium cursor-pointer">
+                  <Label htmlFor={type.id} className="font-medium cursor-pointer text-base">
                     {type.title}
                   </Label>
                   <p className="text-sm text-gray-600 mt-1">{type.description}</p>
@@ -263,7 +268,7 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
               </div>
             ))}
           </RadioGroup>
-          {errors.userType && <p className="text-red-500 text-sm">{errors.userType.message}</p>}
+          {errors.userType && <p className="text-red-500 text-sm mt-2">{errors.userType.message}</p>}
         </div>
       </div>
     </div>
@@ -545,9 +550,9 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="w-full max-w-2xl mx-auto h-full flex flex-col">
       {/* Progress indicator */}
-      <div className="mb-8">
+      <div className="mb-6 flex-shrink-0">
         <div className="flex items-center justify-between">
           {[1, 2, 3].map((step) => (
             <div key={step} className={`flex items-center ${step !== 3 ? 'flex-1' : ''}`}>
@@ -573,30 +578,35 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
-        {getCurrentStepContent()}
+      {/* Scrollable content area */}
+      <div className="flex-1 overflow-y-auto">
+        <form onSubmit={handleSubmit(onSubmit)} className="h-full flex flex-col">
+          <div className="flex-1">
+            {getCurrentStepContent()}
+          </div>
 
-        <div className="flex justify-between mt-8">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={currentStep === 1 ? onBack : () => setCurrentStep(currentStep - 1)}
-            className="flex items-center"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            {currentStep === 1 ? 'Back to Sign In' : 'Previous'}
-          </Button>
+          <div className="flex justify-between mt-8 pt-6 border-t flex-shrink-0">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={currentStep === 1 ? onBack : () => setCurrentStep(currentStep - 1)}
+              className="flex items-center"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              {currentStep === 1 ? 'Back to Sign In' : 'Previous'}
+            </Button>
 
-          <Button
-            type="submit"
-            disabled={isLoading}
-            className="bg-rezilia-purple hover:bg-rezilia-purple/90 flex items-center"
-          >
-            {isLoading ? 'Creating Account...' : currentStep === 3 ? 'Create Account' : 'Continue'}
-            {!isLoading && <ArrowRight className="ml-2 h-4 w-4" />}
-          </Button>
-        </div>
-      </form>
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="bg-rezilia-purple hover:bg-rezilia-purple/90 flex items-center"
+            >
+              {isLoading ? 'Creating Account...' : currentStep === 3 ? 'Create Account' : 'Continue'}
+              {!isLoading && <ArrowRight className="ml-2 h-4 w-4" />}
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -317,139 +316,135 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
   };
 
   const renderPhase1 = () => (
-    <ScrollArea className="h-full">
-      <div className="space-y-6 px-2 pb-4">
-        <div className="text-center mb-6">
-          <h2 className="text-xl md:text-2xl font-bold mb-2">Create Account</h2>
-          <p className="text-gray-600 text-sm md:text-base">Enter your email and create a secure password</p>
+    <div className="space-y-6 px-2 pb-4">
+      <div className="text-center mb-6">
+        <h2 className="text-xl md:text-2xl font-bold mb-2">Create Account</h2>
+        <p className="text-gray-600 text-sm md:text-base">Enter your email and create a secure password</p>
+      </div>
+
+      <div className="space-y-4">
+        <div>
+          <Label htmlFor="email" className="text-sm font-medium">Email Address *</Label>
+          <Input
+            id="email"
+            type="email"
+            {...register("email", { required: "Email is required" })}
+            placeholder="john@example.com"
+            className="mt-1 h-11"
+          />
+          {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
         </div>
 
-        <div className="space-y-4">
-          <div>
-            <Label htmlFor="email" className="text-sm font-medium">Email Address *</Label>
-            <Input
-              id="email"
-              type="email"
-              {...register("email", { required: "Email is required" })}
-              placeholder="john@example.com"
-              className="mt-1 h-11"
-            />
-            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
-          </div>
+        <div>
+          <Label htmlFor="password" className="text-sm font-medium">Password *</Label>
+          <Input
+            id="password"
+            type="password"
+            {...register("password", { required: "Password is required", minLength: { value: 6, message: "Password must be at least 6 characters" } })}
+            placeholder="••••••••"
+            className="mt-1 h-11"
+          />
+          {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
+        </div>
 
-          <div>
-            <Label htmlFor="password" className="text-sm font-medium">Password *</Label>
-            <Input
-              id="password"
-              type="password"
-              {...register("password", { required: "Password is required", minLength: { value: 6, message: "Password must be at least 6 characters" } })}
-              placeholder="••••••••"
-              className="mt-1 h-11"
-            />
-            {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
-          </div>
-
-          <div>
-            <Label htmlFor="confirmPassword" className="text-sm font-medium">Confirm Password *</Label>
-            <Input
-              id="confirmPassword"
-              type="password"
-              {...register("confirmPassword", { required: "Please confirm your password" })}
-              placeholder="••••••••"
-              className="mt-1 h-11"
-            />
-            {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>}
-            {watchedPassword && watchedConfirmPassword && watchedPassword !== watchedConfirmPassword && (
-              <p className="text-red-500 text-sm mt-1">Passwords don't match</p>
-            )}
-          </div>
+        <div>
+          <Label htmlFor="confirmPassword" className="text-sm font-medium">Confirm Password *</Label>
+          <Input
+            id="confirmPassword"
+            type="password"
+            {...register("confirmPassword", { required: "Please confirm your password" })}
+            placeholder="••••••••"
+            className="mt-1 h-11"
+          />
+          {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>}
+          {watchedPassword && watchedConfirmPassword && watchedPassword !== watchedConfirmPassword && (
+            <p className="text-red-500 text-sm mt-1">Passwords don't match</p>
+          )}
         </div>
       </div>
-    </ScrollArea>
+    </div>
   );
 
   const renderPhase2 = () => (
-    <ScrollArea className="h-full">
-      <div className="space-y-6 px-2 pb-4">
-        <div className="text-center mb-6">
-          <h2 className="text-xl md:text-2xl font-bold mb-2">Complete Your Profile</h2>
-          <p className="text-gray-600 text-sm md:text-base">Tell us about yourself</p>
+    <div className="space-y-6 px-2 pb-4">
+      <div className="text-center mb-6">
+        <h2 className="text-xl md:text-2xl font-bold mb-2">Complete Your Profile</h2>
+        <p className="text-gray-600 text-sm md:text-base">Tell us about yourself</p>
+      </div>
+
+      <div className="space-y-4">
+        <div>
+          <Label htmlFor="name" className="text-sm font-medium">Full Name *</Label>
+          <Input
+            id="name"
+            {...register("name", { required: "Name is required" })}
+            placeholder="John Doe"
+            className="mt-1 h-11"
+          />
+          {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
         </div>
 
-        <div className="space-y-4">
-          <div>
-            <Label htmlFor="name" className="text-sm font-medium">Full Name *</Label>
-            <Input
-              id="name"
-              {...register("name", { required: "Name is required" })}
-              placeholder="John Doe"
-              className="mt-1 h-11"
-            />
-            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
-          </div>
+        <div>
+          <Label htmlFor="phone" className="text-sm font-medium">Phone Number *</Label>
+          <Input
+            id="phone"
+            type="tel"
+            {...register("phone", { required: "Phone number is required" })}
+            placeholder="(555) 123-4567"
+            className="mt-1 h-11"
+          />
+          {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>}
+        </div>
 
-          <div>
-            <Label htmlFor="phone" className="text-sm font-medium">Phone Number *</Label>
-            <Input
-              id="phone"
-              type="tel"
-              {...register("phone", { required: "Phone number is required" })}
-              placeholder="(555) 123-4567"
-              className="mt-1 h-11"
-            />
-            {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>}
-          </div>
-
-          <div className="space-y-4 pt-2">
-            <Label className="text-base font-medium">Which best describes your role? *</Label>
-            <RadioGroup
-              value={watchedUserType}
-              onValueChange={(value) => setValue('userType', value)}
-              className="space-y-3"
-            >
-              {userTypes.map((type) => (
-                <div key={type.id} className="flex items-center space-x-3 p-3 md:p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                  <RadioGroupItem value={type.id} id={type.id} />
-                  <div className="flex-1">
-                    <Label htmlFor={type.id} className="font-medium cursor-pointer text-sm md:text-base">
-                      {type.title}
-                    </Label>
-                    <p className="text-xs md:text-sm text-gray-600 mt-1">{type.description}</p>
-                  </div>
+        <div className="space-y-4 pt-2">
+          <Label className="text-base font-medium">Which best describes your role? *</Label>
+          <RadioGroup
+            value={watchedUserType}
+            onValueChange={(value) => setValue('userType', value)}
+            className="space-y-3"
+          >
+            {userTypes.map((type) => (
+              <div key={type.id} className="flex items-center space-x-3 p-3 md:p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                <RadioGroupItem value={type.id} id={type.id} />
+                <div className="flex-1">
+                  <Label htmlFor={type.id} className="font-medium cursor-pointer text-sm md:text-base">
+                    {type.title}
+                  </Label>
+                  <p className="text-xs md:text-sm text-gray-600 mt-1">{type.description}</p>
                 </div>
-              ))}
-            </RadioGroup>
-            {errors.userType && <p className="text-red-500 text-sm mt-2">{errors.userType.message}</p>}
-          </div>
+              </div>
+            ))}
+          </RadioGroup>
+          {errors.userType && <p className="text-red-500 text-sm mt-2">{errors.userType.message}</p>}
+        </div>
 
-          <div className="space-y-4 pt-2">
-            <div className="flex items-start space-x-3">
-              <Checkbox
-                id="agreeTerms"
-                {...register("agreeTerms", { required: "You must agree to the terms" })}
-                className="mt-1"
-              />
-              <Label htmlFor="agreeTerms" className="text-sm leading-relaxed cursor-pointer">
-                I agree to the <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a> and <a href="#" className="text-blue-600 hover:underline">Terms of Service</a>
-              </Label>
-            </div>
-            {errors.agreeTerms && <p className="text-red-500 text-sm">{errors.agreeTerms.message}</p>}
-
-            <div className="flex items-start space-x-3">
-              <Checkbox
-                id="agreeDataUsage"
-                {...register("agreeDataUsage", { required: "You must agree to data usage" })}
-                className="mt-1"
-              />
-              <Label htmlFor="agreeDataUsage" className="text-sm leading-relaxed cursor-pointer">
-                I consent to data usage: "We use your responses to personalize your experience and improve our platform. You can modify these preferences anytime."
-              </Label>
-            </div>
-            {errors.agreeDataUsage && <p className="text-red-500 text-sm">{errors.agreeDataUsage.message}</p>}
+        <div className="space-y-4 pt-2">
+          <div className="flex items-start space-x-3">
+            <Checkbox
+              id="agreeTerms"
+              {...register("agreeTerms", { required: "You must agree to the terms" })}
+              className="mt-1"
+            />
+            <Label htmlFor="agreeTerms" className="text-sm leading-relaxed cursor-pointer">
+              I agree to the <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a> and <a href="#" className="text-blue-600 hover:underline">Terms of Service</a>
+            </Label>
           </div>
+          {errors.agreeTerms && <p className="text-red-500 text-sm">{errors.agreeTerms.message}</p>}
+
+          <div className="flex items-start space-x-3">
+            <Checkbox
+              id="agreeDataUsage"
+              {...register("agreeDataUsage", { required: "You must agree to data usage" })}
+              className="mt-1"
+            />
+            <Label htmlFor="agreeDataUsage" className="text-sm leading-relaxed cursor-pointer">
+              I consent to data usage: "We use your responses to personalize your experience and improve our platform. You can modify these preferences anytime."
+            </Label>
+          </div>
+          {errors.agreeDataUsage && <p className="text-red-500 text-sm">{errors.agreeDataUsage.message}</p>}
         </div>
       </div>
-    </ScrollArea>
+    </div>
   );
 
   const renderPhase3 = () => {
@@ -624,12 +619,14 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
         </div>
       </div>
 
-      {/* Scrollable content area with fixed height */}
-      <div className="flex-1 overflow-hidden" style={{ minHeight: '400px', maxHeight: '60vh' }}>
+      {/* Scrollable content area with proper height management */}
+      <div className="flex-1 min-h-0">
         <form onSubmit={handleSubmit(onSubmit)} className="h-full flex flex-col">
-          <div className="flex-1 overflow-hidden">
-            {getCurrentStepContent()}
-          </div>
+          <ScrollArea className="flex-1 h-full max-h-[calc(100vh-200px)] overflow-y-auto">
+            <div className="pr-4">
+              {getCurrentStepContent()}
+            </div>
+          </ScrollArea>
 
           <div className="flex justify-between mt-4 md:mt-6 pt-4 md:pt-6 border-t flex-shrink-0 px-2">
             <Button

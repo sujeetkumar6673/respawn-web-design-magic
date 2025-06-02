@@ -14,7 +14,7 @@ import SignupFlow from '@/components/signup/SignupFlow';
 
 type FormData = {
   email: string;
-  password: string;
+  password?: string;
 };
 
 const LandingPage = () => {
@@ -42,10 +42,21 @@ const LandingPage = () => {
   }, [searchParams]);
   
   const onSubmit = async (data: FormData) => {
+    if (!isSignIn) {
+      // For join form, just proceed to signup flow
+      setShowSignupFlow(true);
+      return;
+    }
+
+    // For sign in, validate and login
+    if (!data.password) {
+      toast.error("Password is required");
+      return;
+    }
+
     setIsLoading(true);
     
     try {
-      // Login
       const credentials: LoginCredentials = {
         email: data.email,
         password: data.password
@@ -53,13 +64,8 @@ const LandingPage = () => {
       const userData = await authService.login(credentials);
       
       if (userData) {
-        // Use Auth context to login
         login(userData);
-        
-        // Show success toast
         toast.success("Signed in successfully!");
-        
-        // Redirect to dashboard
         navigate('/dashboard');
       }
     } catch (error) {
@@ -183,7 +189,7 @@ const LandingPage = () => {
                 <CardDescription>
                   {isSignIn 
                     ? "Enter your credentials to access your dashboard" 
-                    : "Ready to get started? Create your account below"}
+                    : "Enter your email to get started"}
                 </CardDescription>
               </CardHeader>
               
@@ -204,20 +210,22 @@ const LandingPage = () => {
                     )}
                   </div>
                   
-                  <div className="space-y-1">
-                    <label htmlFor="password" className="text-sm font-medium">
-                      Password
-                    </label>
-                    <Input
-                      id="password"
-                      type="password"
-                      placeholder="••••••••"
-                      {...register("password", { required: "Password is required" })}
-                    />
-                    {errors.password && (
-                      <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
-                    )}
-                  </div>
+                  {isSignIn && (
+                    <div className="space-y-1">
+                      <label htmlFor="password" className="text-sm font-medium">
+                        Password
+                      </label>
+                      <Input
+                        id="password"
+                        type="password"
+                        placeholder="••••••••"
+                        {...register("password", { required: "Password is required" })}
+                      />
+                      {errors.password && (
+                        <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
+                      )}
+                    </div>
+                  )}
                 </CardContent>
                 
                 <CardFooter className="flex flex-col pt-0 pb-4 sticky bottom-0 bg-white/95 z-10">
@@ -232,8 +240,7 @@ const LandingPage = () => {
                     </Button>
                   ) : (
                     <Button 
-                      type="button"
-                      onClick={handleSignupClick}
+                      type="submit"
                       className="w-full bg-rezilia-purple hover:bg-rezilia-purple/90"
                     >
                       Get Started with Assessment
@@ -298,7 +305,7 @@ const LandingPage = () => {
               <CardDescription className="text-base">
                 {isSignIn 
                   ? "Enter your credentials to access your dashboard" 
-                  : "Ready to transform your caregiving journey?"}
+                  : "Enter your email to start your journey"}
               </CardDescription>
             </CardHeader>
             
@@ -320,21 +327,23 @@ const LandingPage = () => {
                   )}
                 </div>
                 
-                <div className="space-y-2">
-                  <label htmlFor="password" className="text-sm font-medium">
-                    Password
-                  </label>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="••••••••"
-                    className="h-11"
-                    {...register("password", { required: "Password is required" })}
-                  />
-                  {errors.password && (
-                    <p className="text-red-500 text-sm">{errors.password.message}</p>
-                  )}
-                </div>
+                {isSignIn && (
+                  <div className="space-y-2">
+                    <label htmlFor="password" className="text-sm font-medium">
+                      Password
+                    </label>
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="••••••••"
+                      className="h-11"
+                      {...register("password", { required: "Password is required" })}
+                    />
+                    {errors.password && (
+                      <p className="text-red-500 text-sm">{errors.password.message}</p>
+                    )}
+                  </div>
+                )}
               </CardContent>
               
               <CardFooter className="flex flex-col pt-4 pb-6">
@@ -349,8 +358,7 @@ const LandingPage = () => {
                   </Button>
                 ) : (
                   <Button 
-                    type="button"
-                    onClick={handleSignupClick}
+                    type="submit"
                     className="w-full bg-rezilia-purple hover:bg-rezilia-purple/90 h-11"
                   >
                     Start Your Assessment

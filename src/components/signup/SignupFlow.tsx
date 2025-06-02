@@ -266,6 +266,14 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
     
     if (currentStep === 3) {
       // Assessment - move to next question or next step
+      const currentQuestion = assessmentQuestions[currentQuestionIndex];
+      const currentValue = watchedAssessment[currentQuestion.id as keyof SignupData];
+      
+      if (!currentValue) {
+        toast.error("Please select an answer to continue");
+        return;
+      }
+      
       if (currentQuestionIndex < assessmentQuestions.length - 1) {
         setCurrentQuestionIndex(currentQuestionIndex + 1);
       } else {
@@ -389,6 +397,28 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
         </div>
 
         <div className="space-y-4 pt-2">
+          <Label className="text-base font-medium">Which best describes your role? *</Label>
+          <RadioGroup
+            value={watchedUserType}
+            onValueChange={(value) => setValue('userType', value)}
+            className="space-y-3"
+          >
+            {userTypes.map((type) => (
+              <div key={type.id} className="flex items-center space-x-3 p-3 md:p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                <RadioGroupItem value={type.id} id={type.id} />
+                <div className="flex-1">
+                  <Label htmlFor={type.id} className="font-medium cursor-pointer text-sm md:text-base">
+                    {type.title}
+                  </Label>
+                  <p className="text-xs md:text-sm text-gray-600 mt-1">{type.description}</p>
+                </div>
+              </div>
+            ))}
+          </RadioGroup>
+          {errors.userType && <p className="text-red-500 text-sm mt-2">{errors.userType.message}</p>}
+        </div>
+
+        <div className="space-y-4 pt-2">
           <div className="flex items-start space-x-3">
             <Checkbox
               id="agreeTerms"
@@ -413,35 +443,13 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
           </div>
           {errors.agreeDataUsage && <p className="text-red-500 text-sm">{errors.agreeDataUsage.message}</p>}
         </div>
-
-        <div className="space-y-4 pt-2">
-          <Label className="text-base font-medium">Which best describes your role? *</Label>
-          <RadioGroup
-            value={watchedUserType}
-            onValueChange={(value) => setValue('userType', value)}
-            className="space-y-3"
-          >
-            {userTypes.map((type) => (
-              <div key={type.id} className="flex items-center space-x-3 p-3 md:p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                <RadioGroupItem value={type.id} id={type.id} />
-                <div className="flex-1">
-                  <Label htmlFor={type.id} className="font-medium cursor-pointer text-sm md:text-base">
-                    {type.title}
-                  </Label>
-                  <p className="text-xs md:text-sm text-gray-600 mt-1">{type.description}</p>
-                </div>
-              </div>
-            ))}
-          </RadioGroup>
-          {errors.userType && <p className="text-red-500 text-sm mt-2">{errors.userType.message}</p>}
-        </div>
       </div>
     </div>
   );
 
   const renderPhase3 = () => {
     const currentQuestion = assessmentQuestions[currentQuestionIndex];
-    const currentValue = watchedAssessment[currentQuestion.id as keyof SignupData];
+    const currentValue = watchedAssessment[currentQuestion.id as keyof SignupData] as string;
     
     return (
       <div className="space-y-6 px-2">
@@ -464,8 +472,8 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
               {currentQuestion.title}
             </Label>
             <RadioGroup
-              value={currentValue}
-              onValueChange={(value) => setValue(currentQuestion.id as keyof SignupData, value)}
+              value={currentValue || ''}
+              onValueChange={(value) => setValue(currentQuestion.id as keyof SignupData, value as any)}
               className="space-y-3"
             >
               {currentQuestion.options.map((option) => (
@@ -632,7 +640,7 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
             >
               {isLoading ? 'Creating Account...' : 
                currentStep === 4 ? 'Create Account' : 
-               currentStep === 3 && currentQuestionIndex < assessmentQuestions.length - 1 ? 'Next Question' : 
+               currentStep === 3 ? 'Next Question' : 
                'Continue'}
               {!isLoading && <ArrowRight className="ml-2 h-4 w-4" />}
             </Button>

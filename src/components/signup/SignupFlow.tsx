@@ -398,27 +398,39 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
 
         <div className="space-y-4 pt-2">
           <Label className="text-base font-medium">Which best describes your role? *</Label>
-          <RadioGroup
-            value={watchedUserType}
-            onValueChange={(value) => setValue('userType', value)}
-            className="space-y-3"
-          >
+          <div className="space-y-3">
             {userTypes.map((type) => (
-              <div key={type.id} className="flex items-center space-x-3 p-3 md:p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                <RadioGroupItem value={type.id} id={type.id} />
-                <div className="flex-1">
-                  <Label htmlFor={type.id} className="font-medium cursor-pointer text-sm md:text-base">
-                    {type.title}
-                  </Label>
-                  <p className="text-xs md:text-sm text-gray-600 mt-1">{type.description}</p>
+              <div 
+                key={type.id} 
+                className={`p-4 border rounded-lg cursor-pointer transition-all hover:shadow-sm ${
+                  watchedUserType === type.id 
+                    ? 'bg-green-50 border-green-300 ring-2 ring-green-200' 
+                    : 'border-gray-200 hover:bg-gray-50'
+                }`}
+                onClick={() => setValue('userType', type.id)}
+              >
+                <div className="flex items-center space-x-3">
+                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                    watchedUserType === type.id 
+                      ? 'border-green-500 bg-green-500' 
+                      : 'border-gray-300'
+                  }`}>
+                    {watchedUserType === type.id && (
+                      <div className="w-2 h-2 rounded-full bg-white"></div>
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium text-sm md:text-base">{type.title}</p>
+                    <p className="text-xs md:text-sm text-gray-600 mt-1">{type.description}</p>
+                  </div>
                 </div>
               </div>
             ))}
-          </RadioGroup>
+          </div>
           {errors.userType && <p className="text-red-500 text-sm mt-2">{errors.userType.message}</p>}
         </div>
 
-        <div className="space-y-4 pt-2">
+        <div className="space-y-4 pt-4">
           <div className="flex items-start space-x-3">
             <Checkbox
               id="agreeTerms"
@@ -431,15 +443,22 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
           </div>
           {errors.agreeTerms && <p className="text-red-500 text-sm">{errors.agreeTerms.message}</p>}
 
-          <div className="flex items-start space-x-3">
-            <Checkbox
-              id="agreeDataUsage"
-              {...register("agreeDataUsage", { required: "You must agree to data usage" })}
-              className="mt-1"
-            />
-            <Label htmlFor="agreeDataUsage" className="text-sm leading-relaxed cursor-pointer">
-              I consent to data usage: "We use your responses to personalize your experience and improve our platform. You can modify these preferences anytime."
-            </Label>
+          <div className="p-4 bg-gray-50 rounded-lg border">
+            <div className="flex items-start space-x-3">
+              <Checkbox
+                id="agreeDataUsage"
+                {...register("agreeDataUsage", { required: "You must agree to data usage" })}
+                className="mt-1"
+              />
+              <div className="flex-1">
+                <Label htmlFor="agreeDataUsage" className="text-sm font-medium cursor-pointer block mb-1">
+                  Data Usage Consent
+                </Label>
+                <p className="text-xs text-gray-600 leading-relaxed">
+                  We'll use your responses to personalize your experience and improve our platform. You can update these preferences anytime in settings.
+                </p>
+              </div>
+            </div>
           </div>
           {errors.agreeDataUsage && <p className="text-red-500 text-sm">{errors.agreeDataUsage.message}</p>}
         </div>

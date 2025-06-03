@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -14,7 +13,7 @@ import SignupFlow from '@/components/signup/SignupFlow';
 
 type FormData = {
   email: string;
-  password?: string;
+  password: string;
 };
 
 const LandingPage = () => {
@@ -37,22 +36,13 @@ const LandingPage = () => {
   useEffect(() => {
     // Check URL parameters on component mount
     if (searchParams.get('form') === 'join') {
-      setIsSignIn(false);
+      setShowSignupFlow(true);
     }
   }, [searchParams]);
   
   const onSubmit = async (data: FormData) => {
-    if (!isSignIn) {
-      // For join form, just proceed to signup flow
-      setShowSignupFlow(true);
-      return;
-    }
-
-    // For sign in, validate and login
-    if (!data.password) {
-      toast.error("Password is required");
-      return;
-    }
+    // Only handle sign in form submission
+    if (!isSignIn) return;
 
     setIsLoading(true);
     
@@ -75,7 +65,7 @@ const LandingPage = () => {
     }
   };
 
-  const handleSignupClick = () => {
+  const handleJoinNowClick = () => {
     setShowSignupFlow(true);
   };
 
@@ -89,13 +79,14 @@ const LandingPage = () => {
     setIsSignIn(true);
   };
 
-  // Toggle between sign in and join forms
-  const toggleForm = () => {
-    setIsSignIn(!isSignIn);
+  // Toggle to sign in form
+  const toggleToSignIn = () => {
+    setIsSignIn(true);
     reset(); // Reset form fields
   };
 
   if (showSignupFlow) {
+    // ... keep existing code (signup flow rendering for mobile and desktop)
     if (isMobile) {
       return (
         <div className="min-h-screen w-full overflow-hidden">
@@ -183,34 +174,32 @@ const LandingPage = () => {
 
           {/* Form card */}
           <div className="w-full max-w-md">
-            <Card className="bg-white/95 backdrop-blur-md border-0 shadow-lg overflow-y-auto max-h-[80vh]">
-              <CardHeader className="pt-4 pb-2 sticky top-0 bg-white/95 z-10">
-                <CardTitle>{isSignIn ? "Sign In" : "Join Now"}</CardTitle>
-                <CardDescription>
-                  {isSignIn 
-                    ? "Enter your credentials to access your dashboard" 
-                    : "Enter your email to get started"}
-                </CardDescription>
-              </CardHeader>
-              
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <CardContent className="space-y-3 py-2">
-                  <div className="space-y-1">
-                    <label htmlFor="email" className="text-sm font-medium">
-                      Email
-                    </label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="name@example.com"
-                      {...register("email", { required: "Email is required" })}
-                    />
-                    {errors.email && (
-                      <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
-                    )}
-                  </div>
-                  
-                  {isSignIn && (
+            {isSignIn ? (
+              <Card className="bg-white/95 backdrop-blur-md border-0 shadow-lg overflow-y-auto max-h-[80vh]">
+                <CardHeader className="pt-4 pb-2 sticky top-0 bg-white/95 z-10">
+                  <CardTitle>Sign In</CardTitle>
+                  <CardDescription>
+                    Enter your credentials to access your dashboard
+                  </CardDescription>
+                </CardHeader>
+                
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <CardContent className="space-y-3 py-2">
+                    <div className="space-y-1">
+                      <label htmlFor="email" className="text-sm font-medium">
+                        Email
+                      </label>
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="name@example.com"
+                        {...register("email", { required: "Email is required" })}
+                      />
+                      {errors.email && (
+                        <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+                      )}
+                    </div>
+                    
                     <div className="space-y-1">
                       <label htmlFor="password" className="text-sm font-medium">
                         Password
@@ -225,11 +214,9 @@ const LandingPage = () => {
                         <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
                       )}
                     </div>
-                  )}
-                </CardContent>
-                
-                <CardFooter className="flex flex-col pt-0 pb-4 sticky bottom-0 bg-white/95 z-10">
-                  {isSignIn ? (
+                  </CardContent>
+                  
+                  <CardFooter className="flex flex-col pt-0 pb-4 sticky bottom-0 bg-white/95 z-10">
                     <Button 
                       type="submit"
                       disabled={isLoading}
@@ -238,29 +225,49 @@ const LandingPage = () => {
                       {isLoading ? "Loading..." : "Sign In"}
                       {!isLoading && <ArrowRight className="ml-2 h-4 w-4" />}
                     </Button>
-                  ) : (
-                    <Button 
-                      type="submit"
-                      className="w-full bg-rezilia-purple hover:bg-rezilia-purple/90"
-                    >
-                      Get Started with Assessment
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  )}
-                  
-                  <p className="text-center text-sm mt-3">
-                    {isSignIn ? "Don't have an account? " : "Already have an account? "}
+                    
+                    <p className="text-center text-sm mt-3">
+                      Don't have an account?{" "}
+                      <button 
+                        type="button"
+                        className="text-rezilia-purple font-semibold hover:underline"
+                        onClick={handleJoinNowClick}
+                      >
+                        Join Now
+                      </button>
+                    </p>
+                  </CardFooter>
+                </form>
+              </Card>
+            ) : (
+              <Card className="bg-white/95 backdrop-blur-md border-0 shadow-lg">
+                <CardHeader className="text-center">
+                  <CardTitle>Join Rezilia</CardTitle>
+                  <CardDescription>Start your health journey today</CardDescription>
+                </CardHeader>
+                <CardContent className="text-center py-8">
+                  <Button 
+                    onClick={handleJoinNowClick}
+                    className="w-full bg-rezilia-purple hover:bg-rezilia-purple/90 h-11"
+                  >
+                    Start Your Assessment
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </CardContent>
+                <CardFooter className="text-center">
+                  <p className="text-sm w-full">
+                    Already have an account?{" "}
                     <button 
                       type="button"
                       className="text-rezilia-purple font-semibold hover:underline"
-                      onClick={toggleForm}
+                      onClick={toggleToSignIn}
                     >
-                      {isSignIn ? "Join Now" : "Sign In"}
+                      Sign In
                     </button>
                   </p>
                 </CardFooter>
-              </form>
-            </Card>
+              </Card>
+            )}
           </div>
 
           <div className="pb-4"></div>
@@ -299,35 +306,33 @@ const LandingPage = () => {
       {/* Right half - Form */}
       <div className="w-1/2 bg-gray-50 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
-          <Card className="bg-white border-0 shadow-xl">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-2xl">{isSignIn ? "Welcome Back" : "Get Started"}</CardTitle>
-              <CardDescription className="text-base">
-                {isSignIn 
-                  ? "Enter your credentials to access your dashboard" 
-                  : "Enter your email to start your journey"}
-              </CardDescription>
-            </CardHeader>
-            
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <label htmlFor="email" className="text-sm font-medium">
-                    Email
-                  </label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="name@example.com"
-                    className="h-11"
-                    {...register("email", { required: "Email is required" })}
-                  />
-                  {errors.email && (
-                    <p className="text-red-500 text-sm">{errors.email.message}</p>
-                  )}
-                </div>
-                
-                {isSignIn && (
+          {isSignIn ? (
+            <Card className="bg-white border-0 shadow-xl">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-2xl">Welcome Back</CardTitle>
+                <CardDescription className="text-base">
+                  Enter your credentials to access your dashboard
+                </CardDescription>
+              </CardHeader>
+              
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <label htmlFor="email" className="text-sm font-medium">
+                      Email
+                    </label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="name@example.com"
+                      className="h-11"
+                      {...register("email", { required: "Email is required" })}
+                    />
+                    {errors.email && (
+                      <p className="text-red-500 text-sm">{errors.email.message}</p>
+                    )}
+                  </div>
+                  
                   <div className="space-y-2">
                     <label htmlFor="password" className="text-sm font-medium">
                       Password
@@ -343,11 +348,9 @@ const LandingPage = () => {
                       <p className="text-red-500 text-sm">{errors.password.message}</p>
                     )}
                   </div>
-                )}
-              </CardContent>
-              
-              <CardFooter className="flex flex-col pt-4 pb-6">
-                {isSignIn ? (
+                </CardContent>
+                
+                <CardFooter className="flex flex-col pt-4 pb-6">
                   <Button 
                     type="submit"
                     disabled={isLoading}
@@ -356,29 +359,51 @@ const LandingPage = () => {
                     {isLoading ? "Loading..." : "Sign In"}
                     {!isLoading && <ArrowRight className="ml-2 h-4 w-4" />}
                   </Button>
-                ) : (
-                  <Button 
-                    type="submit"
-                    className="w-full bg-rezilia-purple hover:bg-rezilia-purple/90 h-11"
-                  >
-                    Start Your Assessment
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                )}
-                
-                <p className="text-center text-sm mt-4">
-                  {isSignIn ? "Don't have an account? " : "Already have an account? "}
+                  
+                  <p className="text-center text-sm mt-4">
+                    Don't have an account?{" "}
+                    <button 
+                      type="button"
+                      className="text-rezilia-purple font-semibold hover:underline"
+                      onClick={handleJoinNowClick}
+                    >
+                      Join Now
+                    </button>
+                  </p>
+                </CardFooter>
+              </form>
+            </Card>
+          ) : (
+            <Card className="bg-white border-0 shadow-xl">
+              <CardHeader className="text-center pb-4">
+                <CardTitle className="text-2xl">Join Rezilia</CardTitle>
+                <CardDescription className="text-base">
+                  Start your health journey today
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="text-center py-8">
+                <Button 
+                  onClick={handleJoinNowClick}
+                  className="w-full bg-rezilia-purple hover:bg-rezilia-purple/90 h-11"
+                >
+                  Start Your Assessment
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </CardContent>
+              <CardFooter className="text-center">
+                <p className="text-sm w-full">
+                  Already have an account?{" "}
                   <button 
                     type="button"
                     className="text-rezilia-purple font-semibold hover:underline"
-                    onClick={toggleForm}
+                    onClick={toggleToSignIn}
                   >
-                    {isSignIn ? "Join Now" : "Sign In"}
+                    Sign In
                   </button>
                 </p>
               </CardFooter>
-            </form>
-          </Card>
+            </Card>
+          )}
         </div>
       </div>
     </div>

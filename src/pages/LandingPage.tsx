@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -113,12 +114,12 @@ const LandingPage = () => {
 
     return (
       <div className="min-h-screen w-full flex overflow-hidden">
-        {/* Left half - Image */}
+        {/* Left half - Family care image */}
         <div className="w-1/2 relative">
           <div 
             className="absolute inset-0 bg-cover bg-center" 
             style={{ 
-              backgroundImage: 'url(/lovable-uploads/47b15075-bd0e-406a-ad46-426378162a9a.png)',
+              backgroundImage: 'url(/lovable-uploads/6fc2af35-6587-4e5e-872e-874ef4f857c4.png)',
               backgroundSize: 'cover',
               backgroundPosition: 'center'
             }}
@@ -137,10 +138,22 @@ const LandingPage = () => {
           </div>
         </div>
 
-        {/* Right half - Signup Flow */}
-        <div className="w-1/2 bg-gray-50 overflow-y-auto">
-          <div className="p-8">
-            <SignupFlow onComplete={handleSignupComplete} onBack={handleBackToSignIn} />
+        {/* Right half - Signup Flow with dashboard background */}
+        <div className="w-1/2 relative">
+          <div 
+            className="absolute inset-0 bg-cover bg-center" 
+            style={{ 
+              backgroundImage: 'url(/lovable-uploads/47b15075-bd0e-406a-ad46-426378162a9a.png)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center'
+            }}
+          >
+            <div className="absolute inset-0 bg-white/80"></div>
+          </div>
+          <div className="relative z-10 overflow-y-auto h-full">
+            <div className="p-8">
+              <SignupFlow onComplete={handleSignupComplete} onBack={handleBackToSignIn} />
+            </div>
           </div>
         </div>
       </div>
@@ -155,7 +168,7 @@ const LandingPage = () => {
         <div 
           className="fixed inset-0 z-0 bg-cover bg-center" 
           style={{ 
-            backgroundImage: 'url(/lovable-uploads/47b15075-bd0e-406a-ad46-426378162a9a.png)',
+            backgroundImage: 'url(/lovable-uploads/6fc2af35-6587-4e5e-872e-874ef4f857c4.png)',
             backgroundSize: 'cover',
             backgroundPosition: 'center'
           }}
@@ -248,12 +261,12 @@ const LandingPage = () => {
   // Desktop layout - half image, half form
   return (
     <div className="min-h-screen w-full flex overflow-hidden">
-      {/* Left half - Image */}
+      {/* Left half - Family care image */}
       <div className="w-1/2 relative">
         <div 
           className="absolute inset-0 bg-cover bg-center" 
           style={{ 
-            backgroundImage: 'url(/lovable-uploads/47b15075-bd0e-406a-ad46-426378162a9a.png)',
+            backgroundImage: 'url(/lovable-uploads/6fc2af35-6587-4e5e-872e-874ef4f857c4.png)',
             backgroundSize: 'cover',
             backgroundPosition: 'center'
           }}
@@ -272,75 +285,88 @@ const LandingPage = () => {
         </div>
       </div>
 
-      {/* Right half - Form */}
-      <div className="w-1/2 bg-gray-50 flex items-center justify-center p-8">
-        <div className="w-full max-w-md">
-          <Card className="bg-white border-0 shadow-xl">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-2xl">Welcome Back</CardTitle>
-              <CardDescription className="text-base">
-                Enter your credentials to access your dashboard
-              </CardDescription>
-            </CardHeader>
-            
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <label htmlFor="email" className="text-sm font-medium">
-                    Email
-                  </label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="name@example.com"
-                    className="h-11"
-                    {...register("email", { required: "Email is required" })}
-                  />
-                  {errors.email && (
-                    <p className="text-red-500 text-sm">{errors.email.message}</p>
-                  )}
-                </div>
-                
-                <div className="space-y-2">
-                  <label htmlFor="password" className="text-sm font-medium">
-                    Password
-                  </label>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="••••••••"
-                    className="h-11"
-                    {...register("password", { required: "Password is required" })}
-                  />
-                  {errors.password && (
-                    <p className="text-red-500 text-sm">{errors.password.message}</p>
-                  )}
-                </div>
-              </CardContent>
+      {/* Right half - Form with dashboard background */}
+      <div className="w-1/2 relative">
+        <div 
+          className="absolute inset-0 bg-cover bg-center" 
+          style={{ 
+            backgroundImage: 'url(/lovable-uploads/47b15075-bd0e-406a-ad46-426378162a9a.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
+          }}
+        >
+          <div className="absolute inset-0 bg-white/85"></div>
+        </div>
+        
+        <div className="relative z-10 flex items-center justify-center p-8 h-full">
+          <div className="w-full max-w-md">
+            <Card className="bg-white/95 backdrop-blur-md border-0 shadow-xl">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-2xl">Welcome Back</CardTitle>
+                <CardDescription className="text-base">
+                  Enter your credentials to access your dashboard
+                </CardDescription>
+              </CardHeader>
               
-              <CardFooter className="flex flex-col pt-4 pb-6">
-                <Button 
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full bg-rezilia-purple hover:bg-rezilia-purple/90 h-11"
-                >
-                  {isLoading ? "Loading..." : "Sign In"}
-                  {!isLoading && <ArrowRight className="ml-2 h-4 w-4" />}
-                </Button>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <label htmlFor="email" className="text-sm font-medium">
+                      Email
+                    </label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="name@example.com"
+                      className="h-11"
+                      {...register("email", { required: "Email is required" })}
+                    />
+                    {errors.email && (
+                      <p className="text-red-500 text-sm">{errors.email.message}</p>
+                    )}
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label htmlFor="password" className="text-sm font-medium">
+                      Password
+                    </label>
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="••••••••"
+                      className="h-11"
+                      {...register("password", { required: "Password is required" })}
+                    />
+                    {errors.password && (
+                      <p className="text-red-500 text-sm">{errors.password.message}</p>
+                    )}
+                  </div>
+                </CardContent>
                 
-                <p className="text-center text-sm mt-4">
-                  Don't have an account?{" "}
-                  <button 
-                    type="button"
-                    className="text-rezilia-purple font-semibold hover:underline"
-                    onClick={handleJoinNowClick}
+                <CardFooter className="flex flex-col pt-4 pb-6">
+                  <Button 
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full bg-rezilia-purple hover:bg-rezilia-purple/90 h-11"
                   >
-                    Join Now
-                  </button>
-                </p>
-              </CardFooter>
-            </form>
-          </Card>
+                    {isLoading ? "Loading..." : "Sign In"}
+                    {!isLoading && <ArrowRight className="ml-2 h-4 w-4" />}
+                  </Button>
+                  
+                  <p className="text-center text-sm mt-4">
+                    Don't have an account?{" "}
+                    <button 
+                      type="button"
+                      className="text-rezilia-purple font-semibold hover:underline"
+                      onClick={handleJoinNowClick}
+                    >
+                      Join Now
+                    </button>
+                  </p>
+                </CardFooter>
+              </form>
+            </Card>
+          </div>
         </div>
       </div>
     </div>

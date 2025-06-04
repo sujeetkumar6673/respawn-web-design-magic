@@ -133,17 +133,19 @@ export const userApi = {
           hasAcceptedTerms: true,
           roles: userData.roles || ['caregiver'],
           assessments: userData.assessments || [],
-          subscriptionName: userData.selectedPlan || 'free'
+          subscriptionName: userData.selectedPlan || 'Free'
         };
 
-        console.log('Real API Signup Request:', signupRequest);
+        console.log('=== API: Real API Signup Request ===');
+        console.log('Request payload:', JSON.stringify(signupRequest, null, 2));
         console.log('API URL:', buildApiUrl(config.ENDPOINTS.AUTH.SIGN_UP));
 
         // TODO: Uncomment when you want to test with real API
         // const response: AxiosResponse<any> = 
         //   await apiClient.post(buildApiUrl(config.ENDPOINTS.AUTH.SIGN_UP), signupRequest);
         
-        // console.log('Real API Signup Response:', response.data);
+        // console.log('=== API: Real API Signup Response ===');
+        // console.log('Response:', JSON.stringify(response.data, null, 2));
         
         // // Transform API response to User format
         // const user: User = {
@@ -161,7 +163,8 @@ export const userApi = {
         // return user;
 
         // Mock implementation - remove when real API is ready
-        console.log('Mock Sign Up API called with actual data:', signupRequest);
+        console.log('=== API: Mock Sign Up called with actual data ===');
+        console.log('Mock processing signup request...');
         await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API delay
         
         // Return mock user data
@@ -176,10 +179,11 @@ export const userApi = {
           contacts: []
         };
         
+        console.log('=== API: Mock user created ===', user);
         localStorage.setItem('user', JSON.stringify(user));
         return user;
       } catch (error) {
-        console.error('Sign up API error:', error);
+        console.error('=== API: Sign up error ===', error);
         throw new Error('Failed to create account. Please try again.');
       }
     },

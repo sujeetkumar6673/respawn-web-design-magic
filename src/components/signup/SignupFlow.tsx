@@ -182,15 +182,15 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
   const getRecommendedPlan = () => {
     const { stressLevel, userType, careTeamStructure } = watchedAssessment;
     
-    if (userType === 'professional-caregiver') return 'professional';
-    if (stressLevel === 'daily' || stressLevel === 'several-times-week') return 'premium';
-    if (careTeamStructure === 'multiple-family' || careTeamStructure === 'mix-family-professional') return 'standard';
-    return 'free';
+    if (userType === 'professional-caregiver') return 'Professional';
+    if (stressLevel === 'daily' || stressLevel === 'several-times-week') return 'Premium';
+    if (careTeamStructure === 'multiple-family' || careTeamStructure === 'mix-family-professional') return 'Standard';
+    return 'Free';
   };
 
   const subscriptionPlans = [
     {
-      id: 'free',
+      id: 'Free',
       name: 'Free Plan',
       subtitle: 'Basic Organization',
       price: 'Free forever',
@@ -203,7 +203,7 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
       ]
     },
     {
-      id: 'standard',
+      id: 'Standard',
       name: 'Standard Plan',
       subtitle: 'Family Coordination',
       price: '$9.99/month or $99/year',
@@ -218,7 +218,7 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
       ]
     },
     {
-      id: 'premium',
+      id: 'Premium',
       name: 'Premium Plan',
       subtitle: 'Complete Care Management',
       price: '$19.99/month or $199/year',
@@ -234,7 +234,7 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
       ]
     },
     {
-      id: 'professional',
+      id: 'Professional',
       name: 'Professional Plan',
       subtitle: 'For Care Providers',
       price: '$39.99/month or $399/year',
@@ -314,6 +314,9 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
         selectedPlan: data.selectedPlan || getRecommendedPlan(),
         roles
       };
+
+      console.log('=== SIGNUP FLOW: Preparing to call authService.register ===');
+      console.log('Register Data:', registerData);
       
       const userData = await authService.register(registerData);
       
@@ -323,6 +326,7 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
         onComplete();
       }
     } catch (error) {
+      console.error('=== SIGNUP FLOW: Registration failed ===', error);
       toast.error(error instanceof Error ? error.message : "An error occurred");
     } finally {
       setIsLoading(false);

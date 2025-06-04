@@ -1,5 +1,5 @@
-
 import { mockUsers } from './mockData';
+import { userApi } from './api';
 
 export interface LoginCredentials {
   email: string;
@@ -46,66 +46,34 @@ const generateGUID = () => {
   });
 };
 
-// Simulate API delay
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
 export const authService = {
-  // Mock login - simplified for demo
+  // Login using userApi
   async login(credentials: LoginCredentials): Promise<User | null> {
-    await delay(1000);
-    
-    // Find user by email in mock data
-    const foundUser = mockUsers.find(user => user.email === credentials.email);
-    
-    if (foundUser) {
-      const authenticatedUser: User = {
-        ...foundUser,
-        isAuthenticated: true
-      };
-      
-      // Store in localStorage
-      localStorage.setItem('user', JSON.stringify(authenticatedUser));
-      return authenticatedUser;
+    try {
+      // Use userApi for authentication
+      const user = await userApi.auth.signIn(credentials);
+      return user;
+    } catch (error) {
+      console.error('Login error in authService:', error);
+      throw error;
     }
-    
-    // For demo purposes, create a default user if not found
-    const defaultUser: User = {
-      id: generateGUID(),
-      email: credentials.email,
-      name: 'John Doe',
-      phone: '(555) 123-4567',
-      city: 'New York',
-      role: 'patient',
-      isAuthenticated: true,
-      contacts: []
-    };
-    
-    localStorage.setItem('user', JSON.stringify(defaultUser));
-    return defaultUser;
   },
 
-  // Mock registration
+  // Registration using userApi
   async register(userData: RegisterData): Promise<User> {
-    await delay(1500);
-    
-    const newUser: User = {
-      id: generateGUID(),
-      name: userData.name,
-      email: userData.email,
-      phone: userData.phone || '',
-      city: userData.city || '',
-      role: 'patient',
-      isAuthenticated: true,
-      contacts: []
-    };
-    
-    // Store in localStorage
-    localStorage.setItem('user', JSON.stringify(newUser));
-    return newUser;
+    try {
+      // Use userApi for registration
+      const user = await userApi.auth.signUp(userData);
+      return user;
+    } catch (error) {
+      console.error('Registration error in authService:', error);
+      throw error;
+    }
   },
 
-  // Get current user from localStorage
+  // Get current user from localStorage (keeping this as is for now)
   async getCurrentUser(): Promise<User | null> {
+    const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
     await delay(200);
     
     const storedUser = localStorage.getItem('user');
@@ -123,10 +91,15 @@ export const authService = {
     return null;
   },
 
-  // Mock logout
+  // Logout using userApi
   async logout(): Promise<void> {
-    await delay(500);
-    localStorage.removeItem('user');
+    try {
+      // Use userApi for logout
+      await userApi.auth.logout();
+    } catch (error) {
+      console.error('Logout error in authService:', error);
+      // Continue with local cleanup even if API fails
+    }
   },
 
   // Check if user is authenticated

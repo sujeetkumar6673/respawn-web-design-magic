@@ -1,4 +1,3 @@
-
 import axios, { AxiosResponse } from 'axios';
 import { buildApiUrl, config } from '@/config/environment';
 import { LoginCredentials, RegisterData, User } from './authService';
@@ -27,6 +26,22 @@ interface SubscriptionPlan {
   currency: string;
   features: string[];
   recommended?: boolean;
+}
+
+// Real API signup request interface
+interface SignupRequest {
+  email: string;
+  password: string;
+  fullName: string;
+  gender: string;
+  hasContent: boolean;
+  hasAcceptedTerms: boolean;
+  roles: string[];
+  assessments: Array<{
+    question: string;
+    answer: string;
+  }>;
+  subscriptionName: string;
 }
 
 // Create axios instance with default configuration
@@ -72,6 +87,7 @@ export const userApi = {
         // if (response.data.success && response.data.data) {
         //   const { user, token } = response.data.data;
         //   localStorage.setItem('authToken', token);
+        //   localStorage.setItem('user', JSON.stringify(user));
         //   return user;
         // }
         // return null;
@@ -81,7 +97,7 @@ export const userApi = {
         await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API delay
         
         // Return mock user data
-        return {
+        const user = {
           id: '1',
           email: credentials.email,
           name: 'John Doe',
@@ -91,6 +107,9 @@ export const userApi = {
           isAuthenticated: true,
           contacts: []
         };
+        
+        localStorage.setItem('user', JSON.stringify(user));
+        return user;
       } catch (error) {
         console.error('Sign in API error:', error);
         throw new Error('Failed to sign in. Please check your credentials.');
@@ -98,29 +117,64 @@ export const userApi = {
     },
 
     /**
-     * Register new user
+     * Register new user with real API structure
      * @param userData - User registration data
      * @returns Promise<User>
      */
     signUp: async (userData: RegisterData): Promise<User> => {
       try {
-        // TODO: Uncomment when backend API is ready
-        // const response: AxiosResponse<ApiResponse<{ user: User; token: string }>> = 
-        //   await apiClient.post(buildApiUrl(config.ENDPOINTS.AUTH.SIGN_UP), userData);
+        // Prepare the signup request with dummy data to match your API structure
+        const signupRequest: SignupRequest = {
+          email: userData.email,
+          password: userData.password,
+          fullName: userData.name,
+          gender: 'prefer-not-to-say', // Dummy gender
+          hasContent: true,
+          hasAcceptedTerms: true,
+          roles: ['caregiver'], // Dummy role
+          assessments: [
+            {
+              question: 'What is your primary caregiving situation?',
+              answer: 'Caring for aging parent(s)'
+            },
+            {
+              question: 'What is your biggest daily challenge?',
+              answer: 'Managing medications and appointments'
+            }
+          ],
+          subscriptionName: 'free' // Dummy subscription
+        };
+
+        console.log('Real API Signup Request:', signupRequest);
+        console.log('API URL:', buildApiUrl(config.ENDPOINTS.AUTH.SIGN_UP));
+
+        // TODO: Uncomment when you want to test with real API
+        // const response: AxiosResponse<any> = 
+        //   await apiClient.post(buildApiUrl(config.ENDPOINTS.AUTH.SIGN_UP), signupRequest);
         
-        // if (response.data.success && response.data.data) {
-        //   const { user, token } = response.data.data;
-        //   localStorage.setItem('authToken', token);
-        //   return user;
-        // }
-        // throw new Error('Registration failed');
+        // console.log('Real API Signup Response:', response.data);
+        
+        // // Transform API response to User format
+        // const user: User = {
+        //   id: response.data.id || response.data.userId || '1',
+        //   email: signupRequest.email,
+        //   name: signupRequest.fullName,
+        //   phone: userData.phone || '',
+        //   city: userData.city || '',
+        //   role: 'patient',
+        //   isAuthenticated: true,
+        //   contacts: []
+        // };
+        
+        // localStorage.setItem('user', JSON.stringify(user));
+        // return user;
 
         // Mock implementation - remove when real API is ready
-        console.log('Mock Sign Up API called with:', userData);
+        console.log('Mock Sign Up API called with transformed data:', signupRequest);
         await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API delay
         
         // Return mock user data
-        return {
+        const user = {
           id: '2',
           email: userData.email,
           name: userData.name,
@@ -130,6 +184,9 @@ export const userApi = {
           isAuthenticated: true,
           contacts: []
         };
+        
+        localStorage.setItem('user', JSON.stringify(user));
+        return user;
       } catch (error) {
         console.error('Sign up API error:', error);
         throw new Error('Failed to create account. Please try again.');
@@ -150,10 +207,12 @@ export const userApi = {
         await new Promise(resolve => setTimeout(resolve, 500));
         
         localStorage.removeItem('authToken');
+        localStorage.removeItem('user');
       } catch (error) {
         console.error('Logout API error:', error);
         // Always remove token on logout, even if API fails
         localStorage.removeItem('authToken');
+        localStorage.removeItem('user');
       }
     }
   },
@@ -404,4 +463,4 @@ export const userApi = {
 };
 
 // Export types for use in other files
-export type { ApiResponse, AssessmentQuestion, SubscriptionPlan };
+export type { ApiResponse, AssessmentQuestion, SubscriptionPlan, SignupRequest };

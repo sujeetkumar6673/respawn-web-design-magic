@@ -2,22 +2,22 @@
 // Environment configuration for different deployment stages
 export const config = {
   // Current environment - change this based on your deployment
-  ENVIRONMENT: 'development', // 'development' | 'qa' | 'production'
+  ENVIRONMENT: 'qa', // 'development' | 'qa' | 'production'
   
   // API Base URLs for different environments
   API_BASE_URLS: {
     development: 'http://localhost:3000/api', // Local development server
-    qa: 'https://api-qa.yourdomain.com/api',   // QA/Staging environment
+    qa: 'https://ca-talos-qa-user-service-api.agreeablehill-e8515896.eastus.azurecontainerapps.io', // QA/Staging environment
     production: 'https://api.yourdomain.com/api' // Production environment
   },
   
   // API Endpoints
   ENDPOINTS: {
     AUTH: {
-      SIGN_IN: '/auth/signin',
-      SIGN_UP: '/auth/signup',
-      LOGOUT: '/auth/logout',
-      REFRESH_TOKEN: '/auth/refresh'
+      SIGN_IN: '/user/auth/signin',
+      SIGN_UP: '/user/auth/signup',
+      LOGOUT: '/user/auth/logout',
+      REFRESH_TOKEN: '/user/auth/refresh'
     },
     ASSESSMENT: {
       GET_QUESTIONS: '/assessment/questions',

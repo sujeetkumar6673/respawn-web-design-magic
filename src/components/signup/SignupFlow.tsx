@@ -10,7 +10,7 @@ import { ArrowRight, ArrowLeft, Check } from 'lucide-react';
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useAuth } from '@/contexts/AuthContext';
-import { authService, RegisterData } from '@/services/authService';
+import { authService } from '@/services/authService';
 
 interface SignupData {
   // Phase 1 - Email & Password
@@ -21,6 +21,7 @@ interface SignupData {
   // Phase 2 - Profile Details
   name: string;
   phone: string;
+  gender: string;
   agreeTerms: boolean;
   agreeDataUsage: boolean;
   userType: string;
@@ -72,6 +73,13 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
       title: '🩺 Professional Caregiver',
       description: 'Providing paid caregiving services'
     }
+  ];
+
+  const genderOptions = [
+    { id: 'male', label: 'Male' },
+    { id: 'female', label: 'Female' },
+    { id: 'non-binary', label: 'Non-binary' },
+    { id: 'prefer-not-to-say', label: 'Prefer not to say' }
   ];
 
   const assessmentQuestions = [
@@ -256,7 +264,7 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
     
     if (currentStep === 2) {
       // Validate profile details
-      const isValid = await trigger(['name', 'phone', 'agreeTerms', 'agreeDataUsage', 'userType']);
+      const isValid = await trigger(['name', 'phone', 'gender', 'agreeTerms', 'agreeDataUsage', 'userType']);
       if (isValid) {
         setCurrentStep(3);
         setCurrentQuestionIndex(0);
@@ -282,15 +290,29 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
       return;
     }
 
-    // Final step - create account
+    // Final step - create account with all collected data
     setIsLoading(true);
     try {
-      const registerData: RegisterData = {
+      // Prepare assessment data from form responses
+      const assessments = assessmentQuestions.map(question => ({
+        question: question.title,
+        answer: data[question.id as keyof SignupData] as string || ''
+      }));
+
+      // Map user type to role
+      const roles = data.userType === 'professional-caregiver' ? ['professional-caregiver'] : ['caregiver'];
+
+      const registerData = {
         name: data.name,
         email: data.email,
         password: data.password,
         phone: data.phone,
-        city: 'Not specified'
+        city: 'Not specified',
+        gender: data.gender,
+        userType: data.userType,
+        assessments,
+        selectedPlan: data.selectedPlan || getRecommendedPlan(),
+        roles
       };
       
       const userData = await authService.register(registerData);
@@ -394,6 +416,22 @@ const SignupFlow: React.FC<SignupFlowProps> = ({ onComplete, onBack }) => {
             className="mt-1 h-11"
           />
           {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>}
+        </div>
+
+        <div className="space-y-3">
+          <Label className="text-sm font-medium">Gender *</Label>
+          <RadioGroup
+            value={watch('gender') || ''}
+            onValueChange={(value) => setValue('gender', value)}
+          >
+            {genderOptions.map((option) => (
+              <div key={option.id} className="flex items-center space-x-2">
+                <RadioGroupItem value={option.id} id={option.id} />
+                <Label htmlFor={option.id} className="text-sm">{option.label}</Label>
+              </div>
+            ))}
+          </RadioGroup>
+          {errors.gender && <p className="text-red-500 text-sm mt-1">{errors.gender.message}</p>}
         </div>
 
         <div className="space-y-4 pt-2">

@@ -123,26 +123,17 @@ export const userApi = {
      */
     signUp: async (userData: RegisterData): Promise<User> => {
       try {
-        // Prepare the signup request with dummy data to match your API structure
+        // Prepare the signup request with actual collected data
         const signupRequest: SignupRequest = {
           email: userData.email,
           password: userData.password,
           fullName: userData.name,
-          gender: 'prefer-not-to-say', // Dummy gender
+          gender: userData.gender || 'prefer-not-to-say',
           hasContent: true,
           hasAcceptedTerms: true,
-          roles: ['caregiver'], // Dummy role
-          assessments: [
-            {
-              question: 'What is your primary caregiving situation?',
-              answer: 'Caring for aging parent(s)'
-            },
-            {
-              question: 'What is your biggest daily challenge?',
-              answer: 'Managing medications and appointments'
-            }
-          ],
-          subscriptionName: 'free' // Dummy subscription
+          roles: userData.roles || ['caregiver'],
+          assessments: userData.assessments || [],
+          subscriptionName: userData.selectedPlan || 'free'
         };
 
         console.log('Real API Signup Request:', signupRequest);
@@ -170,7 +161,7 @@ export const userApi = {
         // return user;
 
         // Mock implementation - remove when real API is ready
-        console.log('Mock Sign Up API called with transformed data:', signupRequest);
+        console.log('Mock Sign Up API called with actual data:', signupRequest);
         await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API delay
         
         // Return mock user data

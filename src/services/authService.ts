@@ -1,3 +1,4 @@
+
 import { mockUsers } from './mockData';
 import { userApi } from './api';
 
@@ -12,6 +13,14 @@ export interface RegisterData {
   password: string;
   phone?: string;
   city?: string;
+  gender?: string;
+  userType?: string;
+  assessments?: Array<{
+    question: string;
+    answer: string;
+  }>;
+  selectedPlan?: string;
+  roles?: string[];
 }
 
 export interface User {

@@ -128,31 +128,7 @@ const SimpliciaPage: React.FC = () => {
             </Card>
 
             {/* Quick Actions - Mobile */}
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm">Quick Actions</CardTitle>
-              </CardHeader>
-              <CardContent className="p-3">
-                <div className="grid grid-cols-2 gap-2">
-                  <Button variant="outline" className="h-16 flex flex-col items-center justify-center space-y-1 text-white border-0 bg-blue-500 hover:bg-blue-600">
-                    <Users className="w-4 h-4" />
-                    <span className="text-xs">Schedule Caregiver</span>
-                  </Button>
-                  <Button variant="outline" className="h-16 flex flex-col items-center justify-center space-y-1 text-white border-0 bg-green-500 hover:bg-green-600">
-                    <Clock className="w-4 h-4" />
-                    <span className="text-xs">Plan Visit</span>
-                  </Button>
-                  <Button variant="outline" className="h-16 flex flex-col items-center justify-center space-y-1 text-white border-0 bg-orange-500 hover:bg-orange-600">
-                    <CheckSquare className="w-4 h-4" />
-                    <span className="text-xs">Add Task</span>
-                  </Button>
-                  <Button variant="outline" className="h-16 flex flex-col items-center justify-center space-y-1 text-white border-0 bg-purple-500 hover:bg-purple-600">
-                    <Pill className="w-4 h-4" />
-                    <span className="text-xs">Med Reminder</span>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+            <QuickActions />
 
             {/* Notes Section - Mobile */}
             <Card>
@@ -293,31 +269,7 @@ const SimpliciaPage: React.FC = () => {
               </Card>
 
               {/* Quick Actions */}
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm">Quick Actions</CardTitle>
-                </CardHeader>
-                <CardContent className="p-3">
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button variant="outline" className="h-16 flex flex-col items-center justify-center space-y-1 text-white border-0 bg-blue-500 hover:bg-blue-600">
-                      <Users className="w-4 h-4" />
-                      <span className="text-xs">Schedule Caregiver</span>
-                    </Button>
-                    <Button variant="outline" className="h-16 flex flex-col items-center justify-center space-y-1 text-white border-0 bg-green-500 hover:bg-green-600">
-                      <Clock className="w-4 h-4" />
-                      <span className="text-xs">Plan Visit</span>
-                    </Button>
-                    <Button variant="outline" className="h-16 flex flex-col items-center justify-center space-y-1 text-white border-0 bg-orange-500 hover:bg-orange-600">
-                      <CheckSquare className="w-4 h-4" />
-                      <span className="text-xs">Add Task</span>
-                    </Button>
-                    <Button variant="outline" className="h-16 flex flex-col items-center justify-center space-y-1 text-white border-0 bg-purple-500 hover:bg-purple-600">
-                      <Pill className="w-4 h-4" />
-                      <span className="text-xs">Med Reminder</span>
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+              <QuickActions />
             </div>
           </div>
         )}

@@ -9,10 +9,12 @@ import AddTaskModal from './modals/AddTaskModal';
 import MedicationReminderModal from './modals/MedicationReminderModal';
 import EmergencyContactModal from './modals/EmergencyContactModal';
 import CalendarModal from './modals/CalendarModal';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const QuickActions: React.FC = () => {
   // State to track which modal is open
   const [activeModal, setActiveModal] = useState<string | null>(null);
+  const isMobile = useIsMobile();
 
   // Function to close all modals
   const closeAllModals = () => setActiveModal(null);
@@ -63,28 +65,42 @@ const QuickActions: React.FC = () => {
     }
   ];
 
+  // Calculate button sizes based on screen width
+  const buttonHeight = isMobile ? 'h-24' : 'h-28';
+  const iconSize = isMobile ? 'w-5 h-5' : 'w-6 h-6';
+  const fontSize = isMobile ? 'text-xs' : 'text-sm';
+  const descriptionSize = isMobile ? 'text-[10px]' : 'text-xs';
+
+  // Handle click on action button
+  const handleActionClick = (id: string) => {
+    console.log('Action clicked:', id);
+    setActiveModal(id);
+  };
+
   return (
     <>
       <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Quick Actions</CardTitle>
+        <CardHeader className="pb-3">
+          <CardTitle className={`${isMobile ? 'text-base' : 'text-lg'}`}>Quick Actions</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <CardContent className="p-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
             {actions.map((action) => {
               const IconComponent = action.icon;
               return (
                 <Button
                   key={action.id}
                   variant="outline"
-                  className={`h-20 flex flex-col items-center justify-center space-y-2 text-white border-0 ${action.color}`}
-                  onClick={() => setActiveModal(action.id)}
+                  className={`${buttonHeight} flex flex-col items-center justify-center p-1 text-white border-0 ${action.color} overflow-visible`}
+                  onClick={() => handleActionClick(action.id)}
                 >
-                  <IconComponent className="w-6 h-6" />
-                  <div className="text-center">
-                    <div className="text-sm font-medium">{action.title}</div>
-                    <div className="text-xs opacity-90">{action.description}</div>
-                  </div>
+                  <IconComponent className={`${iconSize} mb-1`} />
+                  <span className={`${fontSize} font-medium text-center whitespace-normal px-1 leading-tight`}>
+                    {action.title}
+                  </span>
+                  <span className={`${descriptionSize} opacity-90 text-center whitespace-normal px-1 leading-tight`}>
+                    {action.description}
+                  </span>
                 </Button>
               );
             })}

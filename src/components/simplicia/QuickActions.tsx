@@ -1,10 +1,23 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Users, Clock, CheckSquare, Pill, CalendarPlus, Phone } from 'lucide-react';
+import ScheduleCaregiverModal from './modals/ScheduleCaregiverModal';
+import PlanVisitModal from './modals/PlanVisitModal';
+import AddTaskModal from './modals/AddTaskModal';
+import MedicationReminderModal from './modals/MedicationReminderModal';
+import EmergencyContactModal from './modals/EmergencyContactModal';
+import CalendarModal from './modals/CalendarModal';
 
 const QuickActions: React.FC = () => {
+  // State to track which modal is open
+  const [activeModal, setActiveModal] = useState<string | null>(null);
+
+  // Function to close all modals
+  const closeAllModals = () => setActiveModal(null);
+
+  // Action definitions
   const actions = [
     {
       id: 'add-caregiver',
@@ -51,31 +64,65 @@ const QuickActions: React.FC = () => {
   ];
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-lg">Quick Actions</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {actions.map((action) => {
-            const IconComponent = action.icon;
-            return (
-              <Button
-                key={action.id}
-                variant="outline"
-                className={`h-20 flex flex-col items-center justify-center space-y-2 text-white border-0 ${action.color}`}
-              >
-                <IconComponent className="w-6 h-6" />
-                <div className="text-center">
-                  <div className="text-sm font-medium">{action.title}</div>
-                  <div className="text-xs opacity-90">{action.description}</div>
-                </div>
-              </Button>
-            );
-          })}
-        </div>
-      </CardContent>
-    </Card>
+    <>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Quick Actions</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {actions.map((action) => {
+              const IconComponent = action.icon;
+              return (
+                <Button
+                  key={action.id}
+                  variant="outline"
+                  className={`h-20 flex flex-col items-center justify-center space-y-2 text-white border-0 ${action.color}`}
+                  onClick={() => setActiveModal(action.id)}
+                >
+                  <IconComponent className="w-6 h-6" />
+                  <div className="text-center">
+                    <div className="text-sm font-medium">{action.title}</div>
+                    <div className="text-xs opacity-90">{action.description}</div>
+                  </div>
+                </Button>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Modal Components */}
+      <ScheduleCaregiverModal 
+        isOpen={activeModal === 'add-caregiver'} 
+        onOpenChange={(open) => !open && closeAllModals()}
+      />
+
+      <PlanVisitModal
+        isOpen={activeModal === 'add-presence'} 
+        onOpenChange={(open) => !open && closeAllModals()}
+      />
+
+      <AddTaskModal
+        isOpen={activeModal === 'add-todo'} 
+        onOpenChange={(open) => !open && closeAllModals()}
+      />
+
+      <MedicationReminderModal
+        isOpen={activeModal === 'add-med'} 
+        onOpenChange={(open) => !open && closeAllModals()}
+      />
+
+      <EmergencyContactModal
+        isOpen={activeModal === 'emergency'} 
+        onOpenChange={(open) => !open && closeAllModals()}
+      />
+
+      <CalendarModal
+        isOpen={activeModal === 'calendar'} 
+        onOpenChange={(open) => !open && closeAllModals()}
+      />
+    </>
   );
 };
 

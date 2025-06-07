@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Users, Mail, Phone, MapPin, MoreVertical, Trash2 } from 'lucide-react';
+import { Users, Mail, MoreVertical, Trash2 } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,8 +16,8 @@ interface TeamMember {
   id: string;
   name: string;
   email: string;
-  phone: string;
-  city: string;
+  password: string;
+  gender: 'male' | 'female' | 'other' | 'prefer-not-to-say';
   role: string;
   avatar?: string;
 }
@@ -51,6 +51,16 @@ const TeamMembersList: React.FC<TeamMembersListProps> = ({
 
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
+  };
+
+  const getGenderDisplayName = (gender: string) => {
+    switch (gender) {
+      case 'male': return 'Male';
+      case 'female': return 'Female';
+      case 'other': return 'Other';
+      case 'prefer-not-to-say': return 'Prefer not to say';
+      default: return 'Not specified';
+    }
   };
 
   if (members.length === 0) {
@@ -101,12 +111,8 @@ const TeamMembersList: React.FC<TeamMembersListProps> = ({
                       <span>{member.email}</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <Phone className="h-3 w-3" />
-                      <span>{member.phone}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <MapPin className="h-3 w-3" />
-                      <span>{member.city}</span>
+                      <span className="text-gray-500">•</span>
+                      <span>{getGenderDisplayName(member.gender)}</span>
                     </div>
                   </div>
                 </div>

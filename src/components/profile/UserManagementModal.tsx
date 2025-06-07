@@ -7,13 +7,13 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Phone, Mail, MapPin, User } from 'lucide-react';
+import { User, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 
 interface UserFormData {
   name: string;
   email: string;
-  phone: string;
-  city: string;
+  password: string;
+  gender: 'male' | 'female' | 'other' | 'prefer-not-to-say';
   role: 'FamilyMember' | 'patient' | 'FamilyCareGiver';
 }
 
@@ -29,6 +29,7 @@ const UserManagementModal: React.FC<UserManagementModalProps> = ({
   onAddUser
 }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { register, handleSubmit, formState: { errors }, reset, setValue, watch } = useForm<UserFormData>();
   
   const selectedRole = watch('role');
@@ -58,6 +59,7 @@ const UserManagementModal: React.FC<UserManagementModalProps> = ({
 
   const handleClose = () => {
     reset();
+    setShowPassword(false);
     onClose();
   };
 
@@ -132,39 +134,53 @@ const UserManagementModal: React.FC<UserManagementModalProps> = ({
             )}
           </div>
 
-          {/* Phone */}
+          {/* Password */}
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone Number *</Label>
+            <Label htmlFor="password">Password *</Label>
             <div className="relative">
-              <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
               <Input
-                id="phone"
-                type="tel"
-                placeholder="(123) 456-7890"
-                className="pl-10"
-                {...register("phone", { required: "Phone number is required" })}
+                id="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter password"
+                className="pl-10 pr-10"
+                {...register("password", { 
+                  required: "Password is required",
+                  minLength: {
+                    value: 6,
+                    message: "Password must be at least 6 characters"
+                  }
+                })}
               />
+              <button
+                type="button"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
             </div>
-            {errors.phone && (
-              <p className="text-red-500 text-sm">{errors.phone.message}</p>
+            {errors.password && (
+              <p className="text-red-500 text-sm">{errors.password.message}</p>
             )}
           </div>
 
-          {/* City */}
+          {/* Gender */}
           <div className="space-y-2">
-            <Label htmlFor="city">City *</Label>
-            <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-              <Input
-                id="city"
-                type="text"
-                placeholder="Enter city"
-                className="pl-10"
-                {...register("city", { required: "City is required" })}
-              />
-            </div>
-            {errors.city && (
-              <p className="text-red-500 text-sm">{errors.city.message}</p>
+            <Label htmlFor="gender">Gender *</Label>
+            <Select onValueChange={(value: any) => setValue('gender', value)} required>
+              <SelectTrigger>
+                <SelectValue placeholder="Select gender" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="male">Male</SelectItem>
+                <SelectItem value="female">Female</SelectItem>
+                <SelectItem value="other">Other</SelectItem>
+                <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
+              </SelectContent>
+            </Select>
+            {errors.gender && (
+              <p className="text-red-500 text-sm">{errors.gender.message}</p>
             )}
           </div>
 

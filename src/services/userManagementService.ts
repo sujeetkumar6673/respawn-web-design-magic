@@ -5,8 +5,8 @@ export interface TeamMember {
   id: string;
   name: string;
   email: string;
-  phone: string;
-  city: string;
+  password: string;
+  gender: 'male' | 'female' | 'other' | 'prefer-not-to-say';
   role: 'FamilyMember' | 'patient' | 'FamilyCareGiver';
   avatar?: string;
   addedBy: string; // User ID of the owner who added this member

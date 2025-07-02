@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -73,6 +72,12 @@ const MedicationReminderModal: React.FC<MedicationReminderModalProps> = ({ isOpe
       sideEffects: '',
     }
   });
+
+  // Clear schedules when switching modes
+  const handleModeChange = (mode: 'simple' | 'custom') => {
+    setScheduleMode(mode);
+    setSchedules([]); // Clear existing schedules when switching modes
+  };
 
   const addSimpleSchedule = (frequency: string, duration: number) => {
     const newSchedules: MedicationSchedule[] = [];
@@ -305,7 +310,7 @@ const MedicationReminderModal: React.FC<MedicationReminderModalProps> = ({ isOpe
                     type="button"
                     variant={scheduleMode === 'simple' ? 'default' : 'outline'}
                     size="sm"
-                    onClick={() => setScheduleMode('simple')}
+                    onClick={() => handleModeChange('simple')}
                   >
                     Quick Setup
                   </Button>
@@ -313,14 +318,14 @@ const MedicationReminderModal: React.FC<MedicationReminderModalProps> = ({ isOpe
                     type="button"
                     variant={scheduleMode === 'custom' ? 'default' : 'outline'}
                     size="sm"
-                    onClick={() => setScheduleMode('custom')}
+                    onClick={() => handleModeChange('custom')}
                   >
                     Custom Schedule
                   </Button>
                 </div>
               </div>
 
-              <Tabs value={scheduleMode} onValueChange={(value) => setScheduleMode(value as 'simple' | 'custom')}>
+              <Tabs value={scheduleMode} onValueChange={(value) => handleModeChange(value as 'simple' | 'custom')}>
                 <TabsContent value="simple" className="space-y-4">
                   <Card>
                     <CardHeader>

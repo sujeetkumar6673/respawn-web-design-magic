@@ -65,10 +65,10 @@ const QuickActions: React.FC = () => {
     }
   ];
 
-  // Calculate button sizes based on screen width with better spacing
-  const buttonHeight = isMobile ? 'h-28' : 'h-32';
+  // Calculate button sizes based on screen width
+  const buttonHeight = isMobile ? 'h-24' : 'h-28';
   const iconSize = isMobile ? 'w-5 h-5' : 'w-6 h-6';
-  const titleSize = isMobile ? 'text-xs' : 'text-sm';
+  const fontSize = isMobile ? 'text-xs' : 'text-sm';
   const descriptionSize = isMobile ? 'text-[10px]' : 'text-xs';
 
   // Handle click on action button
@@ -94,15 +94,13 @@ const QuickActions: React.FC = () => {
                   className={`${buttonHeight} flex flex-col items-center justify-center p-2 text-white border-0 ${action.color} overflow-hidden`}
                   onClick={() => handleActionClick(action.id)}
                 >
-                  <IconComponent className={`${iconSize} mb-1 flex-shrink-0`} />
-                  <div className="flex flex-col items-center justify-center text-center px-1 min-h-0">
-                    <span className={`${titleSize} font-medium leading-tight mb-0.5 line-clamp-2`}>
-                      {action.title}
-                    </span>
-                    <span className={`${descriptionSize} opacity-90 leading-tight line-clamp-2`}>
-                      {action.description}
-                    </span>
-                  </div>
+                  <IconComponent className={`${iconSize} mb-1`} />
+                  <span className={`${fontSize} font-medium text-center leading-tight px-1 mb-0.5`}>
+                    {action.title}
+                  </span>
+                  <span className={`${descriptionSize} opacity-90 text-center leading-tight px-1`}>
+                    {action.description}
+                  </span>
                 </Button>
               );
             })}

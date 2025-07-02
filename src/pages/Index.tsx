@@ -42,7 +42,7 @@ const Index = () => {
         
         {/* Main Content */}
         <div className={`flex-1 min-h-0 p-2 flex flex-col overflow-hidden ${isMobile ? 'w-full' : 'ml-[220px]'}`}>
-          <div className="max-w-[1200px] mx-auto flex flex-col h-full w-full min-h-0 overflow-hidden">
+          <div className="flex flex-col h-full w-full min-h-0 overflow-hidden">
             {/* Header - Fixed at top */}
             <div className="flex-shrink-0">
               <Header />

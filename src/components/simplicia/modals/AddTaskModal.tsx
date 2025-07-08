@@ -1,12 +1,11 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Calendar as CalendarUI } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { CalendarIcon, ShoppingCart, StickyNote } from 'lucide-react';
+import { CalendarIcon, ShoppingCart, StickyNote, List, Plus } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
@@ -33,8 +32,16 @@ const grocerySchema = z.object({
   notes: z.string().optional(),
 });
 
+const bulkGrocerySchema = z.object({
+  items: z.string().min(1, "Items list is required"),
+  category: z.string().min(1, "Category is required"),
+  priority: z.string().min(1, "Priority is required"),
+  store: z.string().optional(),
+});
+
 type NoteFormValues = z.infer<typeof noteSchema>;
 type GroceryFormValues = z.infer<typeof grocerySchema>;
+type BulkGroceryFormValues = z.infer<typeof bulkGrocerySchema>;
 
 interface AddTaskModalProps {
   isOpen: boolean;
@@ -42,6 +49,8 @@ interface AddTaskModalProps {
 }
 
 const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onOpenChange }) => {
+  const [groceryMode, setGroceryMode] = useState<'single' | 'bulk'>('single');
+
   const noteForm = useForm<NoteFormValues>({
     resolver: zodResolver(noteSchema),
     defaultValues: {
@@ -64,6 +73,16 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onOpenChange }) => 
     }
   });
 
+  const bulkGroceryForm = useForm<BulkGroceryFormValues>({
+    resolver: zodResolver(bulkGrocerySchema),
+    defaultValues: {
+      items: '',
+      category: 'food',
+      priority: 'medium',
+      store: '',
+    }
+  });
+
   const onNoteSubmit = (data: NoteFormValues) => {
     console.log('Creating note:', data);
     toast.success("Note created successfully", {
@@ -82,10 +101,22 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onOpenChange }) => 
     groceryForm.reset();
   };
 
+  const onBulkGrocerySubmit = (data: BulkGroceryFormValues) => {
+    const items = data.items.split('\n').filter(item => item.trim() !== '');
+    console.log('Creating bulk grocery items:', { ...data, itemsArray: items });
+    toast.success("Grocery items added successfully", {
+      description: `${items.length} items added to your shopping list`,
+    });
+    onOpenChange(false);
+    bulkGroceryForm.reset();
+  };
+
   const handleModalClose = () => {
     onOpenChange(false);
     noteForm.reset();
     groceryForm.reset();
+    bulkGroceryForm.reset();
+    setGroceryMode('single');
   };
 
   return (
@@ -221,17 +252,119 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onOpenChange }) => 
           </TabsContent>
 
           <TabsContent value="groceries" className="space-y-4 mt-4">
-            <Form {...groceryForm}>
-              <form onSubmit={groceryForm.handleSubmit(onGrocerySubmit)} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+            <div className="flex items-center gap-2 mb-4">
+              <Button
+                type="button"
+                variant={groceryMode === 'single' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setGroceryMode('single')}
+                className="flex items-center gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                Single Item
+              </Button>
+              <Button
+                type="button"
+                variant={groceryMode === 'bulk' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setGroceryMode('bulk')}
+                className="flex items-center gap-2"
+              >
+                <List className="w-4 h-4" />
+                Bulk Add
+              </Button>
+            </div>
+
+            {groceryMode === 'single' ? (
+              <Form {...groceryForm}>
+                <form onSubmit={groceryForm.handleSubmit(onGrocerySubmit)} className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={groceryForm.control}
+                      name="itemName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Item Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter item name" {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={groceryForm.control}
+                      name="quantity"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Quantity</FormLabel>
+                          <FormControl>
+                            <Input placeholder="e.g., 2 kg, 5 pieces" {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={groceryForm.control}
+                      name="category"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Category</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select category" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="food">Food & Beverages</SelectItem>
+                              <SelectItem value="household">Household Items</SelectItem>
+                              <SelectItem value="personal">Personal Care</SelectItem>
+                              <SelectItem value="health">Health & Medicine</SelectItem>
+                              <SelectItem value="clothing">Clothing</SelectItem>
+                              <SelectItem value="electronics">Electronics</SelectItem>
+                              <SelectItem value="other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={groceryForm.control}
+                      name="priority"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Priority</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select priority" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="low">Low</SelectItem>
+                              <SelectItem value="medium">Medium</SelectItem>
+                              <SelectItem value="high">High</SelectItem>
+                              <SelectItem value="urgent">Urgent</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
                   <FormField
                     control={groceryForm.control}
-                    name="itemName"
+                    name="store"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Item Name</FormLabel>
+                        <FormLabel>Preferred Store (Optional)</FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter item name" {...field} />
+                          <Input placeholder="Enter store name" {...field} />
                         </FormControl>
                       </FormItem>
                     )}
@@ -239,110 +372,128 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onOpenChange }) => 
 
                   <FormField
                     control={groceryForm.control}
-                    name="quantity"
+                    name="notes"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Quantity</FormLabel>
+                        <FormLabel>Additional Notes (Optional)</FormLabel>
                         <FormControl>
-                          <Input placeholder="e.g., 2 kg, 5 pieces" {...field} />
+                          <Textarea 
+                            placeholder="Any specific requirements or notes" 
+                            className="min-h-[80px]"
+                            {...field} 
+                          />
                         </FormControl>
                       </FormItem>
                     )}
                   />
-                </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                  <DialogFooter className="pt-4">
+                    <Button type="button" variant="outline" onClick={handleModalClose}>
+                      Cancel
+                    </Button>
+                    <Button type="submit" className="bg-green-500 hover:bg-green-600">
+                      <ShoppingCart className="w-4 h-4 mr-2" />
+                      Add to Shopping List
+                    </Button>
+                  </DialogFooter>
+                </form>
+              </Form>
+            ) : (
+              <Form {...bulkGroceryForm}>
+                <form onSubmit={bulkGroceryForm.handleSubmit(onBulkGrocerySubmit)} className="space-y-4">
                   <FormField
-                    control={groceryForm.control}
-                    name="category"
+                    control={bulkGroceryForm.control}
+                    name="items"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Category</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select category" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="food">Food & Beverages</SelectItem>
-                            <SelectItem value="household">Household Items</SelectItem>
-                            <SelectItem value="personal">Personal Care</SelectItem>
-                            <SelectItem value="health">Health & Medicine</SelectItem>
-                            <SelectItem value="clothing">Clothing</SelectItem>
-                            <SelectItem value="electronics">Electronics</SelectItem>
-                            <SelectItem value="other">Other</SelectItem>
-                          </SelectContent>
-                        </Select>
+                        <FormLabel>Items List</FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Enter each item on a new line:&#10;tomato (for salads)&#10;whole grain bread&#10;pick up fresh bananas&#10;olive oil&#10;cereals, peanut butter, and herbal tea"
+                            className="min-h-[120px]"
+                            {...field} 
+                          />
+                        </FormControl>
                       </FormItem>
                     )}
                   />
 
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={bulkGroceryForm.control}
+                      name="category"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Category (Applied to all items)</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select category" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="food">Food & Beverages</SelectItem>
+                              <SelectItem value="household">Household Items</SelectItem>
+                              <SelectItem value="personal">Personal Care</SelectItem>
+                              <SelectItem value="health">Health & Medicine</SelectItem>
+                              <SelectItem value="clothing">Clothing</SelectItem>
+                              <SelectItem value="electronics">Electronics</SelectItem>
+                              <SelectItem value="other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={bulkGroceryForm.control}
+                      name="priority"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Priority (Applied to all items)</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select priority" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="low">Low</SelectItem>
+                              <SelectItem value="medium">Medium</SelectItem>
+                              <SelectItem value="high">High</SelectItem>
+                              <SelectItem value="urgent">Urgent</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
                   <FormField
-                    control={groceryForm.control}
-                    name="priority"
+                    control={bulkGroceryForm.control}
+                    name="store"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Priority</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select priority" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="low">Low</SelectItem>
-                            <SelectItem value="medium">Medium</SelectItem>
-                            <SelectItem value="high">High</SelectItem>
-                            <SelectItem value="urgent">Urgent</SelectItem>
-                          </SelectContent>
-                        </Select>
+                        <FormLabel>Preferred Store (Optional)</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter store name" {...field} />
+                        </FormControl>
                       </FormItem>
                     )}
                   />
-                </div>
 
-                <FormField
-                  control={groceryForm.control}
-                  name="store"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Preferred Store (Optional)</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Enter store name" {...field} />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={groceryForm.control}
-                  name="notes"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Additional Notes (Optional)</FormLabel>
-                      <FormControl>
-                        <Textarea 
-                          placeholder="Any specific requirements or notes" 
-                          className="min-h-[80px]"
-                          {...field} 
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-
-                <DialogFooter className="pt-4">
-                  <Button type="button" variant="outline" onClick={handleModalClose}>
-                    Cancel
-                  </Button>
-                  <Button type="submit" className="bg-green-500 hover:bg-green-600">
-                    <ShoppingCart className="w-4 h-4 mr-2" />
-                    Add to Shopping List
-                  </Button>
-                </DialogFooter>
-              </form>
-            </Form>
+                  <DialogFooter className="pt-4">
+                    <Button type="button" variant="outline" onClick={handleModalClose}>
+                      Cancel
+                    </Button>
+                    <Button type="submit" className="bg-green-500 hover:bg-green-600">
+                      <List className="w-4 h-4 mr-2" />
+                      Add All Items
+                    </Button>
+                  </DialogFooter>
+                </form>
+              </Form>
+            )}
           </TabsContent>
         </Tabs>
       </DialogContent>

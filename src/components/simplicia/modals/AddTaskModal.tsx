@@ -6,8 +6,10 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Calendar as CalendarUI } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { CalendarIcon } from 'lucide-react';
+import { CalendarIcon, ShoppingCart, StickyNote } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -15,15 +17,24 @@ import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
-const taskSchema = z.object({
-  taskName: z.string().min(1, "Task name is required"),
+const noteSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  content: z.string().min(1, "Content is required"),
   priority: z.string().min(1, "Priority is required"),
-  dueDate: z.date({ required_error: "Due date is required" }),
-  assignedTo: z.string().optional(),
-  description: z.string().optional(),
+  dueDate: z.date().optional(),
 });
 
-type TaskFormValues = z.infer<typeof taskSchema>;
+const grocerySchema = z.object({
+  itemName: z.string().min(1, "Item name is required"),
+  quantity: z.string().min(1, "Quantity is required"),
+  category: z.string().min(1, "Category is required"),
+  priority: z.string().min(1, "Priority is required"),
+  store: z.string().optional(),
+  notes: z.string().optional(),
+});
+
+type NoteFormValues = z.infer<typeof noteSchema>;
+type GroceryFormValues = z.infer<typeof grocerySchema>;
 
 interface AddTaskModalProps {
   isOpen: boolean;
@@ -31,147 +42,309 @@ interface AddTaskModalProps {
 }
 
 const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onOpenChange }) => {
-  const form = useForm<TaskFormValues>({
-    resolver: zodResolver(taskSchema),
+  const noteForm = useForm<NoteFormValues>({
+    resolver: zodResolver(noteSchema),
     defaultValues: {
-      taskName: '',
+      title: '',
+      content: '',
       priority: 'medium',
-      dueDate: new Date(),
-      assignedTo: '',
-      description: '',
+      dueDate: undefined,
     }
   });
 
-  const onSubmit = (data: TaskFormValues) => {
-    console.log('Creating task:', data);
-    toast.success("Task created successfully", {
-      description: `"${data.taskName}" due on ${format(data.dueDate, 'PPP')}`,
+  const groceryForm = useForm<GroceryFormValues>({
+    resolver: zodResolver(grocerySchema),
+    defaultValues: {
+      itemName: '',
+      quantity: '',
+      category: 'food',
+      priority: 'medium',
+      store: '',
+      notes: '',
+    }
+  });
+
+  const onNoteSubmit = (data: NoteFormValues) => {
+    console.log('Creating note:', data);
+    toast.success("Note created successfully", {
+      description: `"${data.title}" has been added to your notes`,
     });
     onOpenChange(false);
-    form.reset();
+    noteForm.reset();
+  };
+
+  const onGrocerySubmit = (data: GroceryFormValues) => {
+    console.log('Creating grocery item:', data);
+    toast.success("Grocery item added successfully", {
+      description: `"${data.itemName}" (${data.quantity}) added to shopping list`,
+    });
+    onOpenChange(false);
+    groceryForm.reset();
+  };
+
+  const handleModalClose = () => {
+    onOpenChange(false);
+    noteForm.reset();
+    groceryForm.reset();
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+    <Dialog open={isOpen} onOpenChange={handleModalClose}>
+      <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>Add Task</DialogTitle>
           <DialogDescription>
-            Create a new to-do item
+            Create a new note or add items to your shopping list
           </DialogDescription>
         </DialogHeader>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="taskName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Task Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter task name" {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+        <Tabs defaultValue="notes" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="notes" className="flex items-center gap-2">
+              <StickyNote className="w-4 h-4" />
+              Notes
+            </TabsTrigger>
+            <TabsTrigger value="groceries" className="flex items-center gap-2">
+              <ShoppingCart className="w-4 h-4" />
+              Groceries & Shopping
+            </TabsTrigger>
+          </TabsList>
 
-            <FormField
-              control={form.control}
-              name="priority"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Priority</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select priority" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="low">Low</SelectItem>
-                      <SelectItem value="medium">Medium</SelectItem>
-                      <SelectItem value="high">High</SelectItem>
-                      <SelectItem value="urgent">Urgent</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="dueDate"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Due Date</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
+          <TabsContent value="notes" className="space-y-4 mt-4">
+            <Form {...noteForm}>
+              <form onSubmit={noteForm.handleSubmit(onNoteSubmit)} className="space-y-4">
+                <FormField
+                  control={noteForm.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Title</FormLabel>
                       <FormControl>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value ? (
-                            format(field.value, "PPP")
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
+                        <Input placeholder="Enter note title" {...field} />
                       </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <CalendarUI
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        initialFocus
-                        className="pointer-events-auto"
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </FormItem>
-              )}
-            />
+                    </FormItem>
+                  )}
+                />
 
-            <FormField
-              control={form.control}
-              name="assignedTo"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Assign To (Optional)</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter person's name" {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+                <FormField
+                  control={noteForm.control}
+                  name="content"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Content</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Enter your note content" 
+                          className="min-h-[100px]"
+                          {...field} 
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
 
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description (Optional)</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter task details" {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={noteForm.control}
+                    name="priority"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Priority</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select priority" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="low">Low</SelectItem>
+                            <SelectItem value="medium">Medium</SelectItem>
+                            <SelectItem value="high">High</SelectItem>
+                            <SelectItem value="urgent">Urgent</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormItem>
+                    )}
+                  />
 
-            <DialogFooter className="pt-4">
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-                Cancel
-              </Button>
-              <Button type="submit" className="bg-orange-500 hover:bg-orange-600">Create Task</Button>
-            </DialogFooter>
-          </form>
-        </Form>
+                  <FormField
+                    control={noteForm.control}
+                    name="dueDate"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        <FormLabel>Due Date (Optional)</FormLabel>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant={"outline"}
+                                className={cn(
+                                  "pl-3 text-left font-normal",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                {field.value ? (
+                                  format(field.value, "PPP")
+                                ) : (
+                                  <span>Pick a date</span>
+                                )}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0">
+                            <CalendarUI
+                              mode="single"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              initialFocus
+                              className="pointer-events-auto"
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <DialogFooter className="pt-4">
+                  <Button type="button" variant="outline" onClick={handleModalClose}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" className="bg-blue-500 hover:bg-blue-600">
+                    <StickyNote className="w-4 h-4 mr-2" />
+                    Create Note
+                  </Button>
+                </DialogFooter>
+              </form>
+            </Form>
+          </TabsContent>
+
+          <TabsContent value="groceries" className="space-y-4 mt-4">
+            <Form {...groceryForm}>
+              <form onSubmit={groceryForm.handleSubmit(onGrocerySubmit)} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={groceryForm.control}
+                    name="itemName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Item Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter item name" {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={groceryForm.control}
+                    name="quantity"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Quantity</FormLabel>
+                        <FormControl>
+                          <Input placeholder="e.g., 2 kg, 5 pieces" {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={groceryForm.control}
+                    name="category"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Category</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select category" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="food">Food & Beverages</SelectItem>
+                            <SelectItem value="household">Household Items</SelectItem>
+                            <SelectItem value="personal">Personal Care</SelectItem>
+                            <SelectItem value="health">Health & Medicine</SelectItem>
+                            <SelectItem value="clothing">Clothing</SelectItem>
+                            <SelectItem value="electronics">Electronics</SelectItem>
+                            <SelectItem value="other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={groceryForm.control}
+                    name="priority"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Priority</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select priority" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="low">Low</SelectItem>
+                            <SelectItem value="medium">Medium</SelectItem>
+                            <SelectItem value="high">High</SelectItem>
+                            <SelectItem value="urgent">Urgent</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <FormField
+                  control={groceryForm.control}
+                  name="store"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Preferred Store (Optional)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter store name" {...field} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={groceryForm.control}
+                  name="notes"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Additional Notes (Optional)</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Any specific requirements or notes" 
+                          className="min-h-[80px]"
+                          {...field} 
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                <DialogFooter className="pt-4">
+                  <Button type="button" variant="outline" onClick={handleModalClose}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" className="bg-green-500 hover:bg-green-600">
+                    <ShoppingCart className="w-4 h-4 mr-2" />
+                    Add to Shopping List
+                  </Button>
+                </DialogFooter>
+              </form>
+            </Form>
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
   );

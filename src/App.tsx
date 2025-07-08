@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,6 +14,7 @@ import SimpliciaPage from "./pages/SimpliciaPage";
 import ReziliaAIPage from "./pages/ReziliaAIPage";
 import AdmiliaPage from "./pages/AdmiliaPage";
 import ForumPage from "./pages/ForumPage";
+import FamilyHeartsPage from "./pages/FamilyHeartsPage";
 import { CalendarProvider } from "./contexts/CalendarContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -70,6 +72,14 @@ const App = () => (
                 element={
                   <ProtectedRoute>
                     <ForumPage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/family-hearts" 
+                element={
+                  <ProtectedRoute>
+                    <FamilyHeartsPage />
                   </ProtectedRoute>
                 } 
               />

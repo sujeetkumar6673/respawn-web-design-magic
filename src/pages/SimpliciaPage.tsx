@@ -17,6 +17,7 @@ import CalendarStyles from '@/components/calendar/CalendarStyles';
 import QuickActions from '@/components/simplicia/QuickActions';
 import CaregiverList from '@/components/simplicia/CaregiverList';
 import WeeklyCalendarView from '@/components/simplicia/WeeklyCalendarView';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 const SimpliciaPage: React.FC = () => {
   const [isAddEventDialogOpen, setIsAddEventDialogOpen] = useState(false);
@@ -65,12 +66,36 @@ const SimpliciaPage: React.FC = () => {
                   <span>Add Event</span>
                 </Button>
               </div>
+
+              {/* Filter Options */}
+              <div className="mb-4">
+                <ToggleGroup 
+                  type="single" 
+                  value={activeFilter} 
+                  onValueChange={(value) => value && setActiveFilter(value)}
+                  className="justify-start flex-wrap gap-2"
+                >
+                  <ToggleGroupItem value="all" aria-label="All events" className="text-xs px-3 py-1">
+                    All
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="caregivers" aria-label="Caregivers" className="text-xs px-3 py-1">
+                    Caregivers
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="presences" aria-label="Family Presence" className="text-xs px-3 py-1">
+                    Presence
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="todos" aria-label="To-dos" className="text-xs px-3 py-1">
+                    To-dos
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="meds" aria-label="Medications" className="text-xs px-3 py-1">
+                    Meds
+                  </ToggleGroupItem>
+                </ToggleGroup>
+              </div>
               
               <div className="space-y-4 mb-10">
                 <QuickActions />
-                <CalendarSection eventDates={eventDates} />
-                <DailyEvents onAddEvent={() => setIsAddEventDialogOpen(true)} />
-                <UpcomingEvents />
+                <WeeklyCalendarView activeFilter={activeFilter} viewType={viewType} />
                 <CaregiverList />
               </div>
             </div>
@@ -89,15 +114,54 @@ const SimpliciaPage: React.FC = () => {
                 </Button>
               </div>
 
+              {/* Filter Options */}
+              <div className="flex justify-between items-center">
+                <ToggleGroup 
+                  type="single" 
+                  value={activeFilter} 
+                  onValueChange={(value) => value && setActiveFilter(value)}
+                  className="justify-start"
+                >
+                  <ToggleGroupItem value="all" aria-label="All events">
+                    All
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="caregivers" aria-label="Caregivers">
+                    Caregivers
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="presences" aria-label="Family Presence">
+                    Presence
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="todos" aria-label="To-dos">
+                    To-dos
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="meds" aria-label="Medications">
+                    Meds
+                  </ToggleGroupItem>
+                </ToggleGroup>
+
+                {/* View Type Toggle */}
+                <ToggleGroup 
+                  type="single" 
+                  value={viewType} 
+                  onValueChange={(value) => value && setViewType(value as 'daily' | 'weekly' | 'monthly')}
+                >
+                  <ToggleGroupItem value="daily" aria-label="Daily view">
+                    Daily
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="weekly" aria-label="Weekly view">
+                    Weekly
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="monthly" aria-label="Monthly view">
+                    Monthly
+                  </ToggleGroupItem>
+                </ToggleGroup>
+              </div>
+
               {/* Main Layout Grid */}
               <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 overflow-hidden flex-1 h-full">
-                {/* Left Column - Calendar and Events */}
-                <div className="lg:col-span-3 flex flex-col space-y-6 overflow-hidden">
-                  <CalendarSection eventDates={eventDates} />
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 overflow-hidden flex-1">
-                    <DailyEvents onAddEvent={() => setIsAddEventDialogOpen(true)} />
-                    <UpcomingEvents />
-                  </div>
+                {/* Left Column - Calendar */}
+                <div className="lg:col-span-3 flex flex-col overflow-hidden">
+                  <WeeklyCalendarView activeFilter={activeFilter} viewType={viewType} />
                 </div>
                 
                 {/* Right Column - Quick Actions and Caregivers */}

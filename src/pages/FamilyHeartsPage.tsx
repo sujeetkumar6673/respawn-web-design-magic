@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,11 +8,13 @@ import { Heart, MessageCircle, User, Phone, Calendar, Pill, FileText, AlertTrian
 import { useAuth } from '@/contexts/AuthContext';
 import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
-import { useIsMobile } from '@/hooks/useIsMobile';
+import MobileNav from '@/components/MobileNav';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const FamilyHeartsPage = () => {
   const isMobile = useIsMobile();
   const [activePage, setActivePage] = useState('family-hearts');
+  const [selectedPatient, setSelectedPatient] = useState<'mom'>('mom');
   
   const handleNavigate = (page: string) => {
     setActivePage(page);

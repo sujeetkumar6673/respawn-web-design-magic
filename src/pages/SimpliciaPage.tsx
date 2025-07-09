@@ -14,9 +14,14 @@ import DailyEvents from '@/components/calendar/DailyEvents';
 import UpcomingEvents from '@/components/calendar/UpcomingEvents';
 import EventFormDialog from '@/components/calendar/EventFormDialog';
 import CalendarStyles from '@/components/calendar/CalendarStyles';
+import QuickActions from '@/components/simplicia/QuickActions';
+import CaregiverList from '@/components/simplicia/CaregiverList';
+import WeeklyCalendarView from '@/components/simplicia/WeeklyCalendarView';
 
 const SimpliciaPage: React.FC = () => {
   const [isAddEventDialogOpen, setIsAddEventDialogOpen] = useState(false);
+  const [activeFilter, setActiveFilter] = useState('all');
+  const [viewType, setViewType] = useState<'daily' | 'weekly' | 'monthly'>('weekly');
   const isMobile = useIsMobile();
   const [activePage, setActivePage] = useState('simplicia');
   
@@ -43,14 +48,14 @@ const SimpliciaPage: React.FC = () => {
           <Header pageTitle="Simplicia" pageDescription="Care coordination and family presence management" />
         </div>
 
-        {/* Main Calendar Content */}
+        {/* Main Content */}
         <div className="bg-white rounded-xl p-3 sm:p-6 flex-1 flex flex-col overflow-hidden h-[calc(100vh-160px)]">
           {isMobile ? (
             // Mobile view
             <div className="h-full overflow-y-auto pb-24 flex flex-col">
               {/* Page Title and Add Event Button */}
               <div className="flex justify-between items-center mb-4">
-                <h1 className="text-2xl sm:text-3xl font-bold text-rezilia-purple">Calendar</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold text-rezilia-purple">Care Coordination</h1>
                 <Button 
                   onClick={() => setIsAddEventDialogOpen(true)}
                   className="bg-rezilia-purple hover:bg-rezilia-purple/90 text-white rounded-full shadow-lg"
@@ -62,9 +67,11 @@ const SimpliciaPage: React.FC = () => {
               </div>
               
               <div className="space-y-4 mb-10">
+                <QuickActions />
                 <CalendarSection eventDates={eventDates} />
                 <DailyEvents onAddEvent={() => setIsAddEventDialogOpen(true)} />
                 <UpcomingEvents />
+                <CaregiverList />
               </div>
             </div>
           ) : (
@@ -72,7 +79,7 @@ const SimpliciaPage: React.FC = () => {
             <div className="flex flex-col space-y-6 h-full overflow-hidden flex-1">
               {/* Page Title and Add Event Button */}
               <div className="flex justify-between items-center">
-                <h1 className="text-2xl sm:text-3xl font-bold text-rezilia-purple">Calendar</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold text-rezilia-purple">Care Coordination</h1>
                 <Button 
                   onClick={() => setIsAddEventDialogOpen(true)}
                   className="bg-rezilia-purple hover:bg-rezilia-purple/90 text-white rounded-full shadow-lg"
@@ -82,14 +89,21 @@ const SimpliciaPage: React.FC = () => {
                 </Button>
               </div>
 
-              {/* Calendar Layout */}
+              {/* Main Layout Grid */}
               <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 overflow-hidden flex-1 h-full">
-                <div className="lg:col-span-3 overflow-hidden">
+                {/* Left Column - Calendar and Events */}
+                <div className="lg:col-span-3 flex flex-col space-y-6 overflow-hidden">
                   <CalendarSection eventDates={eventDates} />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 overflow-hidden flex-1">
+                    <DailyEvents onAddEvent={() => setIsAddEventDialogOpen(true)} />
+                    <UpcomingEvents />
+                  </div>
                 </div>
+                
+                {/* Right Column - Quick Actions and Caregivers */}
                 <div className="flex flex-col space-y-6 overflow-y-auto h-full pr-2">
-                  <DailyEvents onAddEvent={() => setIsAddEventDialogOpen(true)} />
-                  <UpcomingEvents />
+                  <QuickActions />
+                  <CaregiverList />
                 </div>
               </div>
             </div>

@@ -11,6 +11,7 @@ import EventFormDialog from '@/components/calendar/EventFormDialog';
 import CalendarStyles from '@/components/calendar/CalendarStyles';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import FullCalendarView from '@/components/simplicia/FullCalendarView';
+import QuickActions from '@/components/simplicia/QuickActions';
 
 const SimpliciaPage: React.FC = () => {
   const [isAddEventDialogOpen, setIsAddEventDialogOpen] = useState(false);
@@ -33,8 +34,13 @@ const SimpliciaPage: React.FC = () => {
           <Header pageTitle="Simplicia" pageDescription="Care coordination and family presence management" />
         </div>
 
+        {/* Quick Actions Section */}
+        <div className="mb-4">
+          <QuickActions />
+        </div>
+
         {/* Main Content - Full Calendar Layout */}
-        <div className="bg-white rounded-xl p-3 sm:p-6 flex-1 flex flex-col overflow-hidden h-[calc(100vh-160px)]">
+        <div className="bg-white rounded-xl p-3 sm:p-6 flex-1 flex flex-col overflow-hidden h-[calc(100vh-280px)]">
           {/* Calendar Header with Controls */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <div className="flex items-center gap-4">

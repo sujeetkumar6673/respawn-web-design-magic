@@ -28,7 +28,7 @@ const SimpliciaPage: React.FC = () => {
     <div className="min-h-screen bg-gray-50 flex">
       {!isMobile && <Sidebar activePage={activePage} />}
       
-      <div className={`flex-1 ${!isMobile ? 'ml-[220px]' : ''} ${isMobile ? 'pb-20' : ''}`}>
+      <div className={`flex-1 ${!isMobile ? 'ml-[220px]' : ''} ${isMobile ? 'pb-20' : ''} overflow-auto`}>
         <div className="p-4 space-y-4">
           {/* Header */}
           <Header pageTitle="Simplicia" pageDescription="Care coordination and family presence management" />
@@ -99,7 +99,7 @@ const SimpliciaPage: React.FC = () => {
             </div>
 
             {/* Full Calendar View */}
-            <div className={`${isMobile ? 'min-h-[500px]' : 'h-[600px]'}`}>
+            <div className="w-full" style={{ height: isMobile ? '500px' : '600px' }}>
               <FullCalendarView activeFilter={activeFilter} viewType={viewType} />
             </div>
           </div>

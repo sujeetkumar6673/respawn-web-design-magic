@@ -7,8 +7,9 @@ import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Heart, MessageCircle, User, Phone, Calendar, Pill, FileText, AlertTriangle, Activity, Clock, MapPin, Edit, Shield } from 'lucide-react';
+import { Heart, MessageCircle, User, Phone, Calendar, Pill, FileText, AlertTriangle, Activity, Clock, MapPin, Edit, Shield, Save, CheckCircle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
 import MobileNav from '@/components/MobileNav';
@@ -16,13 +17,59 @@ import { useIsMobile } from '@/hooks/use-mobile';
 
 const FamilyHeartsPage = () => {
   const isMobile = useIsMobile();
+  const { toast } = useToast();
   const [activePage, setActivePage] = useState('family-hearts');
   const [selectedPatient, setSelectedPatient] = useState<'mom'>('mom');
   const [isEditing, setIsEditing] = useState(false);
-  const [editableData, setEditableData] = useState({});
+  const [editingSections, setEditingSections] = useState({
+    medications: false,
+    profile: false,
+    allergies: false,
+    vitals: false
+  });
   
   const handleNavigate = (page: string) => {
     setActivePage(page);
+  };
+
+  const handleSaveSection = async (section: string) => {
+    try {
+      // Different API endpoints for different sections
+      let endpoint = '';
+      switch (section) {
+        case 'medications':
+          endpoint = '/api/patient/medications';
+          break;
+        case 'profile':
+          endpoint = '/api/patient/profile';
+          break;
+        case 'allergies':
+          endpoint = '/api/patient/allergies';
+          break;
+        case 'vitals':
+          endpoint = '/api/patient/vitals';
+          break;
+      }
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      setEditingSections(prev => ({ ...prev, [section]: false }));
+      toast({
+        title: "Success",
+        description: `${section.charAt(0).toUpperCase() + section.slice(1)} updated successfully`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: `Failed to update ${section}`,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const toggleEditSection = (section: string) => {
+    setEditingSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
 
   // Mock patient data
@@ -160,52 +207,71 @@ const FamilyHeartsPage = () => {
               </div>
 
               {/* Main Content Grid */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Left Column */}
-                <div className="lg:col-span-2 space-y-6">
+                <div className="lg:col-span-2 space-y-8">
                   {/* Current Medications & Next Appointment */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <Card className="border-purple-200 shadow-lg">
-                      <CardHeader className="bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-t-lg">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <Card className="border-purple-200 shadow-xl hover:shadow-2xl transition-shadow duration-300">
+                      <CardHeader className="bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-t-lg relative">
                         <CardTitle className="flex items-center justify-between">
                           <div className="flex items-center space-x-2">
                             <Pill className="w-5 h-5" />
                             <span>Current Medications</span>
                           </div>
-                          {isEditing && (
-                            <Button size="sm" variant="secondary" className="text-purple-600">
-                              <Edit className="w-4 h-4" />
-                            </Button>
-                          )}
+                          <div className="flex space-x-2">
+                            {!editingSections.medications ? (
+                              <Button 
+                                size="sm" 
+                                variant="secondary" 
+                                onClick={() => toggleEditSection('medications')}
+                                className="bg-white/20 hover:bg-white/30 text-white border-white/20"
+                              >
+                                <Edit className="w-4 h-4" />
+                              </Button>
+                            ) : (
+                              <Button 
+                                size="sm" 
+                                variant="secondary"
+                                onClick={() => handleSaveSection('medications')}
+                                className="bg-green-500 hover:bg-green-600 text-white border-green-500"
+                              >
+                                <Save className="w-4 h-4" />
+                              </Button>
+                            )}
+                          </div>
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="p-6">
                         <div className="space-y-4">
                           {currentPatient.medications.map((med, index) => (
-                            <div key={index} className="p-3 bg-purple-50 rounded-lg border border-purple-100">
-                              {isEditing ? (
-                                <div className="space-y-2">
+                            <div key={index} className="p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl border border-purple-100 hover:border-purple-200 transition-colors">
+                              {editingSections.medications ? (
+                                <div className="space-y-3">
                                   <Input 
                                     defaultValue={med.name} 
-                                    className="font-semibold text-purple-800 bg-white" 
+                                    className="font-semibold text-purple-800 bg-white border-purple-200 focus:border-purple-400" 
                                     placeholder="Medication name"
                                   />
                                   <Input 
                                     defaultValue={`${med.dosage} - ${med.frequency}`} 
-                                    className="text-sm bg-white" 
+                                    className="text-sm bg-white border-purple-200 focus:border-purple-400" 
                                     placeholder="Dosage and frequency"
                                   />
                                   <Input 
                                     defaultValue={med.time} 
-                                    className="text-xs bg-white" 
+                                    className="text-sm bg-white border-purple-200 focus:border-purple-400" 
                                     placeholder="Time"
                                   />
                                 </div>
                               ) : (
                                 <>
-                                  <h4 className="font-semibold text-purple-800">{med.name}</h4>
-                                  <p className="text-sm text-gray-600">{med.dosage} - {med.frequency}</p>
-                                  <p className="text-xs text-purple-600">{med.time}</p>
+                                  <h4 className="font-bold text-purple-800 text-lg">{med.name}</h4>
+                                  <p className="text-gray-600 font-medium">{med.dosage} - {med.frequency}</p>
+                                  <div className="flex items-center space-x-2 mt-2">
+                                    <Clock className="w-4 h-4 text-purple-600" />
+                                    <p className="text-sm text-purple-600 font-medium">{med.time}</p>
+                                  </div>
                                 </>
                               )}
                             </div>
@@ -284,137 +350,226 @@ const FamilyHeartsPage = () => {
                 </div>
 
                 {/* Right Column - Patient Info */}
-                <div className="space-y-6">
+                <div className="space-y-8">
                   {/* Patient Profile Card */}
-                  <Card className="border-pink-200 shadow-lg">
+                  <Card className="border-pink-200 shadow-xl hover:shadow-2xl transition-shadow duration-300">
+                    <CardHeader className="bg-gradient-to-r from-pink-600 to-red-600 text-white rounded-t-lg">
+                      <CardTitle className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <Heart className="w-5 h-5" />
+                          <span>Patient Profile</span>
+                        </div>
+                        <div className="flex space-x-2">
+                          {!editingSections.profile ? (
+                            <Button 
+                              size="sm" 
+                              variant="secondary" 
+                              onClick={() => toggleEditSection('profile')}
+                              className="bg-white/20 hover:bg-white/30 text-white border-white/20"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                          ) : (
+                            <Button 
+                              size="sm" 
+                              variant="secondary"
+                              onClick={() => handleSaveSection('profile')}
+                              className="bg-green-500 hover:bg-green-600 text-white border-green-500"
+                            >
+                              <Save className="w-4 h-4" />
+                            </Button>
+                          )}
+                        </div>
+                      </CardTitle>
+                    </CardHeader>
                     <CardContent className="p-6">
                       <div className="text-center mb-6">
-                        <div className="w-20 h-20 bg-gradient-to-r from-pink-400 to-red-400 rounded-full mx-auto mb-3 flex items-center justify-center">
-                          <Heart className="w-10 h-10 text-white" />
+                        <div className="w-24 h-24 bg-gradient-to-r from-pink-500 to-red-500 rounded-full mx-auto mb-4 flex items-center justify-center shadow-lg">
+                          <Heart className="w-12 h-12 text-white" />
                         </div>
-                        <h3 className="text-xl font-bold text-gray-800 flex items-center justify-center">
-                          <Heart className="w-5 h-5 text-red-500 mr-2" />
+                        <h3 className="text-2xl font-bold text-gray-800 flex items-center justify-center">
+                          <Heart className="w-6 h-6 text-red-500 mr-2" />
                           {currentPatient.name}
                         </h3>
-                        <p className="text-gray-600">{currentPatient.age} years</p>
+                        <p className="text-gray-600 font-medium">{currentPatient.age} years old</p>
                       </div>
                       
                       <div className="grid grid-cols-3 gap-4 mb-6">
-                        <div className="text-center">
-                          <p className="text-sm text-gray-500">Age</p>
-                          {isEditing ? (
+                        <div className="text-center p-3 bg-gradient-to-r from-pink-50 to-red-50 rounded-lg">
+                          <p className="text-sm text-gray-500 font-medium mb-2">Age</p>
+                          {editingSections.profile ? (
                             <Input 
                               defaultValue={currentPatient.age.toString()} 
-                              className="text-center font-semibold h-8" 
+                              className="text-center font-bold h-10 border-pink-200 focus:border-pink-400" 
                               type="number"
                             />
                           ) : (
-                            <p className="font-semibold">{currentPatient.age}</p>
+                            <p className="font-bold text-lg text-pink-700">{currentPatient.age}</p>
                           )}
                         </div>
-                        <div className="text-center">
-                          <p className="text-sm text-gray-500">Height</p>
-                          {isEditing ? (
+                        <div className="text-center p-3 bg-gradient-to-r from-pink-50 to-red-50 rounded-lg">
+                          <p className="text-sm text-gray-500 font-medium mb-2">Height</p>
+                          {editingSections.profile ? (
                             <Input 
                               defaultValue={currentPatient.height} 
-                              className="text-center font-semibold h-8" 
+                              className="text-center font-bold h-10 border-pink-200 focus:border-pink-400" 
                             />
                           ) : (
-                            <p className="font-semibold">{currentPatient.height}</p>
+                            <p className="font-bold text-lg text-pink-700">{currentPatient.height}</p>
                           )}
                         </div>
-                        <div className="text-center">
-                          <p className="text-sm text-gray-500">Weight</p>
-                          {isEditing ? (
+                        <div className="text-center p-3 bg-gradient-to-r from-pink-50 to-red-50 rounded-lg">
+                          <p className="text-sm text-gray-500 font-medium mb-2">Weight</p>
+                          {editingSections.profile ? (
                             <Input 
                               defaultValue={currentPatient.weight} 
-                              className="text-center font-semibold h-8" 
+                              className="text-center font-bold h-10 border-pink-200 focus:border-pink-400" 
                             />
                           ) : (
-                            <p className="font-semibold">{currentPatient.weight}</p>
+                            <p className="font-bold text-lg text-pink-700">{currentPatient.weight}</p>
                           )}
                         </div>
                       </div>
 
-                      <Button className="w-full bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600">
-                        <Badge className="bg-red-500 text-white mr-2">{currentPatient.bloodPressure}</Badge>
-                        View Full Profile
+                      <Button className="w-full bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
+                        <Activity className="w-5 h-5 mr-2" />
+                        View Complete Medical Profile
                       </Button>
                     </CardContent>
                   </Card>
 
                   {/* Vital Signs */}
-                  <Card className="border-blue-200 shadow-lg">
-                    <CardHeader className="bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-t-lg">
-                      <CardTitle className="flex items-center space-x-2">
-                        <Activity className="w-5 h-5" />
-                        <span>Vital Signs</span>
+                  <Card className="border-blue-200 shadow-xl hover:shadow-2xl transition-shadow duration-300">
+                    <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
+                      <CardTitle className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <Activity className="w-5 h-5" />
+                          <span>Vital Signs</span>
+                        </div>
+                        <div className="flex space-x-2">
+                          {!editingSections.vitals ? (
+                            <Button 
+                              size="sm" 
+                              variant="secondary" 
+                              onClick={() => toggleEditSection('vitals')}
+                              className="bg-white/20 hover:bg-white/30 text-white border-white/20"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                          ) : (
+                            <Button 
+                              size="sm" 
+                              variant="secondary"
+                              onClick={() => handleSaveSection('vitals')}
+                              className="bg-green-500 hover:bg-green-600 text-white border-green-500"
+                            >
+                              <Save className="w-4 h-4" />
+                            </Button>
+                          )}
+                        </div>
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="p-6">
                       <div className="space-y-4">
-                        <div className="flex justify-between items-center">
-                          <span className="text-gray-600">Heart Rate</span>
-                          <span className="font-semibold text-red-600">{currentPatient.vitalSigns.heartRate}</span>
+                        <div className="flex justify-between items-center p-3 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
+                          <span className="text-gray-700 font-medium">Heart Rate</span>
+                          {editingSections.vitals ? (
+                            <Input 
+                              defaultValue={currentPatient.vitalSigns.heartRate} 
+                              className="w-24 text-center font-bold border-blue-200 focus:border-blue-400" 
+                            />
+                          ) : (
+                            <span className="font-bold text-red-600 text-lg">{currentPatient.vitalSigns.heartRate}</span>
+                          )}
                         </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-gray-600">Temperature</span>
-                          <span className="font-semibold text-blue-600">{currentPatient.vitalSigns.temperature}</span>
+                        <div className="flex justify-between items-center p-3 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
+                          <span className="text-gray-700 font-medium">Temperature</span>
+                          {editingSections.vitals ? (
+                            <Input 
+                              defaultValue={currentPatient.vitalSigns.temperature} 
+                              className="w-24 text-center font-bold border-blue-200 focus:border-blue-400" 
+                            />
+                          ) : (
+                            <span className="font-bold text-blue-600 text-lg">{currentPatient.vitalSigns.temperature}</span>
+                          )}
                         </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-gray-600">Oxygen Sat</span>
-                          <span className="font-semibold text-green-600">{currentPatient.vitalSigns.oxygenSat}</span>
+                        <div className="flex justify-between items-center p-3 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
+                          <span className="text-gray-700 font-medium">Oxygen Sat</span>
+                          {editingSections.vitals ? (
+                            <Input 
+                              defaultValue={currentPatient.vitalSigns.oxygenSat} 
+                              className="w-24 text-center font-bold border-blue-200 focus:border-blue-400" 
+                            />
+                          ) : (
+                            <span className="font-bold text-green-600 text-lg">{currentPatient.vitalSigns.oxygenSat}</span>
+                          )}
                         </div>
                         <Separator />
-                        <p className="text-xs text-gray-500">Last updated: {currentPatient.vitalSigns.lastUpdated}</p>
+                        <p className="text-sm text-gray-500 font-medium">Last updated: {currentPatient.vitalSigns.lastUpdated}</p>
                       </div>
                     </CardContent>
                   </Card>
 
                   {/* Allergies */}
-                  <Card className="border-red-200 shadow-lg">
-                      <CardHeader className="bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-t-lg">
-                        <CardTitle className="flex items-center justify-between">
-                          <div className="flex items-center space-x-2">
-                            <AlertTriangle className="w-5 h-5" />
-                            <span>Allergies</span>
-                          </div>
-                          {isEditing && (
-                            <Button size="sm" variant="secondary" className="text-red-600">
+                  <Card className="border-red-200 shadow-xl hover:shadow-2xl transition-shadow duration-300">
+                    <CardHeader className="bg-gradient-to-r from-red-600 to-pink-600 text-white rounded-t-lg">
+                      <CardTitle className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <AlertTriangle className="w-5 h-5" />
+                          <span>Allergies & Warnings</span>
+                        </div>
+                        <div className="flex space-x-2">
+                          {!editingSections.allergies ? (
+                            <Button 
+                              size="sm" 
+                              variant="secondary" 
+                              onClick={() => toggleEditSection('allergies')}
+                              className="bg-white/20 hover:bg-white/30 text-white border-white/20"
+                            >
                               <Edit className="w-4 h-4" />
                             </Button>
+                          ) : (
+                            <Button 
+                              size="sm" 
+                              variant="secondary"
+                              onClick={() => handleSaveSection('allergies')}
+                              className="bg-green-500 hover:bg-green-600 text-white border-green-500"
+                            >
+                              <Save className="w-4 h-4" />
+                            </Button>
                           )}
-                        </CardTitle>
-                      </CardHeader>
-                    <CardContent className="p-6">
-                      <div className="space-y-2">
-                        {currentPatient.allergies.map((allergy, index) => (
-                          <Badge key={index} variant="destructive" className="mr-2 mb-2">
-                            {allergy}
-                          </Badge>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  {/* Emergency Contacts */}
-                  <Card className="border-yellow-200 shadow-lg">
-                    <CardHeader className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-t-lg">
-                      <CardTitle className="flex items-center space-x-2">
-                        <User className="w-5 h-5" />
-                        <span>Emergency Contacts</span>
+                        </div>
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="p-6">
-                      <div className="space-y-3">
-                        {currentPatient.emergencyContacts.map((contact, index) => (
-                          <div key={index} className="p-3 bg-yellow-50 rounded-lg border border-yellow-100">
-                            <h4 className="font-semibold text-yellow-800">{contact.name}</h4>
-                            <p className="text-sm text-gray-600">{contact.phone}</p>
-                            <p className="text-xs text-yellow-600">{contact.relation}</p>
-                          </div>
-                        ))}
-                      </div>
+                      {editingSections.allergies ? (
+                        <div className="space-y-3">
+                          {currentPatient.allergies.map((allergy, index) => (
+                            <Input 
+                              key={index}
+                              defaultValue={allergy} 
+                              className="font-medium border-red-200 focus:border-red-400" 
+                              placeholder="Allergy name"
+                            />
+                          ))}
+                          <Button 
+                            variant="outline" 
+                            className="w-full border-red-200 text-red-600 hover:bg-red-50"
+                            size="sm"
+                          >
+                            + Add New Allergy
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="flex flex-wrap gap-2">
+                          {currentPatient.allergies.map((allergy, index) => (
+                            <Badge key={index} variant="destructive" className="px-3 py-2 text-sm font-medium bg-red-100 text-red-800 border border-red-200 hover:bg-red-200 transition-colors">
+                              <AlertTriangle className="w-4 h-4 mr-1" />
+                              {allergy}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
                     </CardContent>
                   </Card>
                 </div>

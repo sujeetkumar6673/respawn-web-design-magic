@@ -4,7 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Heart, MessageCircle, User, Phone, Calendar, Pill, FileText, AlertTriangle, Activity, Clock, MapPin } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Heart, MessageCircle, User, Phone, Calendar, Pill, FileText, AlertTriangle, Activity, Clock, MapPin, Edit, Shield } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
@@ -15,6 +18,8 @@ const FamilyHeartsPage = () => {
   const isMobile = useIsMobile();
   const [activePage, setActivePage] = useState('family-hearts');
   const [selectedPatient, setSelectedPatient] = useState<'mom'>('mom');
+  const [isEditing, setIsEditing] = useState(false);
+  const [editableData, setEditableData] = useState({});
   
   const handleNavigate = (page: string) => {
     setActivePage(page);
@@ -97,18 +102,54 @@ const FamilyHeartsPage = () => {
                     </div>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <Button variant="outline" className="flex items-center space-x-2">
-                      <Phone className="w-4 h-4" />
-                      <span>Contact</span>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="destructive" className="flex items-center space-x-2 bg-red-500 hover:bg-red-600">
+                          <Shield className="w-4 h-4" />
+                          <span>Emergency</span>
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-md">
+                        <DialogHeader>
+                          <DialogTitle className="flex items-center space-x-2 text-red-600">
+                            <Shield className="w-5 h-5" />
+                            Emergency Contacts
+                          </DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-4 pt-4">
+                          {currentPatient.emergencyContacts.map((contact, index) => (
+                            <div key={index} className="p-4 bg-red-50 rounded-lg border border-red-200">
+                              <div className="flex items-center justify-between mb-2">
+                                <h4 className="font-semibold text-red-800">{contact.name}</h4>
+                                <Badge variant="outline" className="text-red-600 border-red-200">
+                                  {contact.relation}
+                                </Badge>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <Phone className="w-4 h-4 text-red-600" />
+                                <a href={`tel:${contact.phone}`} className="text-red-600 font-medium hover:underline">
+                                  {contact.phone}
+                                </a>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                    
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setIsEditing(!isEditing)}
+                      className="flex items-center space-x-2"
+                    >
+                      <Edit className="w-4 h-4" />
+                      <span>{isEditing ? 'Save' : 'Edit'}</span>
                     </Button>
+                    
                     <Button variant="outline" className="flex items-center space-x-2">
                       <MessageCircle className="w-4 h-4" />
                       <span>Message</span>
                     </Button>
-                    <div className="flex -space-x-2">
-                      <div className="w-10 h-10 bg-blue-500 rounded-full border-2 border-white"></div>
-                      <div className="w-10 h-10 bg-green-500 rounded-full border-2 border-white"></div>
-                    </div>
                   </div>
                 </div>
                 
@@ -126,18 +167,47 @@ const FamilyHeartsPage = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <Card className="border-purple-200 shadow-lg">
                       <CardHeader className="bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-t-lg">
-                        <CardTitle className="flex items-center space-x-2">
-                          <Pill className="w-5 h-5" />
-                          <span>Current Medications</span>
+                        <CardTitle className="flex items-center justify-between">
+                          <div className="flex items-center space-x-2">
+                            <Pill className="w-5 h-5" />
+                            <span>Current Medications</span>
+                          </div>
+                          {isEditing && (
+                            <Button size="sm" variant="secondary" className="text-purple-600">
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                          )}
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="p-6">
                         <div className="space-y-4">
                           {currentPatient.medications.map((med, index) => (
                             <div key={index} className="p-3 bg-purple-50 rounded-lg border border-purple-100">
-                              <h4 className="font-semibold text-purple-800">{med.name}</h4>
-                              <p className="text-sm text-gray-600">{med.dosage} - {med.frequency}</p>
-                              <p className="text-xs text-purple-600">{med.time}</p>
+                              {isEditing ? (
+                                <div className="space-y-2">
+                                  <Input 
+                                    defaultValue={med.name} 
+                                    className="font-semibold text-purple-800 bg-white" 
+                                    placeholder="Medication name"
+                                  />
+                                  <Input 
+                                    defaultValue={`${med.dosage} - ${med.frequency}`} 
+                                    className="text-sm bg-white" 
+                                    placeholder="Dosage and frequency"
+                                  />
+                                  <Input 
+                                    defaultValue={med.time} 
+                                    className="text-xs bg-white" 
+                                    placeholder="Time"
+                                  />
+                                </div>
+                              ) : (
+                                <>
+                                  <h4 className="font-semibold text-purple-800">{med.name}</h4>
+                                  <p className="text-sm text-gray-600">{med.dosage} - {med.frequency}</p>
+                                  <p className="text-xs text-purple-600">{med.time}</p>
+                                </>
+                              )}
                             </div>
                           ))}
                         </div>
@@ -175,12 +245,19 @@ const FamilyHeartsPage = () => {
 
                   {/* Health History */}
                   <Card className="border-green-200 shadow-lg">
-                    <CardHeader className="bg-gradient-to-r from-green-500 to-teal-500 text-white rounded-t-lg">
-                      <CardTitle className="flex items-center space-x-2">
-                        <FileText className="w-5 h-5" />
-                        <span>Health History</span>
-                      </CardTitle>
-                    </CardHeader>
+                      <CardHeader className="bg-gradient-to-r from-green-500 to-teal-500 text-white rounded-t-lg">
+                        <CardTitle className="flex items-center justify-between">
+                          <div className="flex items-center space-x-2">
+                            <FileText className="w-5 h-5" />
+                            <span>Health History</span>
+                          </div>
+                          {isEditing && (
+                            <Button size="sm" variant="secondary" className="text-green-600">
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                          )}
+                        </CardTitle>
+                      </CardHeader>
                     <CardContent className="p-6">
                       <div className="space-y-4">
                         {currentPatient.healthHistory.map((item, index) => (
@@ -204,17 +281,6 @@ const FamilyHeartsPage = () => {
                     </CardContent>
                   </Card>
 
-                  {/* My Paid Claim */}
-                  <Card className="border-orange-200 shadow-lg">
-                    <CardHeader className="bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-t-lg">
-                      <CardTitle>My Paid Claim</CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-6">
-                      <div className="h-32 bg-orange-50 rounded-lg border border-orange-100 flex items-center justify-center">
-                        <p className="text-orange-600">No recent claims</p>
-                      </div>
-                    </CardContent>
-                  </Card>
                 </div>
 
                 {/* Right Column - Patient Info */}
@@ -236,15 +302,37 @@ const FamilyHeartsPage = () => {
                       <div className="grid grid-cols-3 gap-4 mb-6">
                         <div className="text-center">
                           <p className="text-sm text-gray-500">Age</p>
-                          <p className="font-semibold">{currentPatient.age}</p>
+                          {isEditing ? (
+                            <Input 
+                              defaultValue={currentPatient.age.toString()} 
+                              className="text-center font-semibold h-8" 
+                              type="number"
+                            />
+                          ) : (
+                            <p className="font-semibold">{currentPatient.age}</p>
+                          )}
                         </div>
                         <div className="text-center">
                           <p className="text-sm text-gray-500">Height</p>
-                          <p className="font-semibold">{currentPatient.height}</p>
+                          {isEditing ? (
+                            <Input 
+                              defaultValue={currentPatient.height} 
+                              className="text-center font-semibold h-8" 
+                            />
+                          ) : (
+                            <p className="font-semibold">{currentPatient.height}</p>
+                          )}
                         </div>
                         <div className="text-center">
                           <p className="text-sm text-gray-500">Weight</p>
-                          <p className="font-semibold">{currentPatient.weight}</p>
+                          {isEditing ? (
+                            <Input 
+                              defaultValue={currentPatient.weight} 
+                              className="text-center font-semibold h-8" 
+                            />
+                          ) : (
+                            <p className="font-semibold">{currentPatient.weight}</p>
+                          )}
                         </div>
                       </div>
 
@@ -285,12 +373,19 @@ const FamilyHeartsPage = () => {
 
                   {/* Allergies */}
                   <Card className="border-red-200 shadow-lg">
-                    <CardHeader className="bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-t-lg">
-                      <CardTitle className="flex items-center space-x-2">
-                        <AlertTriangle className="w-5 h-5" />
-                        <span>Allergies</span>
-                      </CardTitle>
-                    </CardHeader>
+                      <CardHeader className="bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-t-lg">
+                        <CardTitle className="flex items-center justify-between">
+                          <div className="flex items-center space-x-2">
+                            <AlertTriangle className="w-5 h-5" />
+                            <span>Allergies</span>
+                          </div>
+                          {isEditing && (
+                            <Button size="sm" variant="secondary" className="text-red-600">
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                          )}
+                        </CardTitle>
+                      </CardHeader>
                     <CardContent className="p-6">
                       <div className="space-y-2">
                         {currentPatient.allergies.map((allergy, index) => (
